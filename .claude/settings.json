@@ -12,7 +12,8 @@
     "allow": [
       "Bash(dir *)",
       "Bash(python -m pytest *)",
-      "Bash(py -m pytest *)"
+      "Bash(py -m pytest *)",
+      "Bash(bash .claude/scripts/codex-run.sh *)"
     ],
     "deny": [
       "Bash(rm -rf *)",

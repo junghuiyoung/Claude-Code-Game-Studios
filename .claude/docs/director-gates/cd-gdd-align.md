@@ -2,7 +2,7 @@
 
 # CD-GDD-ALIGN — GDD Pillar Alignment Check
 
-Agent: `creative-director` | Model tier: Opus | Domain: Vision, pillars, player experience
+Agent: `creative-director` | Model tier: Codex gpt-6.1-sol xhigh (Codex proxy; relay: Claude opus) | Domain: Vision, pillars, player experience
 
 **Trigger**: After a system GDD is authored (design-system, or any workflow that
 produces a GDD)

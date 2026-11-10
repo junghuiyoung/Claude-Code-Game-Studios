@@ -2,7 +2,7 @@
 
 # TD-ARCHITECTURE — Architecture Sign-Off
 
-Agent: `technical-director` | Model tier: Opus | Domain: Architecture, engine risk, performance
+Agent: `technical-director` | Model tier: Codex gpt-6.1-sol xhigh (Codex proxy; relay: Claude opus) | Domain: Architecture, engine risk, performance
 
 **Trigger**: After the master architecture document is drafted (`/create-architecture`
 Phase 7), and after any major architecture revision

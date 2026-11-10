@@ -43,8 +43,9 @@ decides *whether* the panel runs, `workflow` decides *how wide* it is.
 - `lean` → run the panel (phase gates always run in lean mode — this is their purpose).
 - `full` → run the panel.
 
-**Axis 2 — `workflow` decides the panel width.** Directors are Opus-tier, so the
-panel is sized to the project rather than fixed at four. The gate still runs at
+**Axis 2 — `workflow` decides the panel width.** Each director is a Codex job at
+effort `xhigh` (`.claude/docs/model-tiers.md`), so the panel is sized to the
+project rather than fixed at four. The gate still runs at
 every tier; only its breadth scales:
 
 | `workflow` | Panel | Directors |

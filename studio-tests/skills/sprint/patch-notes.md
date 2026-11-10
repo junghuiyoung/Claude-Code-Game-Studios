@@ -2,7 +2,7 @@
 
 ## Skill Summary
 
-`/patch-notes` is a Sonnet-tier skill that turns a release's changes into
+`/patch-notes` is an Opus-tier skill that turns a release's changes into
 player-facing patch notes. Before reading any history it classifies recent
 commits as Game or Framework / maintenance (Unclear counts as Framework), uses
 only the Game commits, and says how many of how many it used. It gathers change
@@ -257,7 +257,7 @@ Fixture defaults.
 - [ ] Rewrites entries in plain language without internal IDs
 - [ ] Always asks "May I write" before writing patch notes
 - [ ] No director gates are invoked
-- [ ] Declares `model: sonnet` — it writes player-facing copy
+- [ ] Declares `model: opus` — it writes player-facing copy
 
 ---
 

@@ -10,8 +10,9 @@
 ## Static Assertions (Structural)
 
 - [ ] `description:` field is present and domain-specific (references CI/CD, build, deployment, version control)
-- [ ] `tools:` reads `Read, Glob, Grep, Write, Edit, Bash` — Bash to run builds and pipelines; game code and assets are excluded by the body's "What This Agent Must NOT Do" list, not by the tool list
-- [ ] Model tier is `sonnet` — frontmatter `model:` reads exactly `sonnet` (tiers: `.claude/docs/model-tiers.md`)
+- [ ] `tools:` reads `Read, Glob, Grep, Write, Bash` and no `disallowedTools:` — a Codex proxy (`.claude/docs/model-tiers.md`): Write for the job's `brief.md`, Bash for `codex-run.sh`; the role's own work runs in Codex
+- [ ] Model tier is `opus` — frontmatter `model:` reads exactly `opus` (tiers: `.claude/docs/model-tiers.md`)
+- [ ] A `<!-- claude-only -->` proxy section opens the body: it hands the request to Codex word for word with `codex-run.sh start <dir> --agent devops-engineer --effort xhigh --network`, waits in the foreground, relays the final message unchanged (a `QUESTION:` block goes back to the caller), and never does the work itself
 - [ ] Agent definition does not claim authority over game logic, security audits, or QA test design
 - [ ] Its Implementation Workflow questions are pipeline questions (which platforms, engine version and export presets CI builds; where build secrets and signing keys live) — none asks how game code should be structured
 

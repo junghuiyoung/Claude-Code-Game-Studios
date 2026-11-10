@@ -4,7 +4,7 @@ description: "Performance profiling — find bottlenecks, measure against budget
 argument-hint: "[system-name or 'full']"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Bash(bash "*/.claude/skills/perf-profile/../../hooks/yaml-helper.sh" resolve_config *), Bash(bash "*/.claude/skills/perf-profile/../../hooks/yaml-helper.sh" get_effective_yaml_key *)
-model: sonnet
+model: opus
 ---
 
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys performance.enforce,automation,workflow`

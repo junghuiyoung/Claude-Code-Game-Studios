@@ -4,7 +4,7 @@ description: "Brownfield audit — do existing artifacts actually work? Numbered
 argument-hint: "[focus: full | gdds | adrs | stories | infra]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, AskUserQuestion, Bash(bash "*/.claude/skills/adopt/../../hooks/yaml-helper.sh" resolve_config *), Bash(bash .claude/scripts/gdd-structure-check.sh *), Bash(bash .claude/scripts/migrate-v1-config.sh --dry-run*)
-model: sonnet
+model: opus
 ---
 
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys review_mode,automation,automation_always_ask,workflow`

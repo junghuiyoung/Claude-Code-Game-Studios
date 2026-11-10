@@ -2,7 +2,7 @@
 
 # TD-ENGINE-RISK — Engine Version Risk Review
 
-Agent: `technical-director` | Model tier: Opus | Domain: Architecture, engine risk, performance
+Agent: `technical-director` | Model tier: Codex gpt-6.1-sol xhigh (Codex proxy; relay: Claude opus) | Domain: Architecture, engine risk, performance
 
 **Trigger**: When making architecture decisions that touch post-cutoff engine APIs,
 or before finalizing any engine-specific implementation approach

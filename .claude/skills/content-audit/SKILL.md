@@ -4,7 +4,7 @@ description: "Audit GDD content counts against what's implemented — planned vs
 argument-hint: "[system-name | --summary | (no arg = full audit)]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Bash(bash "*/.claude/skills/content-audit/../../hooks/yaml-helper.sh" resolve_config *)
-model: sonnet
+model: opus
 ---
 
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys workflow,automation`

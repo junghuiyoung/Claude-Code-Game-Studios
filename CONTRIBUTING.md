@@ -29,8 +29,10 @@ These are the things that will get your PR rejected if you miss them.
   required. Flat `.md` files are silently ignored by Claude Code.
 - SKILL.md must include YAML frontmatter: `name`, `description`,
   `argument-hint`, `allowed-tools`, and `model`
-- Model tier: `haiku` for read-only status checks, `opus` for multi-document
-  synthesis and phase gates, `sonnet` for everything else
+- Model tier: `opus`, or `haiku` for a skill that only reads and formats, asks
+  nothing and writes nothing. Agents follow the rule in
+  `.claude/docs/model-tiers.md`: a reviewer or code writer is `opus`, and any
+  other agent is a Codex proxy.
 
 **Hooks**
 - Use `grep -E` — never `grep -P` (Perl regex breaks on Windows Git Bash)

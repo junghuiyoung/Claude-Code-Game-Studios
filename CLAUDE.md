@@ -51,7 +51,8 @@ Every task follows: **Question -> Options -> Decision -> Draft -> Approval**
 
 - Agents MUST ask "May I write this to [filepath]?" before using Write/Edit tools
   (exempt: `active.md` appends, agent memory, a subagent's new file at the path
-  its orchestrating skill named; see `.claude/rules/agent-memory.md`)
+  its orchestrating skill named, a Codex job's brief or answer file under
+  `production/session-state/codex/`; see `.claude/rules/agent-memory.md`)
 - Agents MUST show drafts or summaries before requesting approval
 - Multi-file changes require explicit approval for the full changeset
 - No commits without user instruction

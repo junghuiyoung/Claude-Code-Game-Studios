@@ -4,7 +4,7 @@ description: "Find flaky tests from CI logs — aggregates pass rates, spots int
 argument-hint: "[ci-log-path | scan | registry]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Bash(ls -t *), Bash(bash "*/.claude/skills/test-flakiness/../../hooks/yaml-helper.sh" resolve_config *)
-model: sonnet
+model: opus
 ---
 
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys automation`

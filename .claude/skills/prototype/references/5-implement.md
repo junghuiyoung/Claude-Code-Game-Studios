@@ -8,7 +8,22 @@
 Ask: "May I create the prototype directory at `prototypes/[concept-name]-concept/`
 and begin implementation?"
 
-If yes, create the directory. Every file must begin with:
+If yes, create the directory.
+
+**Codex writes the code.** The engine path's scripts and scenes and the HTML
+path's `prototype.html` are code. Hand them to Codex by following
+`.claude/docs/codex-handoff.md`: `new prototype`, then
+`start --agent prototyper --effort max`. The brief carries:
+- the core question and the approved plan;
+- the header rule and the relaxed standards below;
+- the prototype directory, as the only place it may write.
+
+Each fix round of the engine loop below is a `resume` of the same job. Its
+answer file holds the user's error text or observations. The paper path's two
+documents are not code: write those yourself. If Codex did not run, say so: the
+prototype is not built.
+
+Every file must begin with:
 
 ```
 [comment] PROTOTYPE - NOT FOR PRODUCTION

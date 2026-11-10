@@ -2,7 +2,7 @@
 
 # PR-EPIC — Epic Structure Feasibility Review
 
-Agent: `producer` | Model tier: Opus | Domain: Scope, timeline, dependencies, production risk
+Agent: `producer` | Model tier: Codex gpt-6.1-sol xhigh (Codex proxy; relay: Claude opus) | Domain: Scope, timeline, dependencies, production risk
 
 **Trigger**: After epics are defined by `/create-epics`, before stories are
 broken out — validates the epic structure is producible before `/create-stories`

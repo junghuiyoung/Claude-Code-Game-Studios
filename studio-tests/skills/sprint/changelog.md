@@ -247,7 +247,7 @@ Fixture defaults.
 - [ ] Always asks "May I write" before writing the changelog
 - [ ] No director gates are invoked
 - [ ] Verdict is CHANGELOG WRITTEN after a write, COMPLETE when the write is declined, and BLOCKED when there is no history or no Game commit
-- [ ] Declares `model: sonnet` — it writes player-facing copy
+- [ ] Declares `model: opus` — it writes player-facing copy
 
 ---
 

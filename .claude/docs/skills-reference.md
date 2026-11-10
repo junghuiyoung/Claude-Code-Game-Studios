@@ -30,6 +30,7 @@
 |---------|---------|
 | `/art-bible` | Guided, section-by-section Art Bible authoring — creates visual identity spec before asset production begins |
 | `/asset-spec` | Generate per-asset visual specifications and AI generation prompts from GDDs, level docs, or character profiles |
+| `/asset-generate` | Generate files from approved asset specs: images (Higgsfield, Codex fallback), 3D (Higgsfield GLB plus Blender cleanup), audio (ElevenLabs, Higgsfield fallback). Asks before every paid call |
 | `/asset-audit` | Audit assets for naming conventions, file size budgets, and pipeline compliance |
 
 ## UX & Interface Design

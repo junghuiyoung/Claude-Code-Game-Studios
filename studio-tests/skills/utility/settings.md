@@ -7,7 +7,7 @@
 <key>` (view-one), `/settings <key>=<value>` (write to `project.yaml`) and
 `/settings --local <key>=<value>` (write a personal override to the gitignored
 `project.local.yaml`). Anything else, including an empty key or value, prints
-the usage block. It runs on the Sonnet model and reads every value through
+the usage block. It runs on the Opus model and reads every value through
 `yaml-helper.sh` (`resolve_setting`, `get_yaml_key`, `is_locally_overridable`,
 `validate_enum_value`), so a value the `modes.rigor` preset supplies is shown as
 `(derived from rigor: <level>)` rather than "(not set)".

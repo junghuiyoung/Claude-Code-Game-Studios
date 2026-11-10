@@ -4,8 +4,8 @@ description: "Emergency fix bypassing normal sprint process — hotfix branch, a
 argument-hint: "[bug-id or description]"
 user-invocable: true
 disable-model-invocation: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, Bash(git rev-parse *), Bash(git tag --list*), Bash(git branch --list *)
-model: sonnet
+allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, Bash(git rev-parse *), Bash(git tag --list*), Bash(git branch --list *), Bash(bash .claude/scripts/codex-run.sh *)
+model: opus
 ---
 
 # Hotfix
@@ -104,7 +104,12 @@ Present the root cause and proposed fix, then ask: "May I implement this fix?" D
 
 ## Phase 4b: Implement (only after approval)
 
-Implement the approved minimal change. Validate the fix by running targeted tests for the affected system, with `commands.test` from `project.yaml` (narrowed to the affected suite where the runner allows) — never a runner line written from memory, which drops the flags the engine needs (gdUnit4 hangs without `--remote-debug tcp://127.0.0.1:0`). Check for regressions in adjacent systems. If `commands.test` is unset, or no test covers the affected system, say so and record `Tests: NOT RUN — [reason]` in the hotfix record's Testing section; the Phase 5b QA gate then carries the verification.
+Codex writes the approved minimal change: follow `.claude/docs/codex-handoff.md`
+(`new hotfix`, a brief with the approved root cause, fix and the only files it may
+change, `start --agent - --effort max`, `wait`, `report`). Do not edit the source
+yourself. If Codex did not run, record `Fix: NOT APPLIED — Codex did not run:
+[line]` in the hotfix record and stop: the fix is BLOCKED, not done. Then validate
+the fix by running targeted tests for the affected system, with `commands.test` from `project.yaml` (narrowed to the affected suite where the runner allows) — never a runner line written from memory, which drops the flags the engine needs (gdUnit4 hangs without `--remote-debug tcp://127.0.0.1:0`). Check for regressions in adjacent systems. If `commands.test` is unset, or no test covers the affected system, say so and record `Tests: NOT RUN — [reason]` in the hotfix record's Testing section; the Phase 5b QA gate then carries the verification.
 
 Update the hotfix record with root cause, fix details, and test results.
 

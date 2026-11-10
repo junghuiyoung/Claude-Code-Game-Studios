@@ -2,7 +2,7 @@
 
 # CD-PHASE-GATE — Creative Readiness at Phase Transition
 
-Agent: `creative-director` | Model tier: Opus | Domain: Vision, pillars, player experience
+Agent: `creative-director` | Model tier: Codex gpt-6.1-sol xhigh (Codex proxy; relay: Claude opus) | Domain: Vision, pillars, player experience
 
 **Trigger**: At `/gate-check` when `modes.workflow` is `full` — the panel narrows by workflow, and only the full panel includes creative-director; spawn in parallel with TD-PHASE-GATE, PR-PHASE-GATE and AD-PHASE-GATE
 

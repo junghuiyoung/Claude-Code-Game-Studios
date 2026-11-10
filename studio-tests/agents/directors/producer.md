@@ -12,8 +12,9 @@
 Verified by reading the agent's `.claude/agents/producer.md` frontmatter:
 
 - [ ] `description:` field is present and domain-specific (references scope, sprint, milestone, production — not generic)
-- [ ] `tools:` includes Write and Edit (it authors sprint plans per its Output Format and maintains the risk register) and Bash only because a preloaded skill needs it (`skills:` includes `scope-check`, which reads `git log`)
+- [ ] `tools:` reads `Read, Glob, Grep, Write, Bash` and no `disallowedTools:` — a Codex proxy (`.claude/docs/model-tiers.md`): Write for the job's `brief.md`, Bash for `codex-run.sh`; the role's own work runs in Codex
 - [ ] Model tier is `opus` — frontmatter `model:` reads exactly `opus` (tiers: `.claude/docs/model-tiers.md`)
+- [ ] A `<!-- claude-only -->` proxy section opens the body: it hands the request to Codex word for word with `codex-run.sh start <dir> --agent producer --effort xhigh`, waits in the foreground, relays the final message unchanged (a `QUESTION:` block goes back to the caller), and never does the work itself
 - [ ] Agent definition does not claim authority over design decisions or technical architecture
 
 ---

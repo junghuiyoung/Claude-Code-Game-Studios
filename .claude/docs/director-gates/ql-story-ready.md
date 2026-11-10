@@ -2,7 +2,7 @@
 
 # QL-STORY-READY — QA Lead Story Readiness Check
 
-Agent: `qa-lead` | Model tier: session (inherit)
+Agent: `qa-lead` | Model tier: Codex gpt-6.1-sol xhigh (Codex proxy; relay: Claude opus)
 
 **Trigger**: Before a story is accepted into a sprint — invoked by `/create-stories`
 and `/story-readiness`

@@ -4,7 +4,7 @@ description: "Per-asset visual specs plus AI generation prompts from GDDs and ch
 argument-hint: "[system:<name> | level:<name> | character:<name>] [--review full|lean|solo]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, Bash(bash "*/.claude/skills/asset-spec/../../hooks/yaml-helper.sh" resolve_config *)
-model: sonnet
+model: opus
 ---
 
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys review_mode,automation`
@@ -28,8 +28,9 @@ Every `AskUserQuestion` call follows `.claude/docs/automation-modes.md`
 generator (calling an image API) always prompts regardless of
 `modes.automation` — it is an irreversible external action guarded
 unconditionally, independent of whether `external_calls` is listed in
-`automation_always_ask`. (Today this skill only emits generation-prompt
-*text*; the guard applies if live generation is ever wired in.)
+`automation_always_ask`. This skill only emits generation-prompt *text*.
+`/asset-generate` turns approved specs into files and applies this guard to
+every paid call.
 
 ## Phase 0b: Entity & Screen Inventory (runs when no arguments and no existing inventory)
 
@@ -350,8 +351,9 @@ Use `AskUserQuestion`:
   - `[A] Spec another system — /asset-spec system:[next-system]`
   - `[B] Spec a level — /asset-spec level:[level-name]`
   - `[C] Spec a character — /asset-spec character:[character-name]`
-  - `[D] Run /asset-audit — validate delivered assets against specs`
-  - `[E] Stop here`
+  - `[D] Generate them — /asset-generate design/assets/specs/[target-name]-assets.md`
+  - `[E] Run /asset-audit — validate delivered assets against specs`
+  - `[F] Stop here`
 
 ---
 

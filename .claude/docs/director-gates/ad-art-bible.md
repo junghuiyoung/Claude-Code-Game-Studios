@@ -2,7 +2,7 @@
 
 # AD-ART-BIBLE — Art Bible Sign-Off
 
-Agent: `art-director` | Model tier: session (inherit) | Domain: Visual identity, art bible, visual production readiness
+Agent: `art-director` | Model tier: Codex gpt-6.1-sol xhigh (Codex proxy; relay: Claude opus) | Domain: Visual identity, art bible, visual production readiness
 
 **Trigger**: After the art bible is drafted (`/art-bible`), before asset production begins
 

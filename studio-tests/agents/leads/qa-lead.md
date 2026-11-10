@@ -12,8 +12,9 @@
 Verified by reading the agent's `.claude/agents/qa-lead.md` frontmatter:
 
 - [ ] `description:` field is present and domain-specific (references test strategy, story readiness, coverage, bug triage — not generic)
-- [ ] `tools:` includes Read for story files, test files, and coding-standards; Bash because it runs `/smoke-check` before every QA hand-off; Write/Edit for the QA plans and sign-off reports it produces, each write gated on the user's approval in its collaboration protocol
-- [ ] Model tier is `inherit` — frontmatter `model:` reads exactly `inherit` (tiers: `.claude/docs/model-tiers.md`)
+- [ ] `tools:` reads `Read, Glob, Grep, Write, Bash` and no `disallowedTools:` — a Codex proxy (`.claude/docs/model-tiers.md`): Write for the job's `brief.md`, Bash for `codex-run.sh`; the role's own work runs in Codex
+- [ ] Model tier is `opus` — frontmatter `model:` reads exactly `opus` (tiers: `.claude/docs/model-tiers.md`)
+- [ ] A `<!-- claude-only -->` proxy section opens the body: it hands the request to Codex word for word with `codex-run.sh start <dir> --agent qa-lead --effort xhigh`, waits in the foreground, relays the final message unchanged (a `QUESTION:` block goes back to the caller), and never does the work itself
 - [ ] Agent definition does not claim authority over implementation decisions or game design
 
 ---

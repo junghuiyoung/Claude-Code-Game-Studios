@@ -4,7 +4,7 @@ description: "Estimate task effort from complexity, dependencies, velocity, risk
 argument-hint: "[task-description]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep
-model: sonnet
+model: opus
 ---
 
 # Estimate

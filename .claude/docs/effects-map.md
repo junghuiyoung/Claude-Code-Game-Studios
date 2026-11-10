@@ -427,9 +427,9 @@ pipeline's own review steps run in every mode.
   phase gates always run. Only `solo` skips them. This is intentional: phase
   gates are the minimum quality bar, not optional extras. **How many directors
   run is a separate axis** — `modes.workflow` sets panel width (`minimal` → PR
-  only, `standard` → TD + PR, `full` → all four), because directors are
-  Opus-tier and a small project should not pay for the same four-director panel
-  as a large one. Width never softens a verdict: the strictest verdict from
+  only, `standard` → TD + PR, `full` → all four), because each director is an
+  `xhigh`-effort Codex job and a small project should not pay for the same
+  four-director panel as a large one. Width never softens a verdict: the strictest verdict from
   whoever ran still wins, and `/gate-check` names the perspectives it skipped.
 - **art-bible** always spawns its section specialists regardless of mode — only
   the final sign-off gate is controlled by `review_mode`. Specialist delegation is

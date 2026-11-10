@@ -2,7 +2,7 @@
 
 # TD-CHANGE-IMPACT — Design Change Impact Review
 
-Agent: `technical-director` | Model tier: Opus | Domain: Architecture, engine risk, performance
+Agent: `technical-director` | Model tier: Codex gpt-6.1-sol xhigh (Codex proxy; relay: Claude opus) | Domain: Architecture, engine risk, performance
 
 **Trigger**: After the Design Change Impact Report is produced
 (`/propagate-design-change` Phase 6), before the resolution workflow begins

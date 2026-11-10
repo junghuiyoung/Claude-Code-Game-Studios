@@ -2,7 +2,7 @@
 
 # TD-MANIFEST — Control Manifest Review
 
-Agent: `technical-director` | Model tier: Opus | Domain: Architecture, engine risk, performance
+Agent: `technical-director` | Model tier: Codex gpt-6.1-sol xhigh (Codex proxy; relay: Claude opus) | Domain: Architecture, engine risk, performance
 
 **Trigger**: After control-manifest rules are extracted and previewed
 (`/create-control-manifest` Phase 4), before the manifest file is written

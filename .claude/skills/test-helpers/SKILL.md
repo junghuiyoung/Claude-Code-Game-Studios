@@ -3,8 +3,8 @@ name: test-helpers
 description: "Generate engine-specific test helper libraries — assertion utilities, factory functions, mocks in the engine's test folder. Reduces boilerplate."
 argument-hint: "[system-name | all | scaffold]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Bash(bash "*/.claude/skills/test-helpers/../../hooks/yaml-helper.sh" resolve_config *)
-model: sonnet
+allowed-tools: Read, Glob, Grep, Write, Bash(bash "*/.claude/skills/test-helpers/../../hooks/yaml-helper.sh" resolve_config *), Bash(bash .claude/scripts/codex-run.sh *)
+model: opus
 ---
 
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys automation`
@@ -445,6 +445,19 @@ Ask: "May I write these helper files to `[helper root]`?"
 **Never overwrite existing files.** If a file already exists, report:
 "Skipping `[path]` — already exists. Remove the file manually if you want it
 regenerated."
+
+**Codex writes the helper files.** Follow `.claude/docs/codex-handoff.md`:
+`new test-helpers`, then `start --agent qa-tester --effort max`. The brief
+carries:
+- the approved file list, minus the files that already exist;
+- the engine and the helper root;
+- the GDD formula sections each system helper comes from, as paths;
+- this skill's helper rules above;
+- the rule that no existing file is overwritten and nothing outside the list is
+  written.
+
+If Codex did not run, or `report` shows a file outside the list, say so. The
+verdict is then **BLOCKED**, not COMPLETE.
 
 After writing: Verdict: **COMPLETE** — helper files created.
 

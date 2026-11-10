@@ -2,7 +2,7 @@
 
 # ND-CONSISTENCY — Narrative Director Consistency Check
 
-Agent: `narrative-director` | Model tier: session (inherit)
+Agent: `narrative-director` | Model tier: Codex gpt-6.1-sol xhigh (Codex proxy; relay: Claude opus)
 
 **Trigger**: After writer deliverables (dialogue, lore, item descriptions) are
 authored, or when a design decision has narrative implications

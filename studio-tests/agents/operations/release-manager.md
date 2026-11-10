@@ -10,9 +10,10 @@
 ## Static Assertions (Structural)
 
 - [ ] `description:` field is present and domain-specific (references release pipeline, certification, store submission)
-- [ ] `tools:` reads `Read, Glob, Grep, Write, Edit, Bash` — Bash for release tagging ("Version tags must be applied to the git repository at every release point")
+- [ ] `tools:` reads `Read, Glob, Grep, Write, Bash` and no `disallowedTools:` — a Codex proxy (`.claude/docs/model-tiers.md`): Write for the job's `brief.md`, Bash for `codex-run.sh`; the role's own work runs in Codex
 - [ ] `skills:` preloads `release-checklist`, `changelog` and `patch-notes`
-- [ ] Model tier is `inherit` — frontmatter `model:` reads exactly `inherit` (tiers: `.claude/docs/model-tiers.md`)
+- [ ] Model tier is `opus` — frontmatter `model:` reads exactly `opus` (tiers: `.claude/docs/model-tiers.md`)
+- [ ] A `<!-- claude-only -->` proxy section opens the body: it hands the request to Codex word for word with `codex-run.sh start <dir> --agent release-manager --effort xhigh --network`, waits in the foreground, relays the final message unchanged (a `QUESTION:` block goes back to the caller), and never does the work itself
 - [ ] Agent definition does not claim authority over QA strategy, game design, or build infrastructure
 - [ ] Its next-step offer runs `/patch-notes [version]` itself and hands the result to community-manager for the announcement — never a brief for community-manager to write the patch notes
 - [ ] The pipeline's Test step takes the release gate's tier: QA sign-off at `workflow: full` (recommended at `standard`), no open S1 at any tier, no open S2 or S3 either at `full`

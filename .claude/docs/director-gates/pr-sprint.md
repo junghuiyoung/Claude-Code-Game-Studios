@@ -2,7 +2,7 @@
 
 # PR-SPRINT — Sprint Feasibility Review
 
-Agent: `producer` | Model tier: Opus | Domain: Scope, timeline, dependencies, production risk
+Agent: `producer` | Model tier: Codex gpt-6.1-sol xhigh (Codex proxy; relay: Claude opus) | Domain: Scope, timeline, dependencies, production risk
 
 **Trigger**: Before finalising a sprint plan (`/sprint-plan`), and after any
 mid-sprint scope change

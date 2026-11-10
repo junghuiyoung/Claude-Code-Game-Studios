@@ -3,8 +3,8 @@ name: vertical-slice
 description: "Pre-production validation — end-to-end build to confirm the full loop is achievable before committing to Production. After GDDs, architecture, UX specs."
 argument-hint: "[--review full|lean|solo]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, Bash(bash "*/.claude/skills/vertical-slice/../../hooks/yaml-helper.sh" resolve_config *)
-model: sonnet
+allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, Bash(bash "*/.claude/skills/vertical-slice/../../hooks/yaml-helper.sh" resolve_config *), Bash(bash .claude/scripts/codex-run.sh *)
+model: opus
 ---
 
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys review_mode,automation,workflow`
@@ -122,7 +122,20 @@ multi-week Engine builds will span many sessions.
 Ask: "May I create the vertical slice directory at
 `prototypes/[concept-name]-vertical-slice/` and begin implementation?"
 
-If yes, create the directory. Every file must begin with:
+If yes, create the directory.
+
+**Codex writes the code.** Hand the source files to Codex by following
+`.claude/docs/codex-handoff.md`: `new vertical-slice`, then
+`start --agent gameplay-programmer --effort max`. The brief carries:
+- the validation question and the approved plan;
+- the header rule and the quality standards below;
+- the vertical slice directory, as the only place it may write.
+
+Each round of the multi-turn loop below is a `resume` of the same job. Its
+answer file holds the user's errors or observations. Documents such as the
+build log stay yours. If Codex did not run, say so: the slice is not built.
+
+Every file must begin with:
 
 ```
 [comment] VERTICAL SLICE - NOT FOR PRODUCTION

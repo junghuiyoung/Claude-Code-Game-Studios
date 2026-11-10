@@ -2,7 +2,7 @@
 
 # PR-MILESTONE — Milestone Risk Assessment
 
-Agent: `producer` | Model tier: Opus | Domain: Scope, timeline, dependencies, production risk
+Agent: `producer` | Model tier: Codex gpt-6.1-sol xhigh (Codex proxy; relay: Claude opus) | Domain: Scope, timeline, dependencies, production risk
 
 **Trigger**: At milestone review (`/milestone-review`), or when a scope change is
 proposed that affects the milestone

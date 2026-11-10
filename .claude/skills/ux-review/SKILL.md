@@ -4,7 +4,7 @@ description: "Validate a UX spec, HUD design or pattern library — accessibilit
 argument-hint: "[file-path or 'all' or 'hud' or 'patterns']"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash(bash "*/.claude/skills/ux-review/../../hooks/yaml-helper.sh" resolve_config *)
-model: sonnet
+model: opus
 ---
 
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys workflow`

@@ -2,7 +2,7 @@
 
 # PR-SCOPE — Scope and Timeline Validation
 
-Agent: `producer` | Model tier: Opus | Domain: Scope, timeline, dependencies, production risk
+Agent: `producer` | Model tier: Codex gpt-6.1-sol xhigh (Codex proxy; relay: Claude opus) | Domain: Scope, timeline, dependencies, production risk
 
 **Trigger**: After scope tiers are defined (brainstorm Phase 6, map-systems Phase
 4, or any workflow that produces an MVP definition and timeline estimate)

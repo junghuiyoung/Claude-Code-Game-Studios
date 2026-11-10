@@ -2,7 +2,7 @@
 
 # AD-VISUAL — Art Director Visual Consistency Review
 
-Agent: `art-director` | Model tier: session (inherit)
+Agent: `art-director` | Model tier: Codex gpt-6.1-sol xhigh (Codex proxy; relay: Claude opus)
 
 **Trigger**: After art direction decisions are made, when new asset types are
 introduced, or when a tech art decision affects visual style

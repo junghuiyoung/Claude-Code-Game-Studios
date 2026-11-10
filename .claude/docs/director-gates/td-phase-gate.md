@@ -2,7 +2,7 @@
 
 # TD-PHASE-GATE — Technical Readiness at Phase Transition
 
-Agent: `technical-director` | Model tier: Opus | Domain: Architecture, engine risk, performance
+Agent: `technical-director` | Model tier: Codex gpt-6.1-sol xhigh (Codex proxy; relay: Claude opus) | Domain: Architecture, engine risk, performance
 
 **Trigger**: At `/gate-check` when `modes.workflow` is `standard` or `full` — the panel narrows by workflow; spawn in parallel with the rest of it (PR-PHASE-GATE, plus CD-PHASE-GATE and AD-PHASE-GATE at `full`)
 

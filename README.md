@@ -84,10 +84,17 @@ Tier 3 — Specialists
   live-ops-designer    community-manager
 ```
 
-Each agent declares a model in its frontmatter: the three directors ask for
-Opus, `lead-programmer` and fifteen specialists name Sonnet, and the remaining thirty
-**inherit your session's model**. Treat the tiers as seniority of role, not as
-a billing plan — most of the studio runs on whatever model you are already using.
+Each agent declares `model: opus` in its frontmatter. The work is split by kind:
+
+- **Reviewers stay in Claude.** `lead-programmer` and the engine specialists
+  review and advise as Claude agents.
+- **Code goes to Codex.** The ten code-writing agents ask and plan in Claude,
+  and OpenAI Codex (`gpt-6.1-sol`, effort `max`) writes the code.
+- **Everything else is a Codex proxy.** The other twenty-three agents hand their
+  whole job to Codex at effort `xhigh`.
+
+`.claude/docs/model-tiers.md` has the full table, and
+`.claude/docs/codex-handoff.md` the procedure.
 
 ### Engine Specialists
 

@@ -2,7 +2,7 @@
 
 # CD-PILLARS — Pillar Stress Test
 
-Agent: `creative-director` | Model tier: Opus | Domain: Vision, pillars, player experience
+Agent: `creative-director` | Model tier: Codex gpt-6.1-sol xhigh (Codex proxy; relay: Claude opus) | Domain: Vision, pillars, player experience
 
 **Trigger**: After game pillars and anti-pillars are defined (brainstorm Phase 4,
 or any time pillars are revised)

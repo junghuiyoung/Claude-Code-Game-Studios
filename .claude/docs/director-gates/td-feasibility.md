@@ -2,7 +2,7 @@
 
 # TD-FEASIBILITY — Technical Feasibility Assessment
 
-Agent: `technical-director` | Model tier: Opus | Domain: Architecture, engine risk, performance
+Agent: `technical-director` | Model tier: Codex gpt-6.1-sol xhigh (Codex proxy; relay: Claude opus) | Domain: Architecture, engine risk, performance
 
 **Trigger**: After biggest technical risks are identified during scope/feasibility
 (brainstorm Phase 6, or any early-stage concept with technical unknowns)

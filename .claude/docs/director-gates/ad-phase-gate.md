@@ -2,7 +2,7 @@
 
 # AD-PHASE-GATE — Visual Readiness at Phase Transition
 
-Agent: `art-director` | Model tier: session (inherit) | Domain: Visual identity, art bible, visual production readiness
+Agent: `art-director` | Model tier: Codex gpt-6.1-sol xhigh (Codex proxy; relay: Claude opus) | Domain: Visual identity, art bible, visual production readiness
 
 **Trigger**: At `/gate-check` when `modes.workflow` is `full` — the panel narrows by workflow, and only the full panel includes art-director; spawn in parallel with CD-PHASE-GATE, TD-PHASE-GATE, and PR-PHASE-GATE
 

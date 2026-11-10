@@ -4,8 +4,8 @@ description: "Day-one launch patch — focused fix for known issues found after 
 argument-hint: "[scope: known-bugs | cert-feedback | all]"
 user-invocable: true
 disable-model-invocation: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion
-model: sonnet
+allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, Bash(bash .claude/scripts/codex-run.sh *)
+model: opus
 ---
 
 # Day-One Patch
@@ -130,7 +130,10 @@ For each code fix in the approved scope, spawn a focused implementation loop:
    line each]". No code changes before this approval.
 
 3. On yes, hand each approved fix back to `lead-programmer` (a new `Agent` call
-   carrying its plan) to implement it and run targeted tests with `commands.test`
+   carrying its plan). It does not edit the source itself: Codex writes the fix
+   (`.claude/docs/codex-handoff.md`), and the agent reports Codex's `report`.
+   If Codex did not run, that bug is BLOCKED, not fixed. Then it runs targeted
+   tests with `commands.test`
    from `project.yaml`, narrowed to the affected suite where the runner allows —
    never a runner line written from memory. If `commands.test` is unset, say so
    and record `Tests: NOT RUN — commands.test unset` for that bug.

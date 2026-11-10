@@ -4,7 +4,7 @@ description: "Structured bug report from a description, or analyze code for pote
 argument-hint: "[description] | analyze [path-to-file] | verify [BUG-ID] | close [BUG-ID]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion, Bash(bash "*/.claude/skills/bug-report/../../hooks/yaml-helper.sh" resolve_config *)
-model: sonnet
+model: opus
 ---
 
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys automation`

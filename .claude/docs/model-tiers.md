@@ -1,106 +1,140 @@
 # Model Tier Assignment
 
-> ### When a skill's `model:` is used — skills only
->
-> A skill's `model:` overrides the session model for the rest of the turn the
-> skill runs in, and your next prompt returns to the session model. Whether the
-> override happens depends on how the skill starts:
->
-> | How the skill starts | Is `model:` used? |
-> |---|---|
-> | You type `/skill-name` in Manual (`default`) mode | Yes |
-> | You type `/skill-name` in auto mode | `sonnet` and `opus`: yes. `haiku`: no — auto mode does not support Haiku, so the session keeps its model |
-> | Claude starts the skill itself, through the Skill tool | No — the session model runs it |
->
-> Two things follow:
->
-> - **An `opus` skill costs more in a Sonnet session.** Typing
->   `/architecture-review`, `/gate-check` or `/review-all-gdds` moves that turn
->   to Opus.
-> - **A `haiku` skill saves nothing in auto mode** (this project's settings start
->   terminal sessions in Manual, but a user can switch) — or when Claude starts
->   it. Never tell a user a `haiku` tier is saving them money.
->
-> Because the override ends at your next prompt, a skill that stops to ask you
-> something in chat finishes on the session model after you answer.
->
-> **This does NOT apply to agents.** `model:` in `.claude/agents/*.md` is a
-> different mechanism, spawned as a separate session rather than executed inline,
-> and Claude Code documents it as applied: it is second in the subagent model
-> order, after a `model` Claude passes for one invocation. See the agent section
-> below.
+Two model families do this studio's work, split by the kind of work:
 
-Skills and agents are assigned tiers by task complexity. A tier is written as
-the alias `model:` takes, never as a model ID: Claude Code resolves each alias
-to the current model in that family, so this table does not change when a new
-model ships.
+- **Claude `opus`** does everything that talks to the user, plans, gets approval
+  or reviews code.
+- **OpenAI Codex** (`gpt-6.1-sol`) writes all game code and tests, at effort
+  `max`. It also does the whole job of the agents that neither talk to the user
+  nor write code, at effort `xhigh`.
+- **Asset generation** goes to Higgsfield, ElevenLabs, Codex image generation
+  and Blender (`/asset-generate`).
 
-| Tier | `model:` | When to use |
-|------|----------|-------------|
-| **Haiku** | `haiku` | Read-only status checks, formatting, simple lookups — no creative judgment needed |
-| **Sonnet** | `sonnet` | Implementation, design authoring, analysis of individual systems — default for most work |
-| **Opus** | `opus` | Multi-document synthesis, high-stakes phase gate verdicts, cross-system holistic review |
-| **Session** | `inherit` | Agents only — runs on whatever model the session runs |
+| Work | Runs on | Set in |
+|---|---|---|
+| 71 skills | Claude `opus` | the skill's `model:` |
+| `/help`, `/scope-check`, `/sprint-status` | Claude `haiku` | the skill's `model:` |
+| 16 reviewer agents | Claude `opus` | the agent's `model:` |
+| 10 code-writing agents: asking, planning, approval | Claude `opus` | the agent's `model:` |
+| Writing game code and tests | Codex `gpt-6.1-sol`, effort `max` | `.claude/docs/codex-handoff.md` |
+| 23 Codex proxy agents: the job | Codex `gpt-6.1-sol`, effort `xhigh` | the `--effort` in the proxy section |
+| 23 Codex proxy agents: the relay shell | Claude `opus` | the agent's `model:` |
+| Images, 3D, audio | Higgsfield → Codex image / Blender / ElevenLabs → Higgsfield | `/asset-generate` |
 
-Skills with `model: haiku` (5): `/help`, `/onboard`, `/project-stage-detect`,
-`/scope-check`, `/sprint-status`
+A tier is written as the alias `model:` takes, never a model ID. Claude Code
+resolves each alias to the current model in that family on your provider. The
+Codex model is `gpt-6.1-sol` unless `CODEX_MODEL` names another.
 
-> `/patch-notes` and `/changelog` are `sonnet`, not `haiku`: both produce
-> **player-facing** copy and need judgement the cheapest tier is defined as not
-> doing. Full reasoning in each skill's own header.
->
-> `/settings` was moved off `haiku` for the same reason. It does not only read
-> and format — it resolves every leaf with provenance and then compares the
-> configured rigor against the project's observable working practice. That is
-> synthesis, which is what the Haiku row is defined as excluding.
+## When a skill's `model:` is used — skills only
 
-Skills with `model: opus` (3): `/architecture-review`, `/gate-check`, `/review-all-gdds`
+A skill's `model:` overrides the session model for the rest of the turn the
+skill runs in. Your next prompt returns to the session model, so a skill that
+stops to ask you something finishes on the session model after you answer.
 
-All other skills are Sonnet. When creating a new skill, assign Haiku if it only
-reads and formats; assign Opus if it must synthesize 5+ documents with
-high-stakes output; otherwise write `model: sonnet` explicitly. Every skill
-declares a tier. Whether the tier takes effect depends on how the skill starts
-(see the table at the top of this file).
+| How the skill starts | Is `model:` used? |
+|---|---|
+| You type `/skill-name` in Manual (`default`) mode | Yes |
+| You type `/skill-name` in auto mode | Yes, for a model auto mode supports. `haiku` is supported where it resolves to Haiku 5.5 (the Anthropic API). It is not where it resolves to Haiku 4.5 (Bedrock, Google Cloud, Foundry, Claude Platform on AWS); there the session keeps its model |
+| Claude starts the skill itself, through the Skill tool | Not documented by Claude Code. Observed in this repo: the session model ran it |
 
-**Agent model tiers.** 30 agents use `model: inherit` and run on the session's
-model. 19 are pinned:
+Two things follow:
 
-- **opus (3):** `creative-director`, `producer`, `technical-director`. Under an
-  Opus session an `opus` pin runs on the session's exact model, `[1m]` included,
-  so it never gets a smaller window than its parent.
-- **sonnet (16):** `lead-programmer`, `prototyper`, `devops-engineer`,
-  `community-manager` and the 12 engine sub-specialists:
-  `godot-csharp-specialist`, `godot-gdextension-specialist`,
-  `godot-gdscript-specialist`, `godot-shader-specialist`,
-  `ue-blueprint-specialist`, `ue-gas-specialist`, `ue-replication-specialist`,
-  `ue-umg-specialist`, `unity-addressables-specialist`,
-  `unity-dots-specialist`, `unity-shader-specialist`, `unity-ui-specialist`.
-  `/dev-story` and `/code-review` spawn the sub-specialists named in
-  `project.yaml`'s `specialists` block (which `/setup-engine` writes); `/team-ui` spawns
-  `unity-ui-specialist` and `ue-umg-specialist`; `/team-release` spawns
-  `devops-engineer` and `community-manager`, and `/team-live-ops` spawns
-  `community-manager`.
-- **haiku (0):** no agent. The Haiku row above is for read-only lookups and
-  formatting; every agent drafts, writes or judges. Building CI pipelines and
-  writing player-facing text are Sonnet work, as they are for `/patch-notes`.
+- **An `opus` skill costs more in a Sonnet session**, for its first turn.
+- **The session model matters most.** Most skills here ask questions, and every
+  turn after your first answer runs on the session model. Run the session on
+  Opus to keep those turns on Opus.
 
-Every agent not named above is `inherit`. The `model:` line in the agent's own
-file is what runs.
+**This does not apply to agents.** An agent's `model:` is a separate mechanism:
+the agent is spawned as its own session. Claude Code applies it second in the
+subagent model order, after a `model` Claude passes for one invocation. No skill
+here passes one.
 
-A pin gets that model's context window, whatever the session runs. On the
-Anthropic API `sonnet` currently resolves to Sonnet 5, which always has a 1M
-window, so a `sonnet` pin is not smaller than a 1M session there; `haiku`
-resolves to Haiku 4.5 and its 200K window, and behind an LLM gateway a `sonnet`
-pin can be smaller too. A subagent starts from
-the brief it is given, not the parent's conversation, so this only matters when
-a brief is very large. If a pinned agent does overflow, run every subagent on
-the session's model with one line in your `.claude/settings.local.json`
-(Claude Code v2.1.257 or later):
+## Agents
+
+**Claude `opus`, reviewers (16).** These review code that Codex wrote, so the
+same model does not grade its own work. The three primary engine specialists
+also spawn their sub-specialists with the Agent tool, which a Codex job cannot
+use.
+- `lead-programmer`
+- `godot-specialist`, `unity-specialist`, `unreal-specialist`
+- the 12 engine sub-specialists: `godot-csharp-`, `godot-gdextension-`,
+  `godot-gdscript-`, `godot-shader-`, `ue-blueprint-`, `ue-gas-`,
+  `ue-replication-`, `ue-umg-`, `unity-addressables-`, `unity-dots-`,
+  `unity-shader-` and `unity-ui-specialist`
+
+`lead-programmer` hands any implementation (`/day-one-patch`) to Codex.
+
+**Claude `opus`, code writers (10).** They ask, plan and get approval in Claude.
+The files themselves are written by Codex at `max`
+(`.claude/docs/codex-handoff.md`, the "Code is written by Codex" section at the
+top of each file).
+- `engine-programmer`, `gameplay-programmer`, `ai-programmer`, `ui-programmer`,
+  `network-programmer`, `tools-programmer`
+- `prototyper`, `technical-artist`, `qa-tester`, `security-engineer`
+
+**Codex proxies (23).** Codex does the whole job at `xhigh`, with the role text as
+its brief. The Claude agent only relays the request and the answer, word for
+word, through `.claude/scripts/codex-run.sh`. A question Codex needs answered
+comes back as a `QUESTION:` block. The caller puts it to the user, and the proxy
+resumes the same Codex session with the answer.
+- **Design:** `creative-director`, `technical-director`, `producer`,
+  `art-director`, `audio-director`, `narrative-director`, `game-designer`,
+  `systems-designer`, `level-designer`, `economy-designer`, `ux-designer`,
+  `world-builder`, `writer`, `sound-designer`
+- **QA and accessibility:** `qa-lead`, `accessibility-specialist`
+- **Operations:** `performance-analyst`, `analytics-engineer`,
+  `localization-lead`, `live-ops-designer`, `community-manager`,
+  `release-manager`, `devops-engineer`
+
+`devops-engineer` and `release-manager` start Codex with `--network`. Every other
+proxy runs with the sandbox's network off. Codex's own web search works either
+way.
+
+The text between `<!-- claude-only:start -->` and `<!-- claude-only:end -->` in
+an agent file is for Claude only. `codex-run.sh` leaves it out of what it sends
+to Codex.
+
+## What a Codex job does and does not get
+
+- **It gets:**
+  - `.claude/codex/preamble.md`, which points it at `CLAUDE.md` and its imports;
+  - the role text;
+  - the agent's `.claude/agent-memory/<agent>/MEMORY.md`, if present;
+  - the paths of the agent's preloaded skills;
+  - the brief.
+- **Its environment:** the user's `~/.codex/config.toml` is ignored. It runs in
+  the `workspace-write` sandbox rooted at the project.
+- **It does not get Claude Code's hooks, deny rules or path-scoped rules.**
+  `codex-run.sh report` runs `.claude/scripts/write-guard.sh` on every file it
+  changed instead, and lists those files.
+- **It cannot spawn Claude agents or use Claude Code's connectors.** ElevenLabs
+  is a Claude connector, so audio generation runs in the main session
+  (`/asset-generate`).
+
+## Authoring rule
+
+- **New skill:** `model: opus`. Use `haiku` only if it only reads and formats,
+  asks nothing and writes nothing.
+- **New agent that writes game code or tests:** `model: opus`, plus the "Code is
+  written by Codex" section.
+- **New agent that reviews code:** `model: opus`.
+- **Any other new agent:** a Codex proxy. Copy the proxy section from an
+  existing proxy, change the name and keep `--effort xhigh`. Its frontmatter is
+  `model: opus`, `tools: Read, Glob, Grep, Write, Bash`, `maxTurns: 40`.
+- Every skill and agent declares a tier.
+
+## Pins and context windows
+
+A pin gets that model's context window, whatever the session runs. A subagent
+starts from the brief it is given, not the parent's conversation, so this only
+matters when a brief is very large. To run every Claude subagent on the
+session's model instead, add one line to `.claude/settings.local.json` (Claude
+Code v2.1.257 or later):
 
 ```json
 { "env": { "CLAUDE_CODE_SUBAGENT_MODEL_FORCE": "1" } }
 ```
 
-It applies to **every** pin, the three `opus` directors included: under a
-Sonnet session they run on Sonnet too. `CLAUDE_CODE_SUBAGENT_MODEL` alone does
-not do it: it applies only to agents that set no model of their own.
+It applies to every agent pin. A Codex proxy then relays on the session's model,
+and Codex still does its job. `CLAUDE_CODE_SUBAGENT_MODEL` alone does not do
+this: it applies only to agents that set no model of their own.

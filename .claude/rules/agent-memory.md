@@ -5,7 +5,7 @@ paths:
 
 # Agent Memory Rules
 
-**Agent memory is one of three writes that need no "May I write?"** The other two
+**Agent memory is one of four writes that need no "May I write?"** The other three
 are named in `CLAUDE.md`:
 
 - **Appends to `production/session-state/active.md`** — the session checkpoint
@@ -14,12 +14,17 @@ are named in `CLAUDE.md`:
 - **A subagent's new file at the path its orchestrating skill named.** Only a
   new file under `production/`, `docs/` or `tests/`, only at a path the skill's
   prompt names (never one you chose), and only inside a phase the user approved.
+- **A Codex job's `brief.md` and `answer-<n>.md`** inside the folder
+  `bash .claude/scripts/codex-run.sh new` printed, under
+  `production/session-state/codex/` (gitignored). These hold the request being
+  handed to Codex, not a project artifact (`.claude/docs/codex-handoff.md`).
+  Only those two file names, and only in a folder the script made.
 
 `.claude/agent-memory/` is gitignored, per-agent, and never ships. Its exemption
 exists because the memory is the agent's own working notes about how to do its
 job, not a project artifact.
 
-None of the three extends anywhere else. The Collaboration Protocol still governs
+None of the four extends anywhere else. The Collaboration Protocol still governs
 every other write under the code root (`src/`, `Assets/` or `Source/`),
 `design/`, `docs/`, `production/` and `assets/`: ask first, naming the path.
 Writing a memory is never a substitute for asking, and a memory must never be
