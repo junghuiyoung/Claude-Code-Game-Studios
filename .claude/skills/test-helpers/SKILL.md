@@ -447,7 +447,7 @@ Ask: "May I write these helper files to `[helper root]`?"
 regenerated."
 
 **Codex writes the helper files.** Follow `.claude/docs/codex-handoff.md`:
-`new test-helpers`, then `start --agent qa-tester --effort max`. The brief
+`new test-helpers`, then `start --agent qa-tester --effort xhigh`. The brief
 carries:
 - the approved file list, minus the files that already exist;
 - the engine and the helper root;

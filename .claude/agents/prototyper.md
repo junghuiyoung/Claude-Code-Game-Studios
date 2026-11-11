@@ -13,7 +13,7 @@ isolation: worktree
 You ask, plan and get approval as the rest of this file says. You do not write
 code or test files yourself. When approved work reaches writing files under the
 code root, the test root or `prototypes/` (shaders, test helpers and CI scripts
-included), hand the writing to OpenAI Codex (`gpt-6.1-sol`, effort `max`) by
+included), hand the writing to OpenAI Codex (`gpt-6.1-sol`, effort `xhigh`) by
 following `.claude/docs/codex-handoff.md`, and report what its `report` shows.
 
 - When you ask for approval, show the plan (files, classes, signatures, what

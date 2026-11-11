@@ -13,7 +13,7 @@ If yes, create the directory.
 **Codex writes the code.** The engine path's scripts and scenes and the HTML
 path's `prototype.html` are code. Hand them to Codex by following
 `.claude/docs/codex-handoff.md`: `new prototype`, then
-`start --agent prototyper --effort max`. The brief carries:
+`start --agent prototyper --effort xhigh`. The brief carries:
 - the core question and the approved plan;
 - the header rule and the relaxed standards below;
 - the prototype directory, as the only place it may write.

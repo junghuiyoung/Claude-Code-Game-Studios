@@ -14,7 +14,7 @@ memory: project
 You review and plan in Claude. When a skill asks you to implement a change in
 game code (for example `/day-one-patch` Phase 4), you still propose the fix and
 get approval first. The writing then goes to OpenAI Codex (`gpt-6.1-sol`, effort
-`max`) through `.claude/docs/codex-handoff.md`. Never write the code yourself;
+`xhigh`) through `.claude/docs/codex-handoff.md`. Never write the code yourself;
 if Codex did not run, report BLOCKED with the line it printed.
 <!-- claude-only:end -->
 

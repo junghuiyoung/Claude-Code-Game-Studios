@@ -1,7 +1,7 @@
 # Codex Handoff — Who Writes the Code
 
 In this project Claude does not write game code or test code itself. Claude asks,
-plans and gets approval. OpenAI Codex (`gpt-6.1-sol`, effort `max`) then writes
+plans and gets approval. OpenAI Codex (`gpt-6.1-sol`, effort `xhigh`) then writes
 the files, through `.claude/scripts/codex-run.sh`. This page is the procedure.
 
 It applies to:
@@ -59,7 +59,7 @@ code. Codex writes the code, so a drafted listing would be written twice.
    - the output you need back. If your caller gave you a return contract, use
      that one.
 3. **Start Codex.** Run
-   `bash .claude/scripts/codex-run.sh start <dir> --agent <name> --effort max`.
+   `bash .claude/scripts/codex-run.sh start <dir> --agent <name> --effort xhigh`.
    A skill with no agent passes `--agent -`.
 4. **Wait in the foreground.** Run `bash .claude/scripts/codex-run.sh wait <dir>`
    with the shell timeout at its maximum (600000 ms). Run it again each time it

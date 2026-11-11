@@ -89,7 +89,7 @@ Each agent declares `model: opus` in its frontmatter. The work is split by kind:
 - **Reviewers stay in Claude.** `lead-programmer` and the engine specialists
   review and advise as Claude agents.
 - **Code goes to Codex.** The ten code-writing agents ask and plan in Claude,
-  and OpenAI Codex (`gpt-6.1-sol`, effort `max`) writes the code.
+  and OpenAI Codex (`gpt-6.1-sol`, effort `xhigh`) writes the code.
 - **Everything else is a Codex proxy.** The other twenty-three agents hand their
   whole job to Codex at effort `xhigh`.
 

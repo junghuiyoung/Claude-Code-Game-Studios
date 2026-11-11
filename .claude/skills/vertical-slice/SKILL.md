@@ -126,7 +126,7 @@ If yes, create the directory.
 
 **Codex writes the code.** Hand the source files to Codex by following
 `.claude/docs/codex-handoff.md`: `new vertical-slice`, then
-`start --agent gameplay-programmer --effort max`. The brief carries:
+`start --agent gameplay-programmer --effort xhigh`. The brief carries:
 - the validation question and the approved plan;
 - the header rule and the quality standards below;
 - the vertical slice directory, as the only place it may write.

@@ -4,9 +4,9 @@ Two model families do this studio's work, split by the kind of work:
 
 - **Claude `opus`** does everything that talks to the user, plans, gets approval
   or reviews code.
-- **OpenAI Codex** (`gpt-6.1-sol`) writes all game code and tests, at effort
-  `max`. It also does the whole job of the agents that neither talk to the user
-  nor write code, at effort `xhigh`.
+- **OpenAI Codex** (`gpt-6.1-sol`) runs at effort `xhigh` to write game code and
+  tests and to do the whole job of agents that neither talk to the user nor
+  write code.
 - **Asset generation** goes to Higgsfield, ElevenLabs, Codex image generation
   and Blender (`/asset-generate`).
 
@@ -16,14 +16,16 @@ Two model families do this studio's work, split by the kind of work:
 | `/help`, `/scope-check`, `/sprint-status` | Claude `haiku` | the skill's `model:` |
 | 16 reviewer agents | Claude `opus` | the agent's `model:` |
 | 10 code-writing agents: asking, planning, approval | Claude `opus` | the agent's `model:` |
-| Writing game code and tests | Codex `gpt-6.1-sol`, effort `max` | `.claude/docs/codex-handoff.md` |
+| Writing game code and tests | Codex `gpt-6.1-sol`, effort `xhigh` | `.claude/docs/codex-handoff.md` |
 | 23 Codex proxy agents: the job | Codex `gpt-6.1-sol`, effort `xhigh` | the `--effort` in the proxy section |
 | 23 Codex proxy agents: the relay shell | Claude `opus` | the agent's `model:` |
 | Images, 3D, audio | Higgsfield → Codex image / Blender / ElevenLabs → Higgsfield | `/asset-generate` |
 
 A tier is written as the alias `model:` takes, never a model ID. Claude Code
 resolves each alias to the current model in that family on your provider. The
-Codex model is `gpt-6.1-sol` unless `CODEX_MODEL` names another.
+Codex model is `gpt-6.1-sol` unless `CODEX_MODEL` names another. The runner
+requests Fast mode for this model on new jobs and resumes. Fast availability
+depends on the account. Set `CODEX_FAST_MODE=0` to omit the Fast request.
 
 ## When a skill's `model:` is used — skills only
 
@@ -65,7 +67,7 @@ use.
 `lead-programmer` hands any implementation (`/day-one-patch`) to Codex.
 
 **Claude `opus`, code writers (10).** They ask, plan and get approval in Claude.
-The files themselves are written by Codex at `max`
+The files themselves are written by Codex at `xhigh`
 (`.claude/docs/codex-handoff.md`, the "Code is written by Codex" section at the
 top of each file).
 - `engine-programmer`, `gameplay-programmer`, `ai-programmer`, `ui-programmer`,
