@@ -24,9 +24,8 @@ Two model families do this studio's work, split by the kind of work:
 
 A tier is written as the alias `model:` takes, never a model ID. Claude Code
 resolves each alias to the current model in that family on your provider. The
-Codex model is `gpt-6.1-sol` unless `CODEX_MODEL` names another. The runner
-requests Fast mode for this model on new jobs and resumes. Fast availability
-depends on the account. Set `CODEX_FAST_MODE=0` to omit the Fast request.
+Codex model is `gpt-6.1-sol` unless `CODEX_MODEL` names another. The runner uses
+the standard service tier for new and resumed jobs, with Fast mode disabled.
 
 ## When a skill's `model:` is used — skills only
 

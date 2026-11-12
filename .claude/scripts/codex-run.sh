@@ -32,7 +32,7 @@
 #   --root DIR       the project; defaults to the repo this script is in
 #   -h, --help       this text
 # The model is gpt-6.1-sol unless --model or CODEX_MODEL says otherwise.
-# For gpt-6.1-sol, request Fast mode unless CODEX_FAST_MODE=0.
+# New and resumed jobs use the standard service tier.
 # Codex runs with the user's ~/.codex/config.toml ignored, in the workspace-write
 # sandbox rooted at the project, and writes nothing outside it but its own
 # session files under ~/.codex.
@@ -116,10 +116,8 @@ meta() { [ -f "$JOB/meta" ] && awk -F'\t' -v k="$1" '$1 == k { print $2; exit }'
 if [ "$CMD" = _run ]; then
   MODE="${CODEX_RUN_MODE:-new}"   # new | resume, set by start and resume
   MODEL=$(meta model); EFF=$(meta effort); NET=$(meta network)
-  CODEX_ARGS=(--ignore-user-config --json -m "$MODEL" -c "model_reasoning_effort=\"$EFF\"")
-  if [ "$MODEL" = gpt-6.1-sol ] && [ "${CODEX_FAST_MODE:-1}" != 0 ]; then
-    CODEX_ARGS+=(-c 'service_tier="fast"' -c 'features.fast_mode=true')
-  fi
+  CODEX_ARGS=(--ignore-user-config --json -m "$MODEL" -c "model_reasoning_effort=\"$EFF\""
+              -c 'service_tier="default"' -c 'features.fast_mode=false')
   if [ "$NET" = on ]; then
     CODEX_ARGS+=(-c 'sandbox_workspace_write.network_access=true')
   fi
