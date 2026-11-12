@@ -1462,6 +1462,60 @@ must tell them apart)
 
 ---
 
+## platform.distribution_targets
+
+> ### WIRED — this setting is live
+>
+> `/release-checklist` resolves it. With no argument and `crazygames` listed it
+> runs the CrazyGames report, and it decides whether the rows marked
+> `crazygames` in `.claude/docs/game-quality-standard.md` apply.
+
+**Controls:** Which storefronts or portals the game is released on, where one has release rules of its own
+**Values:** a list. Known targets: `crazygames`. `[]` is a decision: none
+**Default:** *none* — unset stays unset, so the skills ask or report the condition as unknown
+**Set by:** `/setup-engine phaser --target crazygames`, which adds `crazygames` and keeps what is already listed; otherwise edit `project.yaml` and write it as an inline list, `distribution_targets: [crazygames]`
+**Read by:** `/release-checklist`
+
+**Priority chain:** `platform.distribution_targets` in `project.yaml` → unset
+(`platform.*` is locked to `project.yaml`, so `project.local.yaml` cannot set it;
+no default is substituted)
+
+> **Not `platform.targets`, and not `platform.cert_tier`.** `targets` is where the
+> game *runs* (`Web`, `PC`): a web game is not thereby a CrazyGames game.
+> `cert_tier` is the certification regime of the native device checks (`none |
+> itch | steam | console`), and a CrazyGames report leaves it alone. This key is
+> where the game is *published*. A new target is added here, and to the known
+> set in `yaml-helper.sh`'s `distribution_targets` handler.
+
+---
+
+### Value intent
+
+| Value | Meaning |
+|-------|---------|
+| unset | Nobody has decided. A skill asks, or reports `condition unknown — crazygames` |
+| `[]` | Decided: no storefront with rules of its own. The `crazygames` quality rows are N/A |
+| `[crazygames]` | Released on CrazyGames. `docs/CRAZYGAMES.md` applies |
+
+The `distribution_targets` line of `resolve_config` prints the three states
+differently, and names any item outside the known set as `unknown:` rather than
+dropping it. That line is the read to trust. `/settings` reads every key as a
+scalar: it shows an inline list as its text and does not see a block list, and
+it is not the way to write this key.
+
+---
+
+### Affected skills
+
+| Skill | unset | `[]` | `[crazygames]` |
+|-------|-------|------|----------------|
+| **release-checklist** | No argument: the device form, as before. The `crazygames` quality rows read `condition unknown — crazygames` | The device form. Those rows are N/A | No argument: the CrazyGames report, naming this key as the reason. A device argument still selects the device form, with the `crazygames` quality rows applied |
+
+`--target crazygames` on the command line selects the CrazyGames report whatever
+this key holds, and changes no setting.
+
+---
+
 ## accessibility.target
 
 > ### RESERVED - NOT IMPLEMENTED
@@ -2463,6 +2517,7 @@ platform:
   gamepad_support: "Full"    # Full | Partial | None
   touch_support: "None"      # Full | Partial | None
   cert_tier: none            # none | itch | steam | console
+  distribution_targets: []   # storefronts with their own release rules: [crazygames]; [] = none
 
 engine:
   name: "Godot"              # Godot | Unity | Unreal | Phaser — set by /setup-engine

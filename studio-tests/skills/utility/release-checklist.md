@@ -72,6 +72,9 @@ candidate with the screenshots the floor rows need and a stamp for which
 root, so every floor row can be assessed. Advisory rows may read `not observed` or `condition unknown`: they
 never reach Go / No-Go. Case 12 is the exception.
 
+`platform.distribution_targets` is unset in every case unless its Fixture sets
+it, so a run with no argument takes the device form.
+
 ---
 
 ## Test Cases
@@ -353,8 +356,9 @@ apps are unavailable. Other shared checks have evidence.
    record`; the key-binding floor row lists the five bound keys, each with its
    action and whether play needs it, and is ticked
 4. Advisory rows each have one line: what was seen, or `not observed`
-5. The `crazygames` rows are under Not applicable as `not a CrazyGames release (no
-   --target crazygames)`
+5. `platform.distribution_targets` is unset and no `--target crazygames` was typed,
+   so the `crazygames` rows read `condition unknown — crazygames
+   (platform.distribution_targets unset)` under Advisory, not under Not applicable
 6. Go / No-Go is NOT ASSESSED, naming the floor rows
 
 **Assertions:**
@@ -368,7 +372,42 @@ apps are unavailable. Other shared checks have evidence.
 - [ ] Variant — a first-run record exists but names an older build: the rows that need it read `NOT ASSESSED — first-run record names build X`, never ticked
 - [ ] Variant — the record's stamp check prints a `CHANGED:` or `NEW:` line against a stamp that holds hashes, there is no `.stamp.txt` (`RECEIPT: NONE` beside a `NEW:` line per file), or the check prints no `UNCHANGED:` line: the same rows read NOT ASSESSED, and the report says which case it was; the record's date is not what decides it, and the absence of a `CHANGED:` line is not a pass
 - [ ] Variant — `/release-checklist --target crazygames`: the `crazygames` rows are listed as advisory rows, not under Not applicable
+- [ ] Variant — `platform.distribution_targets: []`: the `crazygames` rows are under Not applicable as `not a CrazyGames release (platform.distribution_targets is empty)`
 - [ ] Variant — the standard file does not exist: the section reads `NOT ASSESSED — .claude/docs/game-quality-standard.md not found` and Go / No-Go is not READY
+
+---
+
+### Case 13: A Recorded CrazyGames Target Needs No Flag
+
+**Fixture:**
+- As Case 9's Run B (no `platform.cert_tier`), plus `platform.distribution_targets:
+  [crazygames]` in `project.yaml` and `platform.targets: [Web]`
+
+**Input:** `/release-checklist`
+
+**Expected behavior:**
+1. The resolved block carries `platform.distribution_targets: crazygames
+   (project.yaml)`
+2. With nothing typed, the skill runs the CrazyGames report, and its first line
+   reads `Target: crazygames (platform.distribution_targets in project.yaml)`
+3. The report is the one `--target crazygames` produces: shared sections, the
+   Quality Standard section with its `crazygames` rows applied, and the checks
+   from `docs/CRAZYGAMES.md` in place of the device, certification, store and
+   launch rows
+
+**Assertions:**
+- [ ] No PC, Console, Mobile or certification rows are emitted, and `platform.cert_tier` is neither asked about nor reported as missing
+- [ ] The report says the target came from the key, so a reader can tell it from a typed flag
+- [ ] No project setting is changed
+- [ ] Variant — `/release-checklist mobile` on the same project: the device form with the Mobile rows, no CrazyGames release checks, and the `crazygames` quality rows still applied, since the game is a CrazyGames game
+- [ ] Variant — `platform.targets: [Web]` with `platform.distribution_targets` unset, no argument: the device form. A web game is not thereby a CrazyGames game, and the `crazygames` rows read `condition unknown`
+- [ ] Variant — `platform.distribution_targets: []`, no argument: the device form, and the `crazygames` rows are Not applicable
+- [ ] Variant — `platform.distribution_targets: [crazygames, itchio]`: the resolved line names `unknown: itchio`; the skill says `itchio` is not a target it knows and still runs the CrazyGames report
+- [ ] Variant — `platform.distribution_targets: [itchio]`, no argument: the device form (`all`), `itchio` named as unknown on the first line, and the `crazygames` rows read `condition unknown — crazygames (platform.distribution_targets lists only unknown targets: itchio)`
+- [ ] Variant — `platform.distribution_targets: [none]`: the resolved line is `none (project.yaml; unknown: none)`, which is not the empty list; the same result as `[itchio]`, never Not applicable
+- [ ] Variant — `platform.distribution_targets: []` and `/release-checklist --target crazygames`: the typed flag wins; the CrazyGames report runs and its `crazygames` rows apply
+- [ ] The no-argument CrazyGames report asks no `platform.cert_tier` question although the key is unset
+- [ ] Variant — `project.local.yaml` sets `platform.distribution_targets: [crazygames]` and `project.yaml` does not: the key reads unset, and the device form runs
 
 ---
 
@@ -377,7 +416,7 @@ apps are unavailable. Other shared checks have evidence.
 - [ ] For the original CLI, chooses device blocks from the argument and
       certification from `none | itch | steam | console` in `platform.cert_tier`
 - [ ] In that form, treats unset `cert_tier` as a question (or NOT ASSESSED), never as `none`
-- [ ] Selects CrazyGames only with `--target crazygames` and keeps native rows out
+- [ ] Selects the CrazyGames report with `--target crazygames`, or with no argument when `platform.distribution_targets` lists `crazygames`; never from `platform.targets`, `platform.cert_tier` or the presence of `docs/CRAZYGAMES.md`; and keeps native rows out of it
 - [ ] States a denominator with every scan count, or reports NOT ASSESSED
 - [ ] Reads open bugs from `production/qa/bugs/` and applies the release gate's thresholds for the resolved `workflow` (S1–S3 at `full`, S1 at `standard`/`minimal`); no bug files → `NOT ASSESSED — no bug records`
 - [ ] Go / No-Go takes the first match: NOT READY, then NOT ASSESSED, then READY

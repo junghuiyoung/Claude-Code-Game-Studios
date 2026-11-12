@@ -1,11 +1,26 @@
 # Releasing an HTML5 game on CrazyGames
 
 Use `/release-checklist --target crazygames` to review an existing release
-candidate. CrazyGames serves the same web build on its site and inside its
+candidate, or `/release-checklist` alone once the project is marked as below. CrazyGames serves the same web build on its site and inside its
 Android and iOS apps when the title is available there. The apps load web
 games, so this workflow prepares an HTML5 bundle. Treat approval for the site,
 mobile homepage placement, and availability in the apps as separate results.
 [CrazyGames App](https://docs.crazygames.com/resources/crazygames-app/)
+
+## Marking a game as a CrazyGames game
+
+`platform.distribution_targets: [crazygames]` in `project.yaml` records the
+target. `/setup-engine phaser --target crazygames` writes it; for an existing
+project, add that line under `platform:` in `project.yaml` by hand, as an
+inline list. With it set, `/release-checklist` typed with no argument runs this
+workflow, and no flag has to be remembered.
+
+The quality bar for every game is `.claude/docs/game-quality-standard.md`. Most
+of its rows apply to any game, and its browser and keyboard rows to any web
+game, CrazyGames or not. Two rows wait for this target: `Q-UNQ-4` (the genre
+and major features do not change after submission) and `Q-AES-5` (the name and
+images on CrazyGames match the game). The release checklist reports them once
+the target is set.
 
 ## Local release candidate
 

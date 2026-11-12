@@ -12,10 +12,12 @@
 #       - no Python interpreter is available
 #     Always exits 0 — callers can safely use it under `set -e`.
 #
-#   get_yaml_array <file> <dotted.path>
+#   get_yaml_array <file> <dotted.path> [--with-state]
 #     Prints array values one per line. Handles both inline [a, b, c]
 #     and block-dash forms (- a / - b on subsequent indented lines).
 #     Empty output if not an array, not found, or file missing.
+#     With --with-state, prints empty for an empty array, or item:<value>
+#     per item (also for a scalar). Preserves empty items; missing stays empty.
 #
 #   get_effective_yaml_key <dotted.path>
 #   get_effective_yaml_array <dotted.path>
@@ -221,17 +223,42 @@ PYEOF
 get_yaml_array() {
   local file="$1"
   local path="$2"
+  local state="${3:-}"
   if [ -z "$file" ] || [ -z "$path" ]; then return 0; fi
   if [ ! -f "$file" ]; then return 0; fi
   if ! _yaml_helper_resolve_python; then
     echo "yaml-helper: no python interpreter found (tried python, python3, py)" >&2
     return 0
   fi
-  "$_yaml_helper_python" - "$file" "$path" <<'PYEOF'
+  "$_yaml_helper_python" - "$file" "$path" "$state" <<'PYEOF'
 import sys, re
 
 path_file, dotted = sys.argv[1], sys.argv[2]
+with_state = sys.argv[3] == '--with-state'
 keys = dotted.split('.')
+
+# Used ONLY by --with-state: existing callers retain their quoted-item rules.
+# Consume the closing quote before considering a trailing comment or delimiter.
+# Escaped double quotes/backslashes and doubled single quotes stay item data.
+def state_quoted(value, start):
+    quote = value[start]
+    buf = []
+    idx = start + 1
+    while idx < len(value):
+        ch = value[idx]
+        if quote == '"' and ch == '\\' and idx + 1 < len(value) and value[idx + 1] in ('"', '\\'):
+            buf.append(value[idx + 1])
+            idx += 2
+            continue
+        if ch == quote:
+            if quote == "'" and idx + 1 < len(value) and value[idx + 1] == "'":
+                buf.append("'")
+                idx += 2
+                continue
+            return ''.join(buf), idx + 1
+        buf.append(ch)
+        idx += 1
+    return ''.join(buf), idx
 
 # Parser extended to recognize two YAML array forms:
 #   key: [a, b, c]                     (inline)
@@ -298,6 +325,7 @@ def parse(lines):
             parts = []
             buf = ''
             quote = None
+            started = False
             idx = 1
             while idx < len(value):
                 ch = value[idx]
@@ -307,18 +335,25 @@ def parse(lines):
                     else:
                         buf += ch
                 elif ch in ('"', "'"):
+                    started = True
+                    if with_state:
+                        quoted, idx = state_quoted(value, idx)
+                        buf += quoted
+                        continue
                     quote = ch
                 elif ch == ']':
                     break
                 elif ch == ',':
                     parts.append(buf.strip())
                     buf = ''
+                    started = False
                 else:
                     buf += ch
+                    started = started or bool(ch.strip())
                 idx += 1
-            if buf.strip():
+            if buf.strip() or (with_state and started):
                 parts.append(buf.strip())
-            parent[key] = [p for p in parts if p != '']
+            parent[key] = parts if with_state else [p for p in parts if p != '']
             i += 1
             continue
         elif value[:1] in ('"', "'"):
@@ -350,7 +385,10 @@ def parse(lines):
                         continue
                     pblock = None
                 if pindent <= indent:
-                    break
+                    # YAML permits dashes at the key's own indent. Opt in
+                    # only for state reads; the legacy reader still stops here.
+                    if not (with_state and pindent == indent and pstripped.startswith('- ')):
+                        break
                 if pstripped.startswith('- '):
                     pblock = block_indent(pstripped, pindent)
                     # INDENT IS NOT ENFORCED between items, deliberately.
@@ -371,7 +409,9 @@ def parse(lines):
                     # non-dash line still ends the list via the break below,
                     # so a sub-map after a list is unaffected.
                     item = pstripped[2:].strip()
-                    if item[:1] in ('"', "'") and item[-1:] == item[:1] and len(item) >= 2:
+                    if with_state and item[:1] in ('"', "'"):
+                        item, _ = state_quoted(item, 0)
+                    elif item[:1] in ('"', "'") and item[-1:] == item[:1] and len(item) >= 2:
                         item = item[1:-1]
                     else:
                         # Unquoted items take the same trailing-comment rule
@@ -414,6 +454,22 @@ for k in keys:
         cur = cur[k]
     else:
         sys.exit(0)
+
+if with_state:
+    # State is opt-in: existing array callers keep their exact output. An
+    # item prefix preserves an empty item through shell command substitution;
+    # it must not become indistinguishable from an explicitly empty list.
+    if isinstance(cur, list):
+        values = cur
+        if not values:
+            sys.stdout.buffer.write(b'empty\n')
+    elif isinstance(cur, dict) and not cur:
+        values = []  # an empty-valued key is unset, as for scalar reads
+    else:
+        values = [cur]
+    for item in values:
+        sys.stdout.buffer.write(('item:' + str(item) + '\n').encode('utf-8'))
+    sys.exit(0)
 
 if not isinstance(cur, list):
     sys.exit(0)
@@ -1596,7 +1652,8 @@ PYEOF
 # docs.density, story_granularity, qa.level, team.size, project.stage,
 # automation_always_ask, engine, testing.strict, system_overrides; and, only when
 # named, the derived lines gate_level, engine_values, specialists, review_gate,
-# input_methods, perf_budgets.
+# input_methods, distribution_targets (or platform.distribution_targets),
+# perf_budgets.
 resolve_config() {
   _yaml_helper_set_root
   local want=""
@@ -1842,7 +1899,7 @@ EOF
     fi
   fi
 
-  # --- Derived lines: answers six steps that skills used to work out by hand ---
+  # --- Derived lines: answers steps that skills used to work out by hand -------
   # Each is printed ONLY when asked for by name (--keys gate_level,...): a block
   # without --keys, and every existing --keys call, prints exactly what it did
   # before and spawns no extra interpreter. Each value carries its source in
@@ -2026,6 +2083,42 @@ EOF
       else
         echo "input_methods: unset (no platform block in project.yaml, no Input Methods line)"
       fi
+    fi
+  fi
+
+  # distribution_targets: project.yaml only, because platform.* is locked.
+  # Unset is a missing decision, while [] explicitly means no storefront:
+  # never substitute one for the other (skill-authoring.md, obligation 2).
+  # The opt-in array state preserves that distinction and invalid empty items;
+  # a scalar is a one-item list. Unknown targets stay visible, never filtered.
+  # Add a new known target here AND in .claude/docs/effects-map.md
+  # section platform.distribution_targets.
+  local dt_known="crazygames" dt_items dt_item dt_seen="" dt_out="" dt_unknown=""
+  if _rc_named distribution_targets || _rc_named platform.distribution_targets; then
+    dt_items=$(get_yaml_array "$_YH_ROOT/project.yaml" platform.distribution_targets --with-state 2>/dev/null)
+    if [ "$dt_items" = "empty" ]; then
+      echo "platform.distribution_targets: none (project.yaml sets an empty list)"
+    elif [ -z "$dt_items" ]; then
+      echo "platform.distribution_targets: (unset -- ask where the game is released)"
+    else
+      while IFS= read -r dt_item; do
+        dt_item=$(printf '%s' "${dt_item#item:}" | tr '[:upper:]' '[:lower:]' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+        [ -n "$dt_item" ] || dt_item='""'
+        case "$dt_seen" in *"
+$dt_item
+"*) continue ;; esac
+        dt_seen="$dt_seen
+$dt_item
+"
+        dt_out="${dt_out:+$dt_out, }$dt_item"
+        case ",$dt_known," in
+          *",$dt_item,"*) ;;
+          *) dt_unknown="${dt_unknown:+$dt_unknown, }$dt_item" ;;
+        esac
+      done <<EOF
+$dt_items
+EOF
+      echo "platform.distribution_targets: $dt_out (project.yaml${dt_unknown:+; unknown: $dt_unknown})"
     fi
   fi
 

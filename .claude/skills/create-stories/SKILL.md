@@ -166,7 +166,7 @@ above is a hint only: it lists `keyboard/mouse` for every PC or Web target and
 unknown: ask once ("Which inputs does the game support: keyboard, mouse, touch,
 gamepad?" / "Does it run in a browser?"), and never take unset or `none` as no.
 Rows marked `crazygames` are not story work: leave them to
-`/release-checklist --target crazygames`.
+`/release-checklist`.
 
 **File not found:** say `Quality standard: NOT ASSESSED —
 .claude/docs/game-quality-standard.md not found`, write that line in each story's

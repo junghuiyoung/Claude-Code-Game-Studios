@@ -224,9 +224,10 @@ those never migrated.
 
 ## Derived lines (named only)
 
-Six more lines answer steps skills would otherwise work out by hand. Each prints
+Seven more lines answer steps skills would otherwise work out by hand. Each prints
 **only when named** in `--keys`; the full block never includes them. Each value carries its source in parentheses, and YAML `null`
-or `~` reads as unset (the reader returns them as strings, which are not empty).
+or `~` reads as unset (the reader returns them as strings, which are not empty). `distribution_targets` is the exception:
+it keeps every item it finds, `null` and `~` included, and names the ones outside the known set, so a wrong item is seen rather than read as unset.
 
 | Label | What it prints |
 |---|---|
@@ -235,6 +236,7 @@ or `~` reads as unset (the reader returns them as strings, which are not empty).
 | `specialists` | The engine specialists: `primary` from the engine, the rest from the `specialists` block, where `null` is unset and never an agent name; `technical-preferences.md` only when the block is absent. `specialists: primary=godot-specialist(engine.name) code=godot-gdscript-specialist shader=unset ui=godot-specialist additional=none (project.yaml; unset = skip that specialist)` |
 | `review_gate` | Whether a skill's own director gate and the PHASE-GATEs run at the resolved `review_mode` (`director-gates.md`): `solo` none, `lean` the PHASE-GATEs only, `full` all. `review_gate: skill-gates=skip phase-gates=run (review_mode lean, rigor:standard; a --review flag overrides)` |
 | `input_methods` | The input methods from the `platform` block, each listed once: keyboard/mouse when `PC` or `Web` is a target, gamepad and touch when their support is Full or Partial, plus the primary input, where a primary input such as `Keyboard`, `Controller` or `Touchscreen` is read as keyboard/mouse, gamepad or touch; else `technical-preferences.md`'s Input Methods line. `input_methods: keyboard/mouse, gamepad (project.yaml platform; primary: Gamepad)` |
+| `distribution_targets` | Where the game is published, from `platform.distribution_targets` in `project.yaml` only (`platform.*` is locked): the items lower-cased, each once. Unset and the empty list print differently, and an item outside the known set is named. `platform.distribution_targets: crazygames (project.yaml)` · `platform.distribution_targets: none (project.yaml sets an empty list)` · `platform.distribution_targets: (unset -- ask where the game is released)` |
 | `perf_budgets` | The four `performance.*` budgets (`target_framerate`, `frame_budget_ms`, `draw_call_limit`, `memory_ceiling_mb`), from `project.yaml` only: they are not locally overridable. `perf_budgets: target_framerate=60 frame_budget_ms=16.67 draw_call_limit=unset memory_ceiling_mb=unset (project.yaml)` |
 
 ## Failure modes

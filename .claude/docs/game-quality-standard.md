@@ -27,7 +27,7 @@ never from which platform the guideline was written for.
 | `ads` | the game shows ads or offers rewards for watching them | the brief, GDD or SDK integration |
 | `multiplayer` | the game offers play with other people, online or on one device | the brief, GDD or the modes the build offers. `platform.multiplayer: true` settles it as true; `false` only rules out real-time online play |
 | `released` | the game is public | `project.stage`, or the release it is being checked for |
-| `crazygames` | the game is released on CrazyGames | the run was started with `--target crazygames` |
+| `crazygames` | the game is released on CrazyGames | `platform.distribution_targets` in `project.yaml` lists `crazygames` (the `distribution_targets` line of `resolve_config`), or the run was started with `--target crazygames`. An empty list settles it as false; an unset key is unknown |
 
 **The supported input methods** (`Q-ONB-5` is checked once per method) come from
 the same places as `keyboard`: the controls the design names and the inputs the

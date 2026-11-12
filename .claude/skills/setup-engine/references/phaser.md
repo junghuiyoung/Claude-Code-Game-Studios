@@ -2,7 +2,8 @@
 
 Use this route only after the user chooses Phaser. The default target is a
 standalone browser build. `--target crazygames` adds the optional CrazyGames
-starter files; it does not set `platform.cert_tier` or submit a build.
+starter files and records the target in `platform.distribution_targets`; it does
+not set `platform.cert_tier` or submit a build.
 
 ## Preflight
 
@@ -85,6 +86,21 @@ For `--target crazygames`, include `platform.touch_support: Full` as a design
 requirement so the input workflow includes touch alongside keyboard/mouse.
 This records the intended controls, not app test evidence. Resolve an existing
 conflicting value in the setup preview before changing it.
+
+For `--target crazygames`, also record where the game is published:
+
+```yaml
+platform:
+  distribution_targets: [crazygames]
+```
+
+Add `crazygames` to a list that is already there and keep its other items;
+never replace the list, and never write a second `platform` block. This is what
+lets `/release-checklist`, typed with no argument, run the CrazyGames report and
+apply the `crazygames` rows of `.claude/docs/game-quality-standard.md`. It shows
+in the setup preview with the other config changes. Without `--target
+crazygames`, leave the key as it is: a standalone build does not write `[]`,
+because the game may still be published somewhere later.
 
 `src/` is the Phaser code root. `npm run typecheck` verifies TypeScript and
 `npm run preview` serves the production build. `npm test` runs the starter's

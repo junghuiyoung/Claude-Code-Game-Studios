@@ -1,12 +1,12 @@
 ---
 name: release-checklist
 description: "Pre-release checklist — build verification, certification requirements, store metadata, launch readiness."
-argument-hint: "[pc|console|mobile|all] | --target crazygames"
+argument-hint: "[pc|console|mobile|all] | --target crazygames (no argument: platform.distribution_targets decides)"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Bash(bash "*/.claude/skills/release-checklist/../../hooks/yaml-helper.sh" resolve_config *), Bash(node .claude/scripts/check-crazygames-build.mjs *), Bash(bash .claude/scripts/review-receipts.sh check *)
 model: opus
 ---
-!`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys rigor,workflow,project.stage,cert_tier,automation,input_methods`
+!`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys rigor,workflow,project.stage,cert_tier,automation,input_methods,distribution_targets`
 
 **Automation mode**: Resolve `modes.automation` (`project.local.yaml` →
 `project.yaml` → default `collaborative`). Every `AskUserQuestion` call and
@@ -26,7 +26,8 @@ trains the reader to skip the list, which defeats the gate:
 - **`modes.rigor`** — at `minimal`, drop items whose only justification is process
   weight this project has opted out of. The **Quality Standard** section is never
   one of them: it is emitted at every rigor, for both argument forms.
-- **`platform.cert_tier`** — for a positional device argument or no arguments,
+- **`platform.cert_tier`** — in the device form only (Phase 1; the CrazyGames
+  report never reads it, however that report was selected),
   emit certification items **only** for the tier the project targets. If it is
   **unset**, **ask which platforms are in scope**
   rather than emitting all of them — an unset value is a question, not a licence
@@ -64,13 +65,34 @@ ratings, of which ~140 are unassessable.
 
 Accept exactly one of these forms:
 
-- No arguments or one positional device (`pc`, `console`, `mobile`, or `all`).
-  No arguments defaults to `all`.
+- One positional device (`pc`, `console`, `mobile`, or `all`): the device form.
 - `--target crazygames` scopes this report to the CrazyGames HTML5 build on
   desktop and mobile browsers and in the CrazyGames apps. Read
   [CrazyGames web release](../../../docs/CRAZYGAMES.md) for the target checks.
   For an initial submission, assess Basic Launch. Use Full Launch requirements
   when the user confirms that is the stage being assessed.
+- No arguments: read the `platform.distribution_targets` line above, whole. Its
+  three states are told apart by the exact text, never by one word in it:
+  - `platform.distribution_targets: … crazygames … (project.yaml…)`, with
+    `crazygames` among the listed items: the CrazyGames report, exactly as
+    `--target crazygames`. Say why on the report's first line: `Target:
+    crazygames (platform.distribution_targets in project.yaml)`.
+  - `platform.distribution_targets: none (project.yaml sets an empty list)`: the
+    empty list, a decision. The device form, defaulting to `all`.
+  - `platform.distribution_targets: (unset -- ask where the game is released)`:
+    no decision. The device form, defaulting to `all`; unset is not a decision
+    against CrazyGames, and the Quality Standard section says so.
+  - Items listed, none of them `crazygames`: the device form, defaulting to
+    `all`.
+  - An item the line names after `unknown:` (a typo, a target this skill does
+    not know, even one spelled `none`): say so by name, on the report's first
+    line, and go on. Never drop it in silence, and never read it as the empty
+    list.
+
+A device argument always selects the device form, and `--target crazygames`
+always selects the CrazyGames report, whatever `platform.distribution_targets`
+holds (an empty list included): the key picks the report only when nothing was
+typed.
 
 For an invalid or combined form, show
 `/release-checklist [pc|console|mobile|all]` and
@@ -86,8 +108,8 @@ a `cert_tier` value. So emitting a device block says nothing about which
 certification block to emit, and `all` is **not** a licence to emit every
 certification track.
 
-With `--target crazygames`, `platform.cert_tier` is outside the scope of this
-report. It neither selects CrazyGames nor creates an unanswered certification
+In the CrazyGames report, however it was selected, `platform.cert_tier` is
+outside the scope of this report. It neither selects CrazyGames nor creates an unanswered certification
 question. Keep the configured tier for other release targets.
 
 ---
@@ -97,7 +119,7 @@ question. Keep the configured tier for other release targets.
 - Read `CLAUDE.md` for project context, version information, and platform targets.
 - Read the current milestone from `production/milestones/` to understand what features and content should be included in this release.
 - Read the open bugs from `production/qa/bugs/`: grep the `**Severity**` and `**Status**` lines of `production/qa/bugs/*.md`, as `/bug-triage` does. A bug is open unless its Status is `Closed` or `Verified Fixed`. The bug items use the thresholds `/gate-check release` applies for the resolved `workflow`: at `full` an open S1, S2 or S3 bug fails its item; at `standard` and `minimal` only an open S1 does, and an open S2 or S3 is listed in the Rationale as a risk. Each failing bug is named in the Rationale as a blocking item. **No bug files in `production/qa/bugs/`** → the bug items read `NOT ASSESSED — no bug records` — never zero and never ticked, since an absent record and a clean one must not produce the same checklist; bugs are filed with `/bug-report`.
-- Read `.claude/docs/game-quality-standard.md`: every row of its tables, with its Applies condition and Level. Decide each condition as its "How a row applies" section says — `web` from `platform.targets` in `project.yaml`; `keyboard` and the supported input methods from the controls the design names and the keys the code root binds (the `input_methods` line above is a hint only: it lists `keyboard/mouse` for every PC or Web target and `none` on an incomplete `platform` block); `crazygames` only when this run has `--target crazygames`. A condition that cannot be read is unknown, never false. **File not found** → the Quality Standard section reads `NOT ASSESSED — .claude/docs/game-quality-standard.md not found`.
+- Read `.claude/docs/game-quality-standard.md`: every row of its tables, with its Applies condition and Level. Decide each condition as its "How a row applies" section says — `web` from `platform.targets` in `project.yaml`; `keyboard` and the supported input methods from the controls the design names and the keys the code root binds (the `input_methods` line above is a hint only: it lists `keyboard/mouse` for every PC or Web target and `none` on an incomplete `platform` block); `crazygames` as the "A `crazygames` row" rule in Phase 4 says: true for a CrazyGames report or when the `platform.distribution_targets` line lists `crazygames`, false on the empty list, unknown when the key is unset or lists only unknown items. A condition that cannot be read is unknown, never false. **File not found** → the Quality Standard section reads `NOT ASSESSED — .claude/docs/game-quality-standard.md not found`.
 - Find the newest first-run record, `production/qa/evidence/first-run/first-run-*.md`, and note its date and the build it names. None → say so; the rows that need it are `NOT ASSESSED`. Whether it is current is never judged by its date: list the files under the code root with Glob and run `bash .claude/scripts/review-receipts.sh check production/qa/evidence/first-run/[record name].stamp.txt <every file under the code root>` as its own Bash call. Read the result in the standard's order, first match wins: (1) `RECEIPT: NONE`, or a stamp file with no `Reviewed-Content-Hash:` line, means the record has no usable stamp — the `NEW:` lines printed beside it say the stamp is empty, not that the code changed; (2) a `CHANGED:`, `GONE:` or `NEW:` line means the code changed after the capture; (3) an `UNRESOLVED:` line, a failed check, no `UNCHANGED:` line at all, or an unresolved code root means the stamp could not be checked; (4) only every file reading `UNCHANGED:` makes the record evidence for this candidate. In cases 1 to 3 it is not, and the report says which case.
 
 ---
@@ -204,11 +226,21 @@ added to the standard is checked the next time this skill runs.
   unknown`. Never move it to Not applicable.
 - **An advisory row whose condition is unknown:** `condition unknown — [which]`
   under Advisory. Never Not applicable, and never part of Go / No-Go.
-- **A `crazygames` row without `--target crazygames`:** Not applicable, as `not a
-  CrazyGames release (no --target crazygames)`.
+- **A `crazygames` row:** it applies when this run is a CrazyGames report
+  (typed, or selected by the key) or the `platform.distribution_targets` line
+  lists `crazygames`, in the device form too. Otherwise, by the line's exact
+  state:
+  - the empty list (`none (project.yaml sets an empty list)`): Not applicable,
+    as `not a CrazyGames release (platform.distribution_targets is empty)`;
+  - unset: `condition unknown — crazygames (platform.distribution_targets
+    unset)`, under its level, never Not applicable;
+  - only items named `unknown:`: `condition unknown — crazygames
+    (platform.distribution_targets lists only unknown targets: [items])`. One of
+    them may be a misspelling of it.
 
-For `--target crazygames`, keep the shared sections above (the `crazygames`
-rows of the Quality Standard then apply) and apply the
+For the CrazyGames report (`--target crazygames`, or no argument with
+`crazygames` in `platform.distribution_targets`), keep the shared sections above
+(the `crazygames` rows of the Quality Standard then apply) and apply the
 [CrazyGames checks](../../../docs/CRAZYGAMES.md) in place of the device,
 certification, generic distribution, and generic launch rows. Group the target
 checks under Local Build and Browser QA, Portal Preview, Android App, iOS App,
@@ -277,8 +309,8 @@ here would hand an `itch` project Steamworks rows.
 > deliberate choice, not an oversight — do not "fix" it by inventing a `mobile`
 > tier, which is the exact wrong vocabulary the `cert_tier` rule warns against.
 
-**Certification — emit ONLY the block matching `platform.cert_tier`** (resolved in
-the resolved-config block at the top of this skill). Do not emit this subsection's other blocks, and do not fall back to
+**Certification — device form only; emit ONLY the block matching `platform.cert_tier`** (resolved in
+the resolved-config block at the top of this skill). The CrazyGames report has no certification subsection and asks no certification question. Do not emit this subsection's other blocks, and do not fall back to
 emitting all of them because the platform argument was `all`.
 
 **At `none`** — emit no certification block at all. Emit exactly this one line in
@@ -319,7 +351,7 @@ Certification: omitted — cert_tier is 'none' (internal build, alpha or jam rel
 - [ ] Age ratings obtained (ESRB, PEGI, regional)
 ```
 
-If `cert_tier` is **unset**, ask which platforms are in scope rather than
+If `cert_tier` is **unset** in the device form, ask which platforms are in scope rather than
 emitting every track; if it cannot be determined, emit
 `### Certification: NOT ASSESSED — cert tier unknown` and say why. **Unset is not
 `none`** — `none` is a decision and unset is a missing one.

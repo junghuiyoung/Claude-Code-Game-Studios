@@ -297,6 +297,12 @@ Fixture defaults.
 - [ ] A has no CrazyGames runtime files or requests. B selects the CrazyGames
       adapter and resolves keyboard/mouse and touch as target inputs. It does
       not set a certification tier or use native tools.
+- [ ] B's preview shows, and its `project.yaml` then holds,
+      `platform.distribution_targets: [crazygames]`. A leaves the key unset: it
+      writes neither `[crazygames]` nor `[]`.
+- [ ] B on a project whose `platform.distribution_targets` already lists another
+      item keeps that item and adds `crazygames`; a rerun does not list it
+      twice.
 - [ ] Successful verification names the dependency install, typecheck and
       production build that actually ran. An unavailable runtime or a failed
       install leaves verification pending.
