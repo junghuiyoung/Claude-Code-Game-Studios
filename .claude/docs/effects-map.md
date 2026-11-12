@@ -1710,15 +1710,16 @@ required at `standard` and `minimal` levels.
 
 **Controls:** Which engine-specific specialist agents are routed to for code
 implementation, review, and architecture validation  
-**Values:** `Godot` | `Unity` | `Unreal`  
+**Values:** `Godot` | `Unity` | `Unreal` | `Phaser`
 **Default:** `[UNSET]` — must be configured via `/setup-engine`  
 **Set by:** `/setup-engine`  
 **Read by:** `dev-story`, `code-review`, `architecture-decision`, `create-architecture`, `team-combat`, `team-ui`, `team-audio`
 
-> **Currently stored in `technical-preferences.md`**, not `project.yaml`. After
-> YAML expansion, `engine.name` and the specialist routing table move to
-> `project.yaml specialists` block. Skill behavior is unchanged — only the
-> source file changes.
+> `engine.name` and the `specialists` block live in `project.yaml`.
+> `technical-preferences.md` is the legacy mirror. Phaser uses `src/` and the
+> general programmer agents unless the project explicitly configures a
+> specialist. Choosing Phaser defaults to `platform.targets: [Web]` without
+> changing `platform.cert_tier`.
 
 > **This is a project attribute, not a mode.** Engine choice drives specialist
 > routing the same way `platform.multiplayer` drives network routing — skills
@@ -1733,6 +1734,7 @@ implementation, review, and architecture validation
 | **Godot** | `godot-gdscript-specialist` (GDScript) or `godot-csharp-specialist` (C#) — driven by `engine.language` | `godot-shader-specialist` | `godot-specialist` | `godot-gdextension-specialist` |
 | **Unity** | `unity-specialist` | `unity-shader-specialist` | `unity-ui-specialist` | `unity-addressables-specialist`, `unity-dots-specialist` |
 | **Unreal** | `unreal-specialist` | `unreal-specialist` | `ue-umg-specialist` | `ue-gas-specialist`, `ue-blueprint-specialist`, `ue-replication-specialist` |
+| **Phaser** | Unset by default | Unset by default | Unset by default | None |
 | **[UNSET]** | No specialist spawned — warning emitted | No specialist spawned | No specialist spawned | None |
 
 ---
@@ -1819,24 +1821,31 @@ keys are inside the locked file, not a local override).
 |-------|---------|
 | `build` | Full project build for CI or release. `/smoke-check` runs it only as the WAIVED-path build check when `commands.smoke` is unset; `project-coherence.sh` (which `/smoke-check` runs first) checks the export preset it names, and `/launch-checklist` only asks whether the build produces a valid artifact. |
 | `test` | Run the full test suite. Run by `/smoke-check` and, narrowed to the affected suite, by `/hotfix`, `/bug-report` (verify mode) and `/day-one-patch`; `project-coherence.sh` checks the runner it names. `/regression-suite` does **not** run it. |
-| `run` | Launch the **game** windowed at a fixed resolution — not the editor. Used by `/dev-story` Phase 6 step 4 to observe the feature and retain a screenshot; see `.claude/docs/run-and-observe.md` for the per-engine capture flags that are appended to it. |
+| `run` | Launch the game for local iteration. For a native engine, `/dev-story` Phase 6 step 4 uses it with engine-specific capture flags. The Phaser starter uses it to start Vite's dev server; serve the built files for production browser verification. See `.claude/docs/run-and-observe.md`. |
 | `smoke` | Minimal "does it boot?" check. Run by `/dev-story` as the Unity parse check (Phase 6 step 2), and by `/smoke-check` as the build check when `qa.level: minimal` waives tests. |
 
 ---
 
 ### Engine defaults
 
-When `/setup-engine` runs, it populates `commands` based on engine choice — except
-the **build** row, which it must **ask** for. The build artifact is named by a
-project-defined string (a Godot export preset, a Unity build target), and no
-engine reference in this repo can source it. See `/setup-engine` §"The Godot
-`build` row must not hardcode `'Linux/X11'`".
+When `/setup-engine` runs, it populates `commands` based on engine choice.
+Native engine builds can depend on a project-defined string such as a Godot
+export preset or a Unity build target; ask the operator for that value. Phaser's
+Vite build writes the starter's `dist/` directory without a native export preset.
 
 | Engine | build | test | run | smoke |
 |--------|-------|------|-----|-------|
+| Phaser | `npm run build` | Unset until a project gameplay test command exists | `npm run dev` | Unset until a project smoke command exists |
 | Godot | `godot --headless --export-debug '<PRESET>'` | `godot --headless -s -d --remote-debug tcp://127.0.0.1:0 res://addons/gdUnit4/bin/GdUnitCmdTool.gd -a res://tests --ignoreHeadlessMode` | `godot --path . --windowed --resolution 1280x720` | `godot --headless --quit-after 5` |
 | Unity | `"<Unity editor>" -batchmode -quit -projectPath . -buildTarget <TARGET> -build<PLATFORM>Player Builds/<Target>/<Game>.exe` | `"<Unity editor>" -batchmode -runTests -projectPath . -testPlatform EditMode -testResults test-results/editmode.xml` | `Builds/<Target>/<Game>.exe -screen-width 1280 -screen-height 720 -screen-fullscreen 0` | `"<Unity editor>" -batchmode -quit -projectPath . -logFile -` |
 | Unreal | `"<UE root>/Engine/Binaries/DotNET/AutomationTool/AutomationTool.exe" BuildCookRun -project="$(pwd -W 2>/dev/null || pwd)/<project>.uproject" -platform=Win64 -build -cook` (confirm per project) | `"<UE root>/Engine/Binaries/Win64/UnrealEditor-Cmd.exe" "$(pwd -W 2>/dev/null || pwd)/<project>.uproject" -ExecCmds="Automation RunTests <project>.; Quit" -unattended -nullrhi -stdout -FullStdOutLogOutput` | `"<UE root>/Engine/Binaries/Win64/UnrealEditor.exe" "$(pwd -W 2>/dev/null || pwd)/<project>.uproject" -game -windowed -ResX=1280 -ResY=720` | `"<UE root>/Engine/Binaries/Win64/UnrealEditor-Cmd.exe" "$(pwd -W 2>/dev/null || pwd)/<project>.uproject" -game -nullrhi -unattended -stdout -ExecCmds="Quit"` |
+
+For Phaser, `npm run typecheck` checks TypeScript, `npm test` verifies the
+starter's platform adapter, and `npm run preview` serves `dist/`. The adapter
+suite does not establish gameplay coverage. A successful build or listening
+preview server is not browser evidence. `project-coherence.sh` checks the
+declared Phaser version against `package.json` and the installed npm package
+when available. It checks conventional npm script names without running them.
 
 The Unreal row is Windows'. `/setup-engine` writes the Linux block (`Engine/Build/BatchFiles/RunUAT.sh`,
 `Engine/Binaries/Linux/UnrealEditor`) on Linux, and on macOS only `build`, leaving `test`, `run` and
@@ -2456,9 +2465,9 @@ platform:
   cert_tier: none            # none | itch | steam | console
 
 engine:
-  name: "Godot"              # Godot | Unity | Unreal — set by /setup-engine
+  name: "Godot"              # Godot | Unity | Unreal | Phaser — set by /setup-engine
   version: "4.7"
-  language: "GDScript"       # GDScript | C# | C++ | Blueprint
+  language: "GDScript"       # GDScript | C# | C++ | Blueprint | TypeScript
   rendering: "Forward+"
   physics: "Jolt"
 

@@ -11,6 +11,7 @@
 - Godot 4
 - Unity: Edit Mode, then Play Mode as a second run
 - Unreal Engine: build first, commands per OS, macOS
+- Phaser: configured web test runner
 - Unknown engine / not configured
 - Test runner not available here
 - Build check (the WAIVED path only)
@@ -156,6 +157,12 @@ Read the output, not the exit code: a failing test and a run that matched nothin
   not be found`) → FAIL: no test ran. The exception: the editor never started (exit 126 or 127, `command not found`) — that is the runner not being
   available, below, and `NOT ASSESSED`.
 
+**Phaser:** use the configured `commands.test` with the timeout above. With
+test files but no configured runner, report `NOT RUN — commands.test unset`;
+do not substitute the TypeScript check or a Vite build for game tests. Count
+tests from the runner's report. A zero-test run is `NOT ASSESSED`, and a
+nonzero exit from a runner that started is `FAIL`.
+
 **Unknown engine / not configured:**
 "Engine not configured in `project.yaml` or
 `.claude/docs/technical-preferences.md`. Run `/setup-engine` to specify the
@@ -199,5 +206,10 @@ non-zero exit is a FAIL. Record `Build check: PASS — [command] exit 0`,
 executable not found]`. A build check that did not run is named in the report
 and leaves the launch in Batch 1 to carry the verdict; it never passes on its
 own.
+
+For Phaser, run `npm run typecheck` before the configured build command and
+report both exit codes. A type error fails the build check. Use
+`npm run preview` to serve the resulting production build for Batch 1.
+Missing Node, npm or dependencies are `NOT RUN` prerequisites.
 
 ---

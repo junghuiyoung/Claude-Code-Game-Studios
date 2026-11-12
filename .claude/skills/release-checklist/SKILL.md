@@ -1,9 +1,9 @@
 ---
 name: release-checklist
 description: "Pre-release checklist — build verification, certification requirements, store metadata, launch readiness."
-argument-hint: "[platform: pc|console|mobile|all]"
+argument-hint: "[pc|console|mobile|all] | --target crazygames"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Bash(bash "*/.claude/skills/release-checklist/../../hooks/yaml-helper.sh" resolve_config *)
+allowed-tools: Read, Glob, Grep, Write, Bash(bash "*/.claude/skills/release-checklist/../../hooks/yaml-helper.sh" resolve_config *), Bash(node .claude/scripts/check-crazygames-build.mjs *)
 model: opus
 ---
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys rigor,workflow,project.stage,cert_tier,automation`
@@ -25,8 +25,9 @@ trains the reader to skip the list, which defeats the gate:
   scope; say so rather than listing them unchecked.
 - **`modes.rigor`** — at `minimal`, drop items whose only justification is process
   weight this project has opted out of.
-- **`platform.cert_tier`** — emit certification items **only** for the tier the
-  project targets. If it is **unset**, **ask which platforms are in scope**
+- **`platform.cert_tier`** — for a positional device argument or no arguments,
+  emit certification items **only** for the tier the project targets. If it is
+  **unset**, **ask which platforms are in scope**
   rather than emitting all of them — an unset value is a question, not a licence
   to emit every certification track. If it cannot be determined, mark the section
   **`NOT ASSESSED — cert tier unknown`**. **Unset is not `none`:** `none` is a
@@ -60,9 +61,21 @@ ratings, of which ~140 are unassessable.
 
 ## Phase 1: Parse Arguments
 
-Read the argument for the target platform (`pc`, `console`, `mobile`, or `all`). If no platform is specified, default to `all`.
+Accept exactly one of these forms:
 
-**The argument selects DEVICE requirements. It never selects the certification
+- No arguments or one positional device (`pc`, `console`, `mobile`, or `all`).
+  No arguments defaults to `all`.
+- `--target crazygames` scopes this report to the CrazyGames HTML5 build on
+  desktop and mobile browsers and in the CrazyGames apps. Read
+  [CrazyGames web release](../../../docs/CRAZYGAMES.md) for the target checks.
+  For an initial submission, assess Basic Launch. Use Full Launch requirements
+  when the user confirms that is the stage being assessed.
+
+For an invalid or combined form, show
+`/release-checklist [pc|console|mobile|all]` and
+`/release-checklist --target crazygames`, then stop before generating or saving a report.
+
+**A positional argument selects DEVICE requirements. It never selects the certification
 track.** Certification is decided by `platform.cert_tier`, resolved in the resolved-config block at the top of this skill —
 see the `platform.cert_tier` rule above. The two axes are different lists that
 happen to share one word: `pc`/`console`/`mobile` are hardware shapes, while
@@ -71,6 +84,10 @@ nowhere else — `itch` and `none` have no device block at all, and `mobile` is 
 a `cert_tier` value. So emitting a device block says nothing about which
 certification block to emit, and `all` is **not** a licence to emit every
 certification track.
+
+With `--target crazygames`, `platform.cert_tier` is outside the scope of this
+report. It neither selects CrazyGames nor creates an unanswered certification
+question. Keep the configured tier for other release targets.
 
 ---
 
@@ -150,9 +167,32 @@ Generated: [Date]
 - [ ] Credits complete and accurate
 ```
 
-Add **device** sections based on the argument. These carry no certification or
-storefront-SDK items — those are gated on `platform.cert_tier` in the next
-subsection, and repeating them here would hand an `itch` project Steamworks rows.
+For `--target crazygames`, keep the shared sections above and apply the
+[CrazyGames checks](../../../docs/CRAZYGAMES.md) in place of the device,
+certification, generic distribution, and generic launch rows. Group the target
+checks under Local Build and Browser QA, Portal Preview, Android App, iOS App,
+and Submission Materials. Record the launch stage in the report and include
+the applicable SDK checks.
+Evaluate the existing release build and evidence. A confirmed blocking failure
+is `NOT READY`. Missing evidence for an applicable check is `NOT ASSESSED`;
+give the reason and next verification step. Label optional or inapplicable
+features accordingly. Report local, Portal Preview, and each real app result
+separately, even if one is unavailable. Run the read-only package check from the
+guide against the existing output when the candidate and Node are available.
+Run it as its own Bash call so it matches the skill's grant. Use Read, Glob or
+Grep separately for the other checks.
+If the candidate is absent, report the package check as `NOT ASSESSED`; do not
+run a build from this checklist. A local package check establishes only the
+properties it measured. Do not infer actual app play or Portal eligibility from
+local output. Leave the upload and submission steps to the developer.
+If the candidate visibly still contains the starter's marker demo or other
+confirmed placeholder gameplay, mark Content Complete as a blocking failure.
+This does not stop a separate local template test from passing.
+
+For a positional device or the default `all`, add **device** sections based on
+the argument. These carry no certification or storefront-SDK items — those
+are gated on `platform.cert_tier` in the next subsection, and repeating them
+here would hand an `itch` project Steamworks rows.
 
 **For `pc`:**
 ```markdown
@@ -255,7 +295,7 @@ emitting every track; if it cannot be determined, emit
 > `**For \`console\`:**` heading is argument-gating, not tier-gating — do not read
 > it as evidence that certification is already scoped by tier.
 
-**Store and launch sections (all platforms):**
+**Store and launch sections (positional device and default `all`):**
 ```markdown
 ### Store / Distribution
 - [ ] Store page metadata complete and proofread
@@ -283,7 +323,10 @@ emitting every track; if it cannot be determined, emit
 - [ ] Press/influencer keys prepared for distribution
 - [ ] Support team briefed on known issues and FAQ
 - [ ] Rollback plan documented (if critical issues found post-launch)
+```
 
+**Go / No-Go and sign-offs (both argument forms):**
+```markdown
 ### Go / No-Go: [READY / NOT ASSESSED / NOT READY]
 
 First match wins: **NOT READY** if any blocking item fails; else **NOT ASSESSED**

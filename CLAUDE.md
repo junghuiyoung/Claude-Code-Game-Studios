@@ -5,8 +5,8 @@ Each agent owns a specific domain, enforcing separation of concerns and quality.
 
 ## Technology Stack
 
-- **Engine**: [CHOOSE: Godot 4 / Unity / Unreal Engine 5]
-- **Language**: [CHOOSE: GDScript / C# / C++ / Blueprint]
+- **Engine**: [CHOOSE: Godot 4 / Unity / Unreal Engine 5 / Phaser]
+- **Language**: [CHOOSE: GDScript / C# / C++ / Blueprint / TypeScript]
 - **Version Control**: Git with trunk-based development
 - **Build System**: [SPECIFY after choosing engine]
 - **Asset Pipeline**: [SPECIFY after choosing engine]

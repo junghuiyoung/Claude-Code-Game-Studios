@@ -11,7 +11,7 @@ After setup is complete, output:
 Engine Setup Complete
 =====================
 Engine:          [name] [version]
-Language:        [GDScript | C# | GDScript + C# | C# | C++ + Blueprint | Blueprint + C++]
+Language:        [GDScript | C# | GDScript + C# | C# | C++ + Blueprint | Blueprint + C++ | TypeScript]
 Knowledge Risk:  [LOW/MEDIUM/HIGH]
 Reference Docs:  [created/skipped]
 CLAUDE.md:       [updated]
@@ -22,6 +22,11 @@ Agent Config:    [verified]
 Next Steps:
 1. Review docs/engine-reference/<engine>/VERSION.md
 ```
+
+On Phaser, include the selected target, dependency install/build results and the
+`npm run dev` handoff. Agent Config is `no dedicated specialist` unless the
+project explicitly supplied one. The CrazyGames adapter setup is independent of
+the separate `/release-checklist --target crazygames` release workflow.
 
 Then print **one** Next-Steps list, matching the resolved `workflow` tier:
 
@@ -45,4 +50,7 @@ Then print **one** Next-Steps list, matching the resolved `workflow` tier:
 
 ---
 
-Verdict: **COMPLETE** — engine configured and reference docs populated.
+Verdict: **COMPLETE** — engine configured and reference docs populated. On
+Phaser this requires installed dependencies, passing type-check and starter
+tests, and a build with `dist/index.html`. Otherwise report what was configured
+and which verification failed or is still pending.

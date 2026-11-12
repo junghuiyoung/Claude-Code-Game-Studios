@@ -191,7 +191,7 @@ Hooks fail gracefully if optional tools are missing — you just lose validation
 
 1. **Clone or use as template**:
    ```bash
-   git clone https://github.com/Donchitos/Claude-Code-Game-Studios.git my-game
+   git clone https://github.com/junghuiyoung/Claude-Code-Game-Studios.git my-game
    cd my-game
    ```
 
@@ -209,7 +209,24 @@ Hooks fail gracefully if optional tools are missing — you just lose validation
    Or jump directly to a specific skill if you already know what you need:
    - `/brainstorm` — explore game ideas from scratch
    - `/setup-engine godot 4.7` — configure your engine if you already know
+   - `/setup-engine phaser` — scaffold a Phaser/TypeScript web project
    - `/project-stage-detect` — analyze an existing project
+
+### Phaser and CrazyGames
+
+Run `/setup-engine phaser --target crazygames` to opt into the CrazyGames SDK
+in a new Phaser project. The starter uses an MIT-licensed engine and Vite to
+build a single `dist/` folder for web and the CrazyGames mobile apps. Its
+small scene exercises keyboard, touch and audio before you build a game.
+
+Setup runs `npm ci`, `npm run typecheck`, `npm test` and `npm run build`
+after approval. Use `npm run dev` to iterate and `npm run preview` to play
+the production build in a browser.
+`/release-checklist --target crazygames` uses the
+[CrazyGames release and QA guide](docs/CRAZYGAMES.md).
+The starter's automated SDK tests use a mock. Verify the live SDK in Portal
+Preview and check the Android and iOS apps on physical devices before recording
+those results.
 
 ## Configuration
 
@@ -280,7 +297,7 @@ CLAUDE.md                           # Master configuration
   docs/
     workflow-catalog.yaml           # 7-phase pipeline definition (read by /help)
     templates/                      # 62 document templates (+ per-section guidance)
-src/                                # Game source code (Godot). The code root is
+src/                                # Game source code (Godot or Phaser). The code root is
                                     #   ENGINE-SPECIFIC: Unity compiles only
                                     #   Assets/, Unreal builds from Source/<Module>/
 assets/                             # Art, audio, VFX, shaders, data files

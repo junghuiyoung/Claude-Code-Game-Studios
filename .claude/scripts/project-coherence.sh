@@ -20,7 +20,7 @@
 #
 # A subtler cause is handled elsewhere: `/setup-engine` writes an `Installed at
 # pin time` row into VERSION.md, and a VERSION.md with no such row leaves that
-# step no slot, so it vanishes without a trace. The row ships in all three
+# step no slot, so it vanishes without a trace. The row ships in the engine
 # reference files, and check 1 below reads it.
 #
 # OBSERVATIONS, NEVER VERDICTS
@@ -75,6 +75,78 @@ summarise() {
 # major.minor of the first version in $1, with Unity's 6000.N read as 6.N.
 vmm() { printf '%s' "$1" | grep -oE '[0-9]+\.[0-9]+' | head -1 | sed -E 's/^6000\./6./'; }
 
+phaser_json() {
+  node -e '
+    const fs = require("node:fs");
+    try {
+      let value = JSON.parse(fs.readFileSync(process.argv[1], "utf8"));
+      for (const key of process.argv.slice(2)) value = value?.[key];
+      if (typeof value === "string" && value.trim()) process.stdout.write(value);
+    } catch {
+      process.exitCode = 1;
+    }
+  ' "$@"
+}
+
+check_phaser() {
+  local declared installed key command script
+  if ! command -v node >/dev/null 2>&1; then
+    skipped "Phaser package and npm script checks — Node.js is not available on PATH"
+    return
+  fi
+  if [ ! -f package.json ]; then
+    skipped "Phaser package and npm script checks — no package.json; run /setup-engine phaser or adopt the existing package"
+    return
+  fi
+  if ! declared=$(phaser_json package.json dependencies phaser); then
+    differs "package.json could not be parsed as JSON"
+    return
+  fi
+  if [ -z "$declared" ]; then
+    differs "package.json does not declare Phaser in dependencies"
+  elif [ -z "$VERSION" ]; then
+    skipped "engine.version vs package.json — project.yaml has no engine.version"
+  elif [ "$declared" = "$VERSION" ]; then
+    match "engine.version $VERSION agrees with the exact Phaser dependency in package.json"
+  else
+    differs "engine.version is '$VERSION' but package.json declares Phaser '$declared'; pin the exact version in both"
+  fi
+
+  if [ -f node_modules/phaser/package.json ]; then
+    if ! installed=$(phaser_json node_modules/phaser/package.json version) || [ -z "$installed" ]; then
+      differs "node_modules/phaser/package.json does not record a readable Phaser version"
+    elif [ -z "$VERSION" ]; then
+      skipped "engine.version vs installed Phaser — project.yaml has no engine.version"
+    elif [ "$VERSION" = "$installed" ]; then
+      match "engine.version $VERSION matches the installed Phaser package"
+    else
+      differs "engine.version is '$VERSION' but node_modules contains Phaser '$installed'"
+    fi
+  else
+    skipped "engine.version vs installed Phaser — node_modules/phaser/package.json is absent"
+  fi
+
+  # Check conventional npm commands without executing package scripts.
+  for key in build test run smoke; do
+    command=$(yaml_block_value commands "$key")
+    [ -n "$command" ] || continue
+    case "$command" in
+      'npm test') script=test ;;
+      'npm run '*) script=${command#npm run } ;;
+      *) script="" ;;
+    esac
+    case "$script" in
+      ''|*[!a-zA-Z0-9:_-]*) skipped "commands.$key — custom command, not inspected" ;;
+      *)
+        if [ -n "$(phaser_json package.json scripts "$script")" ]; then
+          match "commands.$key names the '$script' npm script in package.json"
+        else
+          differs "commands.$key is '$command' but package.json has no '$script' script"
+        fi ;;
+    esac
+  done
+}
+
 say "=== project coherence ==="
 
 if [ ! -f project.yaml ]; then
@@ -121,11 +193,17 @@ else
     skipped "project.yaml version vs pinned reference — no Engine Version row in $VERFILE"
   elif [ -z "$VERSION" ]; then
     skipped "project.yaml version vs pinned reference — project.yaml has no engine.version"
-  elif printf '%s' "$PINNED" | grep -qF "$VERSION" || { [ -n "$WANT2" ] && [ "$WANT2" = "$GOT2" ]; }; then
+  elif { [ "$ENGINE_LC" = phaser ] && [ "${PINNED#Phaser }" = "$VERSION" ]; } ||
+       { [ "$ENGINE_LC" != phaser ] && { printf '%s' "$PINNED" | grep -qF "$VERSION" || { [ -n "$WANT2" ] && [ "$WANT2" = "$GOT2" ]; }; }; }; then
     match "engine.version ($VERSION) agrees with $VERFILE ($PINNED)"
   else
     differs "engine.version is '$VERSION' but $VERFILE pins '$PINNED'. Agents consult the reference file, so they will answer for a version the project does not declare."
   fi
+fi
+
+if [ "$ENGINE_LC" = phaser ]; then
+  check_phaser
+  summarise
 fi
 
 # --- 3. Declared version vs the binary actually installed ---------------------

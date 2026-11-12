@@ -229,6 +229,12 @@ command, the exit code and any error lines:
   run-tests.sh` is not the editor), else `engine.path`, else `godot`. Never search the disk for
   one: when none of the three runs, the check is not verified.
 - **Unity, Unreal:** read `references/engine-checks.md`.
+- **Phaser:** from the project root, run `npm run typecheck` and `npm run build`
+  using the project's installed dependencies. Vite's build alone does not
+  type-check TypeScript. Report both exit codes. If Node, npm or the installed
+  packages are missing, report `parse NOT VERIFIED` with the missing prerequisite.
+  Do not install packages silently. Serve the resulting `dist/` using
+  `npm run preview` for the browser observation below.
 - **No engine executable:** `parse NOT VERIFIED — engine binary not available`.
   Never infer from reading the code that it parses.
 

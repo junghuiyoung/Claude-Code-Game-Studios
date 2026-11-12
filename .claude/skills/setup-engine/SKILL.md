@@ -1,9 +1,9 @@
 ---
 name: setup-engine
 description: "Configure engine and version. Pins it in CLAUDE.md; WebSearch fills reference docs when the version is beyond LLM training data."
-argument-hint: "[engine] | [engine version] | refresh | upgrade [old-version] [new-version] | no args for guided selection"
+argument-hint: "[engine [version]] | phaser [4.2.1] [--target crazygames] | refresh | upgrade [old-version] [new-version]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, WebSearch, WebFetch, Agent, AskUserQuestion, Bash(bash "*/.claude/skills/setup-engine/../../hooks/yaml-helper.sh" resolve_config *), Bash(godot --version), Bash(godot --headless --path . --import), Bash(command -v godot), Bash(uname -s), Bash(bash .claude/scripts/project-coherence.sh*)
+allowed-tools: Read, Glob, Grep, Write, Edit, WebSearch, WebFetch, Agent, AskUserQuestion, Bash(bash "*/.claude/skills/setup-engine/../../hooks/yaml-helper.sh" resolve_config *), Bash(godot --version), Bash(godot --headless --path . --import), Bash(command -v godot), Bash(uname -s), Bash(bash .claude/scripts/project-coherence.sh*), Bash(node --version), Bash(npm --version), Bash(bash .claude/scripts/scaffold-phaser.sh --check), Bash(bash .claude/scripts/scaffold-phaser.sh --check --target crazygames)
 model: opus
 ---
 
@@ -26,11 +26,12 @@ If the block did not render (shell preprocessing disabled), assume `minimal` (th
 
 ## 1. Parse Arguments
 
-Four modes:
+Routes:
 
 - **Full spec**: `/setup-engine godot 4.7` — engine and version provided
 - **Engine only**: `/setup-engine unity` — engine provided, version will be looked up
 - **No args**: `/setup-engine` — fully guided mode (engine recommendation + version)
+- **Phaser browser project**: `/setup-engine phaser` or `/setup-engine phaser --target crazygames` — read `references/phaser.md` and follow that route in place of Sections 3–11, then report per Section 12. The starter has an exact Phaser version pin; `4.2.1` is also accepted explicitly. Reject other versions and unknown or duplicate flags before writing. `--target crazygames` is supported only for Phaser and only by explicit opt-in.
 - **Refresh**: `/setup-engine refresh` — update reference docs (see Section 10)
 - **Upgrade**: `/setup-engine upgrade [old-version] [new-version]` — migrate to a new engine version (see Section 11)
 
@@ -39,6 +40,8 @@ Four modes:
 ## 2. Guided Mode (No Arguments)
 
 **Read `references/2-guided-mode.md` now and follow it** — this phase's steps are in that file, not here. Read it again if the conversation was compacted or resumed during this phase.
+
+If the user chooses Phaser here, follow the same `references/phaser.md` route.
 
 ## 3. Look Up Current Version
 

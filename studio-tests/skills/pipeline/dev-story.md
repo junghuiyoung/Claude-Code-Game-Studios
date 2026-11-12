@@ -466,6 +466,20 @@ The `full` column of the file-check table has its own STOP rule, so the
 
 ---
 
+### Case 12: Phaser UI story requires a built browser observation
+
+**Fixture:** `engine.name: Phaser`, a Phaser starter with installed
+dependencies, and a UI story that changes the pause menu at minimal QA.
+
+- [ ] Code is routed to `src/`. Verification records the distinct
+      `npm run typecheck` and `npm run build` results.
+- [ ] The skill serves the built output and opens the relevant UI state in a
+      browser. It retains a PNG and evidence stamp using the existing
+      story contract.
+- [ ] With the browser unavailable, typecheck and build success do not
+      produce `Run result: OBSERVED`. The output says why the run is
+      `NOT VERIFIED`.
+
 ## Protocol Compliance
 
 - [ ] Does NOT write source code directly — delegates to specialist agents

@@ -36,6 +36,12 @@ Use `AskUserQuestion` to batch-verify. Keep to at most 3 calls.
 
 **Batch 1 — Core stability (always run):** one call, two questions — an empty
 failure list means nothing unless somebody launched the build.
+
+For Phaser, launch the built game with `npm run preview`. Observe the actual
+screen and play a critical path. Record the browser and viewport with the
+result. For CrazyGames release checks, use the distinct Portal and app checks
+in `docs/CRAZYGAMES.md`.
+
 ```
 question: "Did you launch the current build this session?"
 multiSelect: false

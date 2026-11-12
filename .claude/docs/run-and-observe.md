@@ -22,8 +22,9 @@ engine has a native way.
 ## The procedure
 
 1. **Launch windowed** at a fixed resolution — `1280x720` unless the project
-   says otherwise — using `commands.run` from `project.yaml`. Never the
-   headless / batch / null-RHI flag: those exist to *skip* rendering.
+   says otherwise — using `commands.run` from `project.yaml` for native
+   engines, or the built-game preview below for Phaser. Native headless,
+   batch and null-RHI modes skip rendering.
 2. **Launch straight into the scene or map the story touched.** A feature that
    is only reachable through the main menu and three clicks is a feature the
    run will not reach. Stories should be written so their surface is reachable
@@ -53,6 +54,18 @@ engine has a native way.
 | Godot 4 | `godot --path . --windowed --resolution 1280x720 <scene>.tscn` | `--write-movie <path>.png --quit-after <N>` | beside the given path, `<name>00000000.png` … | `--headless` | **none** |
 | Unity 6 | built player `.exe -screen-width 1280 -screen-height 720 -screen-fullscreen 0 --scene <Name>` | `ScreenCapture.CaptureScreenshot(<abs path>)` from a bootstrap script | the absolute path you pass | `-batchmode`, `-nographics` | one MonoBehaviour |
 | Unreal 5 | `MSYS_NO_PATHCONV=1 "<UE root>/Engine/Binaries/Win64/UnrealEditor.exe" "$(pwd -W 2>/dev/null || pwd)/<Game>.uproject" <MapURL> -game -windowed -ResX=1280 -ResY=720` | `HighResShot 1280x720 filename=<abs path>` console command | the path you pass (else `Saved/Screenshots/WindowsEditor/`) | `-nullrhi`, `-unattended` alone | one actor or `-ExecCmds` |
+| Phaser | `npm run build`, then `npm run preview` from the project root | Browser screenshot after the relevant state is visible | story evidence PNG | Type checking or a dev server as production-build evidence | none |
+
+### Phaser — built browser game
+
+Serve the current production build with `npm run preview` and open the URL it
+prints. Use a 1280×720 desktop viewport or the project's stated target. Reach
+the actual screen or game state, verify it renders, and save a screenshot to
+the evidence folder. For a touch-facing story, also inspect the target mobile
+viewport and use touch input. Check the browser console and failed requests.
+Record whether the evidence comes from browser emulation or a physical device.
+If the browser cannot run or capture the build, record `NOT VERIFIED`.
+Stop the preview server after capturing the evidence.
 
 ### Godot 4 — zero scaffold
 
@@ -228,9 +241,9 @@ not is a story that will be marked `NOT VERIFIED` every time.
 
 ## Finding the engine
 
-None of the three engines installs onto `PATH` on Windows. `engine.path` in
-`project.yaml` is where the editor lives; resolve it before concluding "no
-engine on this machine". Absence of a path is not absence of an engine.
+For Godot, Unity and Unreal on Windows, resolve `engine.path` in `project.yaml`
+before concluding the editor is unavailable. For Phaser, check Node, npm, the
+project's installed packages and a browser.
 
 ---
 

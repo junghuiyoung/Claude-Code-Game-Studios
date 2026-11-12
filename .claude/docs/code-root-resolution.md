@@ -12,10 +12,11 @@ code. This file is the procedure for applying it.
 | `engine.name` | Code root | Why it cannot be `src/` |
 |---|---|---|
 | Godot | `src/` | No constraint; Godot loads from `res://` anywhere under the project root |
+| Phaser | `src/` | The Vite starter imports TypeScript and CSS under `src/` |
 | Unity | `Assets/` | Unity compiles **only** `Assets/` and `Packages/` |
 | Unreal | `Source/<Module>/` | UnrealBuildTool discovers modules under `Source/`; content lives in `Content/` |
 
-`src/` is the **Godot row of that table, not a universal path.**
+`src/` applies to Godot and Phaser. Use the configured engine's row.
 
 ## Resolution order
 

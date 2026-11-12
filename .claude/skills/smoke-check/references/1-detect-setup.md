@@ -24,11 +24,14 @@ Before running anything, understand the environment:
    that `tests/` does. Check the engine's **test root** (from step 3; the table
    is in `.claude/docs/directory-structure.md` — Godot `tests/unit/` and
    `tests/integration/`, Unity `Assets/Tests/`, Unreal
-   `Source/*/Private/Tests/`) and `tests/smoke/` for actual test files. A
+   `Source/*/Private/Tests/`, Phaser `tests/`) and `tests/smoke/` for actual test files. A
    **test file** is one the engine's test runner executes — a `*_test.gd` suite,
    a C# test class, an Unreal automation test source. Markdown checklists do not
    count: `/test-setup` always writes `tests/smoke/critical-paths.md`, and
    counting it would hide exactly the zero-test state this step exists to catch.
+   Phaser's generated `tests/phaser-platform.test.mjs` verifies the starter's
+   platform adapter only. Do not count it as a game test or use it to satisfy
+   a game-suite requirement.
    If none are found **at `qa.level: minimal`**, tests are waived at this level:
    record the automated row as `WAIVED — qa.level: minimal, no game tests`, skip
    the test run in Phase 2 and all of Phase 3 (say so in one line each), run
@@ -40,7 +43,9 @@ Before running anything, understand the environment:
    If none are found **at `standard` or `full`**, **deliver a NOT ASSESSED verdict — do not merely stop.**
    "Smoke check: **NOT ASSESSED — no game tests found** under
    [the test root] or `tests/smoke/`. Run `/test-setup` to scaffold the testing
-   infrastructure, or point me at where tests live." Then stop.
+   infrastructure, or point me at where tests live." For Phaser, ask for
+   the project's own test files and `commands.test` instead of directing it to
+   the native-engine scaffolder. Then stop.
 
    > A bare halt is the wrong shape here.
    > This is the state with the **least** information about build health, so it is
@@ -65,7 +70,11 @@ Before running anything, understand the environment:
    (a `[TO BE CONFIGURED]` value means not configured). Store this for test
    command selection in Phase 2.
 
-   Then find the **editor executable** — none of the three engines installs
+   For **Phaser**, check `node` and `npm` on PATH, root `package.json`, and
+   the installed project dependencies. Record the Node/npm versions and
+   whether a browser is available. No editor executable is used.
+
+   For Godot, Unity and Unreal, find the **editor executable** — none installs
    onto `PATH` by default on Windows or macOS, so a bare `godot` that does not
    resolve says nothing about whether the engine is installed. Take the first
    that resolves (the file exists, or `command -v` finds it): the executable

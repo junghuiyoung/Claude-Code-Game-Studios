@@ -16,6 +16,12 @@
 
 If invoked as `/setup-engine upgrade [old-version] [new-version]`:
 
+For Phaser, use Steps 1–3 to assess a proposed version, then report the
+package migration separately. The native-engine write steps below do not
+update `package.json` or its lockfile. Do not apply them to Phaser on their
+own: a Phaser upgrade must update the dependency, lockfile, config and
+reference together, then type-check and rebuild before reporting success.
+
 ### Step 1 — Read Current Version State
 
 Read `docs/engine-reference/<engine>/VERSION.md` to confirm the current pinned

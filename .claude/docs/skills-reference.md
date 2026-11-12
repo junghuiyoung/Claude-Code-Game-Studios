@@ -9,7 +9,7 @@
 | `/start` | First-time onboarding — asks where you are, then guides you to the right workflow |
 | `/help` | Context-aware "what do I do next?" — reads current stage and surfaces the required next step |
 | `/project-stage-detect` | Full project audit — detect phase, identify existence gaps, recommend next steps |
-| `/setup-engine` | Configure engine + version, detect knowledge gaps, populate version-aware reference docs |
+| `/setup-engine` | Configure engine + version and reference docs; `phaser` scaffolds a TypeScript/Vite web starter with optional `--target crazygames` |
 | `/adopt` | Brownfield format audit — checks internal structure of existing GDDs/ADRs/stories, produces migration plan |
 | `/settings` | View or change project config — the effective merged values, or a local override in `project.local.yaml` |
 
@@ -55,7 +55,7 @@
 |---------|---------|
 | `/create-epics` | Translate GDDs + ADRs into epics — one per architectural module |
 | `/create-stories` | Break a single epic into implementable story files |
-| `/dev-story` | Read a story and implement it — routes to the correct programmer agent |
+| `/dev-story` | Implement a story and verify the result, including type checking and built browser evidence for Phaser |
 | `/sprint-plan` | Generate or update a sprint plan; initializes sprint-status.yaml |
 | `/sprint-status` | Fast 30-line sprint snapshot (reads sprint-status.yaml) |
 | `/story-readiness` | Validate a story is implementation-ready before pickup (READY/NEEDS WORK/BLOCKED) |
@@ -82,7 +82,7 @@
 | Command | Purpose |
 |---------|---------|
 | `/qa-plan` | Generate a QA test plan for a sprint or feature |
-| `/smoke-check` | Run critical path smoke test gate before QA hand-off |
+| `/smoke-check` | Run critical path smoke checks before QA hand-off, including built browser preview for Phaser |
 | `/soak-test` | Generate a soak test protocol for extended play sessions |
 | `/regression-suite` | Map test coverage to GDD critical paths, identify fixed bugs without regression tests |
 | `/test-setup` | Scaffold the test framework and CI/CD pipeline for the project's engine |
@@ -107,7 +107,7 @@
 
 | Command | Purpose |
 |---------|---------|
-| `/release-checklist` | Generate and validate a pre-release checklist for the current build |
+| `/release-checklist` | Generate a pre-release checklist; `--target crazygames` checks the web bundle and records Portal and app evidence separately |
 | `/launch-checklist` | Complete launch readiness validation across all departments |
 | `/changelog` | Auto-generate changelog from git commits and sprint data |
 | `/patch-notes` | Generate player-facing patch notes from git history and internal data |

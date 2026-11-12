@@ -283,6 +283,27 @@ Fixture defaults.
 
 ---
 
+### Case 9: Phaser starter and CrazyGames are explicit choices
+
+**Fixture:** Unconfigured template, with unrelated framework settings in
+`project.yaml` and a supported Node/npm runtime.
+
+**Input:** Run A `/setup-engine phaser`, Run B
+`/setup-engine phaser --target crazygames` in a separate copy, and Run C
+`/setup-engine phaser --target unknown`. Approve the preview for A and B.
+
+- [ ] A and B scaffold TypeScript/Vite, record Phaser and the Web target, use
+      `src/`, preserve existing settings, and point at the Phaser reference.
+- [ ] A has no CrazyGames runtime files or requests. B selects the CrazyGames
+      adapter and resolves keyboard/mouse and touch as target inputs. It does
+      not set a certification tier or use native tools.
+- [ ] Successful verification names the dependency install, typecheck and
+      production build that actually ran. An unavailable runtime or a failed
+      install leaves verification pending.
+- [ ] An identical rerun preserves every existing file. A conflicting
+      `package.json` is reported before any scaffold or config writes.
+- [ ] C rejects the target before writing.
+
 ## Protocol Compliance
 
 - [ ] Presents draft configuration before asking to write

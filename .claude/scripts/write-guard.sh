@@ -166,7 +166,7 @@ engine_name() {
 }
 ENGINE=$(engine_name | tr 'A-Z' 'a-z')
 case "$ENGINE" in
-  godot) ROOTS="src" ;;
+  godot|phaser) ROOTS="src" ;;
   unity) ROOTS="Assets" ;;
   unreal) ROOTS="Source" ;;
   # Unset or unknown: the three roots, so no rule is skipped for want of one.

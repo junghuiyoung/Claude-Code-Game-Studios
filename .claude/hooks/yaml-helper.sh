@@ -544,7 +544,7 @@ team.size::individual|small|studio
 performance.enforce::warn|block|off
 platform.cert_tier::none|itch|steam|console
 accessibility.target::none|standard|aaa
-engine.name::Godot|Unity|Unreal
+engine.name::Godot|Unity|Unreal|Phaser
 project.stage::Concept|Systems Design|Technical Setup|Pre-Production|Production|Polish|Release
 testing.strict.logic::true|false
 testing.strict.integration::true|false
@@ -1423,7 +1423,7 @@ resolve_setting() {
 # WHY THIS EXISTS. `.claude/docs/directory-structure.md` is explicit that the
 # code root is not a style preference but a hard toolchain constraint: Unity
 # compiles only `Assets/` and `Packages/`, and UnrealBuildTool discovers modules
-# under `Source/`. `src/` is that table's GODOT row, not a universal path.
+# under `Source/`. `src/` is the Godot and Phaser root, not a universal path.
 #
 # Every hook that filtered staged or on-disk files with a literal `^src/`
 # therefore matched NOTHING on a Unity or Unreal project — and matching nothing
@@ -1472,7 +1472,7 @@ resolve_code_root() {
   fi
 
   case "$(printf '%s' "$ename" | tr '[:upper:]' '[:lower:]')" in
-    godot)   root="src" ;;
+    godot|phaser) root="src" ;;
     unity)   root="Assets" ;;
     unreal*) root="Source" ;;
     *)       root="" ;;
@@ -1940,16 +1940,17 @@ EOF
   # a member set to null is UNSET, never an agent name. Only when the block is
   # absent do they fall back to technical-preferences.md (the v1.0 migration
   # writes the whole block, with null for each member it did not know).
-  local sp_primary sp_psrc sp_src sp_code sp_shader sp_ui sp_add
+  local sp_engine sp_primary sp_psrc sp_src sp_code sp_shader sp_ui sp_add
   if _rc_named specialists; then
-    case "$(printf '%s' "$ev_name" | tr '[:upper:]' '[:lower:]')" in
+    sp_engine=$(printf '%s' "$ev_name" | tr '[:upper:]' '[:lower:]')
+    sp_psrc="engine.name"
+    case "$sp_engine" in
       godot)   sp_primary="godot-specialist" ;;
       unity)   sp_primary="unity-specialist" ;;
       unreal*) sp_primary="unreal-specialist" ;;
-      *)       sp_primary="" ;;
+      phaser)  sp_primary="" ;;
+      *)       sp_primary=$(_rc_tp Primary); sp_psrc="$tp_src" ;;
     esac
-    sp_psrc="engine.name"
-    if [ -z "$sp_primary" ]; then sp_primary=$(_rc_tp Primary); sp_psrc="$tp_src"; fi
     if [ -n "$(get_yaml_child_keys "$_YH_ROOT/project.yaml" specialists 2>/dev/null)" ]; then
       sp_src="project.yaml"
       sp_code=$(_rc_yaml "$_YH_ROOT/project.yaml" specialists.code)
@@ -1957,6 +1958,10 @@ EOF
       sp_ui=$(_rc_yaml "$_YH_ROOT/project.yaml" specialists.ui)
       sp_add=$(get_yaml_array "$_YH_ROOT/project.yaml" specialists.additional 2>/dev/null \
                | awk '$0 != "" && $0 != "null" && $0 != "~"' | paste -sd, - | sed 's/,/, /g')
+    elif [ "$sp_engine" = phaser ]; then
+      # Do not route a Phaser project to stale native specialists in the mirror.
+      sp_src="no Phaser specialists configured"
+      sp_code=""; sp_shader=""; sp_ui=""; sp_add=""
     else
       sp_src="$tp_src"
       sp_code=$(_rc_tp "Language/Code Specialist")

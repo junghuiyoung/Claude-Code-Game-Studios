@@ -30,6 +30,10 @@ blocking item fails), then NOT ASSESSED (any section or item NOT ASSESSED), then
 then asks "May I write this to
 `production/releases/release-checklist-[version].md`?". No director gates apply.
 
+`/release-checklist --target crazygames` uses the same report and verdict but
+uses the CrazyGames guide for the target checks. The native device,
+certification and general store rows apply to the original argument form.
+
 ---
 
 ## Static Assertions (Structural)
@@ -270,11 +274,63 @@ Fixture defaults.
 
 ---
 
+### Case 9: CrazyGames Is an Explicit Release Target
+
+**Fixture:**
+- Run A: `platform.cert_tier: steam`. Run B: omit `platform.cert_tier`.
+- A Phaser HTML5 project has a locally verified release build and local
+  desktop/mobile browser evidence. No Portal Preview or physical app evidence.
+- This is the first submission. The game integrates the SDK, but no Portal
+  initial download measurement exists. All shared checks have evidence.
+
+**Input:** `/release-checklist --target crazygames`
+
+**Assertions:**
+- [ ] Shared checks remain and target-specific checks come from `docs/CRAZYGAMES.md`.
+- [ ] No PC, Console, Mobile, Steamworks or other native rows are emitted.
+- [ ] Neither run asks about `platform.cert_tier` or reports it as missing evidence.
+- [ ] Basic Launch is assessed, SDK is optional, and monetization is disabled.
+- [ ] Reports local package evidence and Portal initial download separately.
+- [ ] Distinguishes the 20 MB mobile homepage threshold from app availability.
+- [ ] Portal Preview, Android app and iOS app are separately `NOT ASSESSED`,
+      and the shared Go / No-Go is `NOT ASSESSED`.
+- [ ] Shows the draft before offering to save to
+      `production/releases/release-checklist-[version].md`. Upload is a manual
+      step for the developer. No project settings are changed.
+
+### Case 10: Package Failure Outranks Unavailable App Evidence
+
+**Fixture:** A real no-SDK candidate has 60 MB of files. Portal Preview and both
+apps are unavailable. Other shared checks have evidence.
+
+**Input:** `/release-checklist --target crazygames`
+
+**Assertions:**
+- [ ] The no-SDK total counts toward the 50 MB initial limit. The report names
+      the verified size failure and gives a `NOT READY` verdict.
+- [ ] The unavailable app checks are still named as `NOT ASSESSED`.
+- [ ] If the candidate does not exist, the package check is `NOT ASSESSED`
+      instead. The skill does not run a build.
+
+### Case 11: The Original CLI Still Selects Native Device Checks
+
+**Fixture:** A repo has `docs/CRAZYGAMES.md` and `platform.cert_tier: none`.
+
+**Assertions:**
+- [ ] `/release-checklist mobile` still selects the Mobile device rows and
+      shows the ordinary `none` certification omission. It adds no CrazyGames checks.
+- [ ] `/release-checklist mobile --target crazygames` and
+      `/release-checklist --target unknown` show accepted forms and stop without
+      generating or saving a report.
+
+---
+
 ## Protocol Compliance
 
-- [ ] Resolves `platform.cert_tier` and branches only on `none | itch | steam | console`
-- [ ] Treats unset `cert_tier` as a question (or NOT ASSESSED), never as `none`
-- [ ] Chooses device blocks from the argument and certification from `cert_tier`
+- [ ] For the original CLI, chooses device blocks from the argument and
+      certification from `none | itch | steam | console` in `platform.cert_tier`
+- [ ] In that form, treats unset `cert_tier` as a question (or NOT ASSESSED), never as `none`
+- [ ] Selects CrazyGames only with `--target crazygames` and keeps native rows out
 - [ ] States a denominator with every scan count, or reports NOT ASSESSED
 - [ ] Reads open bugs from `production/qa/bugs/` and applies the release gate's thresholds for the resolved `workflow` (S1–S3 at `full`, S1 at `standard`/`minimal`); no bug files → `NOT ASSESSED — no bug records`
 - [ ] Go / No-Go takes the first match: NOT READY, then NOT ASSESSED, then READY
@@ -287,8 +343,6 @@ Fixture defaults.
 
 - `project.stage` scoping (items for unreached phases marked out of scope) and
   `modes.rigor: minimal` trimming are not separately tested.
-- The mobile device block (App Store / Play Store rows kept in the device block
-  by design) is not tested by a dedicated case.
 - How READY vs NOT READY is decided depends on the unchecked items and the
   user's inputs; a live run is needed to verify the rationale text.
 - A resolved code root that is absent or empty reads

@@ -37,7 +37,7 @@ mode) and Read those ranges with offset and limit:
 
 **Question 1 — Prior experience** (ask this first, always, via `AskUserQuestion`):
 - Prompt: "Have you worked in any of these engines before?"
-- Options: `Godot` / `Unity` / `Unreal Engine 5` / `Multiple — I'll explain` / `None of them`
+- Options: `Godot` / `Unity` / `Unreal Engine 5` / `Phaser` / `Multiple — I'll explain` / `None of them`
 - If they pick a specific engine → recommend that engine. Prior experience outweighs all other factors. Confirm with them and skip the matrix.
 - If "None" or "Multiple" → continue to the questions below.
 
@@ -49,14 +49,14 @@ mode) and Read those ranges with offset and limit:
 - Platform rules that feed directly into the recommendation:
   - Mobile → Unity strongly preferred; Unreal is a poor fit; Godot is viable for simple mobile
   - Console → Unity or Unreal; Godot console support requires third-party publishers or significant extra work
-  - Web → Godot exports cleanly to web; Unity WebGL is functional; Unreal has poor web support
+  - Web → Phaser fits browser-first 2D; Godot also exports to web; Unity WebGL is functional; Unreal has poor web support
   - PC only → all engines viable; other factors decide
   - Multiple → Unity is the most portable across PC/mobile/console
 
 1. **What kind of game?** (2D, 3D, or both?)
 2. **Primary input method?** (keyboard/mouse, gamepad, touch, or mixed?)
 3. **Team size and experience?** (solo beginner, solo experienced, small team?)
-4. **Any strong language preferences?** (GDScript, C#, C++, visual scripting?)
+4. **Any strong language preferences?** (GDScript, C#, C++, TypeScript, visual scripting?)
 5. **Budget for engine licensing?** (free only, or commercial licenses OK?)
 
 ### Produce a recommendation
@@ -64,6 +64,10 @@ mode) and Read those ranges with offset and limit:
 Do NOT use a simple scoring matrix that eliminates engines. Instead, reason through the user's profile against the honest tradeoffs below, then present 1-2 recommendations with full context. Always end with the user choosing — never force a verdict.
 
 **Engine honest tradeoffs:**
+
+**Phaser**
+- Browser-first 2D game framework. TypeScript, npm and Vite fit teams that use the web toolchain; the build is static files suitable for hosting under a subpath.
+- Choose a different engine for native console delivery or a production 3D pipeline. Verify input, audio, performance and rendering in the target browsers.
 
 **Godot 4**
 - Genuine strengths: 2D (best in class), stylized/indie 3D, rapid iteration, free forever (MIT), open source, gentlest learning curve, best for solo devs who want full control
@@ -84,7 +88,8 @@ Do NOT use a simple scoring matrix that eliminates engines. Instead, reason thro
 - Best fit: AAA-quality 3D; large open-world games; photorealistic visuals; developers with C++ experience or willing to use Blueprint; games targeting high-end PC/console where visual fidelity is a core selling point
 
 **Genre-specific guidance** (factor this into the recommendation):
-- 2D any style → Godot strongly preferred
+- Browser-first 2D → Phaser or Godot, depending on the team's web tooling and whether a native export is also needed
+- Other 2D → Godot strongly preferred
 - 3D stylized / atmospheric / contained world → Godot viable, Unity solid alternative
 - 3D open world (large, seamless) → Unity or Unreal; Godot is not production-proven for this
 - 3D photorealistic / AAA-quality → Unreal
