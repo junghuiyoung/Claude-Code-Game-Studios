@@ -3,10 +3,10 @@ name: release-checklist
 description: "Pre-release checklist — build verification, certification requirements, store metadata, launch readiness."
 argument-hint: "[pc|console|mobile|all] | --target crazygames"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Bash(bash "*/.claude/skills/release-checklist/../../hooks/yaml-helper.sh" resolve_config *), Bash(node .claude/scripts/check-crazygames-build.mjs *)
+allowed-tools: Read, Glob, Grep, Write, Bash(bash "*/.claude/skills/release-checklist/../../hooks/yaml-helper.sh" resolve_config *), Bash(node .claude/scripts/check-crazygames-build.mjs *), Bash(bash .claude/scripts/review-receipts.sh check *)
 model: opus
 ---
-!`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys rigor,workflow,project.stage,cert_tier,automation`
+!`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys rigor,workflow,project.stage,cert_tier,automation,input_methods`
 
 **Automation mode**: Resolve `modes.automation` (`project.local.yaml` →
 `project.yaml` → default `collaborative`). Every `AskUserQuestion` call and
@@ -24,7 +24,8 @@ trains the reader to skip the list, which defeats the gate:
 - **`project.stage`** — items for phases this project has not reached are out of
   scope; say so rather than listing them unchecked.
 - **`modes.rigor`** — at `minimal`, drop items whose only justification is process
-  weight this project has opted out of.
+  weight this project has opted out of. The **Quality Standard** section is never
+  one of them: it is emitted at every rigor, for both argument forms.
 - **`platform.cert_tier`** — for a positional device argument or no arguments,
   emit certification items **only** for the tier the project targets. If it is
   **unset**, **ask which platforms are in scope**
@@ -96,6 +97,8 @@ question. Keep the configured tier for other release targets.
 - Read `CLAUDE.md` for project context, version information, and platform targets.
 - Read the current milestone from `production/milestones/` to understand what features and content should be included in this release.
 - Read the open bugs from `production/qa/bugs/`: grep the `**Severity**` and `**Status**` lines of `production/qa/bugs/*.md`, as `/bug-triage` does. A bug is open unless its Status is `Closed` or `Verified Fixed`. The bug items use the thresholds `/gate-check release` applies for the resolved `workflow`: at `full` an open S1, S2 or S3 bug fails its item; at `standard` and `minimal` only an open S1 does, and an open S2 or S3 is listed in the Rationale as a risk. Each failing bug is named in the Rationale as a blocking item. **No bug files in `production/qa/bugs/`** → the bug items read `NOT ASSESSED — no bug records` — never zero and never ticked, since an absent record and a clean one must not produce the same checklist; bugs are filed with `/bug-report`.
+- Read `.claude/docs/game-quality-standard.md`: every row of its tables, with its Applies condition and Level. Decide each condition as its "How a row applies" section says — `web` from `platform.targets` in `project.yaml`; `keyboard` and the supported input methods from the controls the design names and the keys the code root binds (the `input_methods` line above is a hint only: it lists `keyboard/mouse` for every PC or Web target and `none` on an incomplete `platform` block); `crazygames` only when this run has `--target crazygames`. A condition that cannot be read is unknown, never false. **File not found** → the Quality Standard section reads `NOT ASSESSED — .claude/docs/game-quality-standard.md not found`.
+- Find the newest first-run record, `production/qa/evidence/first-run/first-run-*.md`, and note its date and the build it names. None → say so; the rows that need it are `NOT ASSESSED`. Whether it is current is never judged by its date: list the files under the code root with Glob and run `bash .claude/scripts/review-receipts.sh check production/qa/evidence/first-run/[record name].stamp.txt <every file under the code root>` as its own Bash call. Read the result in the standard's order, first match wins: (1) `RECEIPT: NONE`, or a stamp file with no `Reviewed-Content-Hash:` line, means the record has no usable stamp — the `NEW:` lines printed beside it say the stamp is empty, not that the code changed; (2) a `CHANGED:`, `GONE:` or `NEW:` line means the code changed after the capture; (3) an `UNRESOLVED:` line, a failed check, no `UNCHANGED:` line at all, or an unresolved code root means the stamp could not be checked; (4) only every file reading `UNCHANGED:` makes the record evidence for this candidate. In cases 1 to 3 it is not, and the report says which case.
 
 ---
 
@@ -165,9 +168,47 @@ Generated: [Date]
 - [ ] All text localization-ready (no hardcoded strings)
 - [ ] Audio mix finalized and approved
 - [ ] Credits complete and accurate
+
+### Quality Standard
+First-run record: [path, its date and build, stamp check: current — N files unchanged | changed: files | could not be checked: why] | [none found]
+
+Floor (part of Go / No-Go):
+- [ ] [Q-ID] — [what the evidence shows, with its path | NOT ASSESSED — what is missing | N/A — why]
+
+Advisory (reported, never part of Go / No-Go):
+- [Q-ID] — [what was seen, with its path | not observed | condition unknown — which]
+
+Not applicable: [Q-ID — why], ...
 ```
 
-For `--target crazygames`, keep the shared sections above and apply the
+**Quality Standard — both argument forms, every `modes.rigor`.** Fill it from the
+rows read in Phase 2. Take the rows, and which of them are floor, from the
+standard's tables on this run; the IDs are never listed from memory, so a row
+added to the standard is checked the next time this skill runs.
+
+- **A floor row that applies:** tick it only when evidence for this candidate
+  exists and shows what the row asks: the first-run record, the retained
+  screenshots under `production/qa/evidence/`, and for a row about key bindings
+  the keys the code root binds (Grep them and list them; code root unresolved →
+  `NOT ASSESSED — code root unresolved`). Evidence that shows the row failing is
+  a blocking item: name it in the Rationale. No evidence → `NOT ASSESSED — [what
+  is missing]`, never ticked. A first-run record that names another build, lacks
+  a field or screenshot the standard requires, or whose stamp check did not come
+  out current is not evidence for this candidate: `NOT ASSESSED — first-run
+  record [names build X | lacks Y | stamp could not be checked | predates a
+  change to Z]`. For the key-binding row, list each bound key with its
+  action, whether play needs it, and the other input that does the same thing.
+- **An advisory row that applies:** one line, what was seen and where, or `not
+  observed`. It never changes Go / No-Go.
+- **A floor row whose condition is unknown:** `NOT ASSESSED — [condition]
+  unknown`. Never move it to Not applicable.
+- **An advisory row whose condition is unknown:** `condition unknown — [which]`
+  under Advisory. Never Not applicable, and never part of Go / No-Go.
+- **A `crazygames` row without `--target crazygames`:** Not applicable, as `not a
+  CrazyGames release (no --target crazygames)`.
+
+For `--target crazygames`, keep the shared sections above (the `crazygames`
+rows of the Quality Standard then apply) and apply the
 [CrazyGames checks](../../../docs/CRAZYGAMES.md) in place of the device,
 certification, generic distribution, and generic launch rows. Group the target
 checks under Local Build and Browser QA, Portal Preview, Android App, iOS App,
@@ -332,7 +373,10 @@ emitting every track; if it cannot be determined, emit
 First match wins: **NOT READY** if any blocking item fails; else **NOT ASSESSED**
 if any section or item came out `NOT ASSESSED` (name each one); else **READY**. NOT
 ASSESSED outranks READY — an unassessed section is not a passed one — and ranks
-below NOT READY, so a known blocker is never buried behind it.
+below NOT READY, so a known blocker is never buried behind it. In the Quality
+Standard section only the Floor rows and the standard file itself count here: an
+advisory row that reads `not observed` or `condition unknown` never changes Go /
+No-Go.
 
 **Rationale:**
 [Summary of readiness assessment. List any blocking items that must be

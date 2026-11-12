@@ -303,6 +303,45 @@ Fixture defaults.
 
 ---
 
+### Case 7: Quality rows — floor rows become criteria, at `minimal` too
+
+**Fixture:**
+- As Case 6's first fixture, plus `project.yaml` has `platform.targets: [Web]`, and
+  the brief's controls line reads "arrow keys or WASD to move, mouse to aim"
+- `.claude/docs/game-quality-standard.md` exists with four rows marked **floor**
+  in its Level column: `Q-ONB-1`, `Q-ONB-3`, `Q-ONB-5` and `Q-KEY-2`
+- The brief's MVP feature 1 is what a new player does first; feature 2 is a save
+  system with nothing on screen
+
+**Input:** `/create-stories`
+
+**Expected behavior:**
+1. Phase 2 reads the standard at `minimal`, where no GDD, ADR or manifest is read
+2. `keyboard` (from the brief's controls) and `web` are both true, so all four
+   floor rows apply
+3. Story 001 carries the four floor rows, each as an acceptance criterion that
+   names the behaviour and the evidence file; story 002 reads `Quality: None — save
+   data only; no screen, control, text, art or audio changed`
+4. The Phase 6 list shows a `Quality:` line per story and one `Quality floor:` line
+   naming all four rows as `→ story 001`
+5. The written stories each have a `## Quality Standard` section; the closing block
+   repeats the `Quality floor:` line
+
+**Assertions:**
+- [ ] Still 2 stories, one per MVP feature: a floor row adds a criterion, never a story
+- [ ] Each floor row in story 001's `## Quality Standard` section names an `AC-N` the story has and the evidence location the standard fixes: the folder `production/qa/evidence/first-run/` for the first-run rows, never a dated file in it, and `production/qa/evidence/story-001-…/keys.md` for `Q-KEY-2`
+- [ ] Variant — the brief says "no tutorial: the first wave starts at once": story 001 lists `Q-ONB-3: N/A — the brief specifies no onboarding step`, with no criterion for it, and the `Quality floor:` line shows the same
+- [ ] The sections cite rows by ID and do not copy the rows' text out of the standard
+- [ ] Rows marked `crazygames` are in no story
+- [ ] The minimal branch reaches the quality standard: it is read although no GDD, ADR or manifest is
+- [ ] Story 001's Dependencies or notes say what must exist before a new player can reach play, since its implementer writes the first-run record
+- [ ] Variant — `project.yaml` has no `platform` block and the brief names no controls: the skill asks which inputs the game supports and whether it runs in a browser, and never drops `Q-KEY-2` on the unset value
+- [ ] Variant — `platform.targets: [Web]` and the brief says "touch only": `keyboard` is false although the `input_methods` line lists `keyboard/mouse`, and the `Quality floor:` line reads `Q-KEY-2 N/A — touch only, no key bound`
+- [ ] Variant — the user answers that it is not a browser game: the `Quality floor:` line reads `Q-KEY-2 N/A — not a web game`, and the other three rows are still carried
+- [ ] Variant — `.claude/docs/game-quality-standard.md` does not exist: each story's section reads `Quality standard: NOT ASSESSED — .claude/docs/game-quality-standard.md not found`, never `None`, and the stories are still written
+
+---
+
 ## Protocol Compliance
 
 - [ ] All context (EPIC, GDD, ADRs, manifest layer rules, TR registry entries) loaded before drafting stories

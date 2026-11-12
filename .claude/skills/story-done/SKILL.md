@@ -38,7 +38,7 @@ Checklist (copy it and tick as you go):
 - [ ] Phase 1: story found, facts and settings read
 - [ ] Phase 2: what the story is checked against, loaded for its tier
 - [ ] Phase 3: each criterion verified, traceability table built
-- [ ] Phase 4: test evidence and run result checked
+- [ ] Phase 4: test evidence, quality rows and run result checked
 - [ ] Phase 5: deviations and scope checked
 - [ ] Phase 6: review gates run, or their skip noted
 - [ ] Phase 7: report and verdict shown; close asked
@@ -79,10 +79,12 @@ Logic story's unit test.
 | Logic, Integration test | waived | required | required |
 | Config/Data smoke report | waived | required, advisory by default | required, **blocking** by default |
 | Visual/Feel, UI retained screenshot | required | required | required |
+| Quality floor rows (Phase 4) | required | required | required |
 | Untested criteria (Phase 3) | never escalate | more than half block | **any** blocks |
 
 The look is never waived: a Visual/Feel or UI story needs its screenshot at every
-level. **Gate level** per type is the `gate_level` line above. At `full`, a
+level. Neither is the quality floor: it is not a test, so `qa.level` and
+`gate_level` do not reach it. **Gate level** per type is the `gate_level` line above. At `full`, a
 Config/Data default (`config=advisory(default…)`) becomes blocking; an explicit
 `testing.strict.config: false` still makes it advisory.
 
@@ -167,6 +169,68 @@ A missing item is a gap at the gate level: BLOCKING stops COMPLETE, ADVISORY goe
 in the notes. Name what is missing and where it goes. An evidence doc with no image
 beside it is not evidence: a described check is an assertion.
 
+**Quality rows, every type, every `qa.level`.** Read the story's `## Quality
+Standard` section, and in `.claude/docs/game-quality-standard.md`: "How a row
+applies", "When a story touches a row", "The first-run record", "The key list",
+and the rows. Which rows are **floor** comes from that file's Level column, never
+from memory.
+
+First decide what the story touches, from its criteria and `## Files`, not from
+its Type and not only from what its section lists. This skill is the last check
+at `workflow: minimal`, where `/story-readiness` does not run.
+
+- **A floor row the section leaves out.** A floor row that applies, that the
+  story's criteria or the changes in its `## Files` touch, and that the section
+  does not list (a `None` section included): a BLOCKING gap. Name the row.
+- **An advisory row the section leaves out**, or a `None` that only advisory rows
+  contradict: report each as `[Q-ID] (advisory): not observed`. Never a gap.
+- **An ID the standard does not have:** a BLOCKING gap; the line checks nothing.
+- **`None — [reason]`** on a story that changes no first-run flow, screen,
+  control, player-facing text, art or audio: accept it.
+- **`Q-ID: N/A — [reason]`:** confirm the reason against the build (for
+  `Q-ONB-3`, the current first-run record says there is no onboarding step).
+  Confirmed: the row needs no other evidence. No current record to confirm it
+  with: `[Q-ID]: NOT ASSESSED — N/A reason not confirmed`.
+- **A floor row that applies.** Its evidence is at the location the standard
+  fixes: for a first-run row, the newest `first-run-*.md` under
+  `production/qa/evidence/first-run/` with its screenshots and stamp; for the key
+  list, `production/qa/evidence/[story-slug]/keys.md`. Open it and check it shows
+  what the row asks.
+  - Nothing there: a BLOCKING gap, whatever `qa.level` and `gate_level` say.
+  - It exists but cannot be read, or lacks a field or a screenshot the standard
+    requires: `[Q-ID]: NOT ASSESSED — [what is missing]`, which keeps the verdict
+    at best NOT ASSESSED.
+  - Is a first-run record current? Never judge by a date. List the files under
+    the code root with Glob and run
+    `bash .claude/scripts/review-receipts.sh check production/qa/evidence/first-run/[record name].stamp.txt <every file under the code root>`.
+    Read the result in the standard's order, first match wins:
+    1. `RECEIPT: NONE`, or a stamp file with no `Reviewed-Content-Hash:` line:
+       `[Q-ID]: NOT ASSESSED — the record has no usable stamp`. The `NEW:` lines
+       printed beside it mean the stamp is empty, not that the code changed.
+    2. A `CHANGED:`, `GONE:` or `NEW:` line: the code changed after the capture,
+       a BLOCKING gap, "re-capture the first run".
+    3. An `UNRESOLVED:` line, a failed check, no `UNCHANGED:` line at all, or a
+       code root that cannot be resolved: `[Q-ID]: NOT ASSESSED — the record's
+       stamp could not be checked`.
+    4. Every file reads `UNCHANGED:`: the record is current. No `CHANGED:` line
+       is not enough.
+  - `Q-ONB-5`: one `-hint-[method].png` beside the record for each supported
+    input method, by the standard's "supported input methods". Methods that
+    cannot be told, or a method with no screenshot: `Q-ONB-5: NOT ASSESSED —
+    [which]`, since an incomplete record has shown nothing. A screenshot that
+    shows no hint for its method: the criterion that carries the row FAILS.
+  - It shows the row failing (onboarding with no way to skip, play that needs
+    Escape with no other input): the criterion that carries the row FAILS.
+- **An advisory row:** report `[Q-ID]: [what the evidence shows]` or `[Q-ID]: not
+  observed`. Never a gap.
+- **No section** (a story written before the standard): `Quality rows: NOT
+  ASSESSED — the story has no Quality Standard section`. When the story changes
+  anything in the list above, this keeps the verdict at best NOT ASSESSED;
+  otherwise it is an information line.
+- **Standard not found:** `Quality rows: NOT ASSESSED —
+  .claude/docs/game-quality-standard.md not found`. The verdict is at best NOT
+  ASSESSED unless the story changes nothing in the list above.
+
 **Is the evidence older than its code?** For a retained image, run
 `bash .claude/scripts/review-receipts.sh check production/qa/evidence/[story-slug]/stamp.txt`.
 Each `CHANGED:` or `GONE:` file: "[file] changed after the evidence was captured —
@@ -242,6 +306,14 @@ exists yet.
 **Required**: [what the type needs at this qa.level, or "waived at qa.level minimal"]
 **Found**: [YES — path | NO — BLOCKING | NO — ADVISORY]
 
+### Quality Standard
+[one line per row the story touches: `Q-ID (floor): evidence path — what it shows |
+MISSING — BLOCKING | NOT ASSESSED — why`, `Q-ID (advisory): what it shows | not
+observed`, `Q-ID: N/A — reason, confirmed by [what]`; a floor row that applies and
+that the section left out: `Q-ID (floor): NOT LISTED — BLOCKING`; an advisory row
+it left out: `Q-ID (advisory): not observed`; or `None — [the story's reason]`; or
+the `NOT ASSESSED — …` line from Phase 4]
+
 ### Deviations
 [NONE, or each: BLOCKING / ADVISORY / OUT OF SCOPE — description — reference]
 
@@ -256,8 +328,9 @@ exists yet.
 1. **BLOCKED:** a criterion fails, or a BLOCKING gap or deviation stands.
 2. **NOT ASSESSED:** a criterion could not be evaluated: it names no observable
    outcome, the user answered "Not tested yet", a review gate returned NOT ASSESSED
-   and its input was not supplied, evidence exists but cannot be read, or the GDD
-   or ADR a deviation would be judged against is missing. Name each one and what
+   and its input was not supplied, evidence exists but cannot be read, the GDD
+   or ADR a deviation would be judged against is missing, or Phase 4's quality
+   rows came out NOT ASSESSED in a way it says holds the verdict. Name each one and what
    would settle it. It outranks the two passes and never hides a failure.
 3. **COMPLETE WITH NOTES:** every criterion passes or is DEFERRED, with advisory
    items listed. Information lines are not advisory items: the evidence-stamp
@@ -274,6 +347,12 @@ when the `automation_always_ask` line lists it, ask in every automation mode, ev
 when the user's own request is what got here. Write only on an explicit choice to
 close.
 
+**The quality floor is not a deviation to accept.** When a floor row that applies
+failed, has no evidence, or is NOT ASSESSED, offer only "Don't close yet — I'll
+fix things first" and say why: "Close anyway" does not reach the floor
+(`.claude/docs/game-quality-standard.md`, "The floor"). The story stays open until
+the evidence exists.
+
 **On close:**
 
 1. `bash .claude/scripts/md-section.sh set-field <story> Status Complete`, then
@@ -286,6 +365,7 @@ close.
    **Criteria**: [X/Y passing] ([deferred items])
    **Deviations**: [None, or the advisory ones]
    **Test Evidence**: [path, or "waived at qa.level minimal", or "none required"]
+   **Quality rows**: [each Q-ID with its evidence path or "not observed", or "None — reason", or the NOT ASSESSED line]
    **Reviewed by**: [value]
    ```
 3. "Close and log as tech debt": read `references/tech-debt-row.md` and add one

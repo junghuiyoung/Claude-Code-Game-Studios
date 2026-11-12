@@ -64,6 +64,14 @@ Every case's `project.yaml` sets `modes.rigor: minimal` and
 Fixture says otherwise. Rules: `studio-tests/CLAUDE.md` §
 Fixture defaults.
 
+`.claude/docs/game-quality-standard.md` exists. Every case's `project.yaml` lists
+its `platform.targets`, the design names the game's controls, and
+`production/qa/evidence/first-run/` holds a complete first-run record for the
+candidate with the screenshots the floor rows need and a stamp for which
+`review-receipts.sh check` prints `UNCHANGED:` for every file under the code
+root, so every floor row can be assessed. Advisory rows may read `not observed` or `condition unknown`: they
+never reach Go / No-Go. Case 12 is the exception.
+
 ---
 
 ## Test Cases
@@ -322,6 +330,45 @@ apps are unavailable. Other shared checks have evidence.
 - [ ] `/release-checklist mobile --target crazygames` and
       `/release-checklist --target unknown` show accepted forms and stop without
       generating or saving a report.
+
+---
+
+### Case 12: The Quality Standard Section Is Emitted at Every Rigor
+
+**Fixture:**
+- No `modes` keys (`rigor: minimal`); `platform.cert_tier: none`;
+  `platform.targets: [Web]`; the brief's controls are "WASD to move, Space to jump"
+- `.claude/docs/game-quality-standard.md` exists with its four floor rows and its
+  `crazygames` rows
+- `production/qa/evidence/` holds story screenshots; **there is no
+  `production/qa/evidence/first-run/` folder**
+- The code root binds `W`, `A`, `S`, `D` and `Space`, and nothing else
+
+**Input:** `/release-checklist`
+
+**Expected behavior:**
+1. Phase 2 reads every row of the standard and decides `keyboard` and `web` true
+2. The checklist has a `### Quality Standard` section at `rigor: minimal`
+3. The floor rows that need the first-run record read `NOT ASSESSED — no first-run
+   record`; the key-binding floor row lists the five bound keys, each with its
+   action and whether play needs it, and is ticked
+4. Advisory rows each have one line: what was seen, or `not observed`
+5. The `crazygames` rows are under Not applicable as `not a CrazyGames release (no
+   --target crazygames)`
+6. Go / No-Go is NOT ASSESSED, naming the floor rows
+
+**Assertions:**
+- [ ] The section is present at `rigor: minimal` — it is not trimmed as process weight
+- [ ] The floor rows listed are the ones the standard's Level column marks, read on this run
+- [ ] No floor row is ticked without evidence; a missing first-run record is NOT ASSESSED, never a pass and never a failure
+- [ ] An advisory row never changes Go / No-Go, whether it reads `not observed` or `condition unknown`
+- [ ] Variant — the code root binds `Escape` to "open the shop", which play needs and no other input does: the key-binding floor row is a blocking item and Go / No-Go is NOT READY, which outranks the NOT ASSESSED rows
+- [ ] Variant — `Escape` also closes the shop, and so does an on-screen button: the row is ticked, with the other input named
+- [ ] Variant — `project.yaml` has no `platform` block and the design names no controls, but the code root's five bindings are readable: `keyboard` is true and `web` is unknown. The key-binding floor row reads `NOT ASSESSED — web unknown`; `Q-KEY-1` is assessed or `not observed`, never `condition unknown`; an advisory row that depends on `web` alone would read `condition unknown — web`. None is moved to Not applicable
+- [ ] Variant — a first-run record exists but names an older build: the rows that need it read `NOT ASSESSED — first-run record names build X`, never ticked
+- [ ] Variant — the record's stamp check prints a `CHANGED:` or `NEW:` line against a stamp that holds hashes, there is no `.stamp.txt` (`RECEIPT: NONE` beside a `NEW:` line per file), or the check prints no `UNCHANGED:` line: the same rows read NOT ASSESSED, and the report says which case it was; the record's date is not what decides it, and the absence of a `CHANGED:` line is not a pass
+- [ ] Variant — `/release-checklist --target crazygames`: the `crazygames` rows are listed as advisory rows, not under Not applicable
+- [ ] Variant — the standard file does not exist: the section reads `NOT ASSESSED — .claude/docs/game-quality-standard.md not found` and Go / No-Go is not READY
 
 ---
 

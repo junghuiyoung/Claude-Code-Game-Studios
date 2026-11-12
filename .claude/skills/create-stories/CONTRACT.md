@@ -36,7 +36,7 @@ and `/story-readiness` + `/dev-story`.
 ### Files Written
 | File | Guaranteed Fields / Sections | Notes |
 |------|------------------------------|-------|
-| `production/epics/[epic-slug]/story-NNN-[slug].md` | `Epic:`, `Status:`, `Layer:`, `Type:`, `Manifest Version:`, `## Context` (GDD path + `TR-[system]-NNN` + ADR reference + ADR Decision Summary + Engine/Risk + Engine Notes + Control Manifest Rules), `## Acceptance Criteria`, `## Implementation Notes`, `## Out of Scope`, `## Files`, `## Test Evidence`, `## Dependencies` | Created per story |
+| `production/epics/[epic-slug]/story-NNN-[slug].md` | `Epic:`, `Status:`, `Layer:`, `Type:`, `Manifest Version:`, `## Context` (GDD path + `TR-[system]-NNN` + ADR reference + ADR Decision Summary + Engine/Risk + Engine Notes + Control Manifest Rules), `## Acceptance Criteria`, `## Quality Standard`, `## Implementation Notes`, `## Out of Scope`, `## Files`, `## Test Evidence`, `## Dependencies` | Created per story |
 | `production/epics/[epic-slug]/EPIC.md` | `## Stories` table replacing the "Not yet created" placeholder | Updated in-place; a return visit appends rows for new stories only. At `minimal`, when none exists yet, the skill creates it from the brief, after the write ask names it |
 | `production/epics/index.md` | The epic's `Stories` column set to `[N] stories` | Only when the index exists; otherwise the run prints `Epics index not updated: production/epics/index.md absent` |
 
@@ -49,6 +49,7 @@ and `/story-readiness` + `/dev-story`.
 - Every story file has a `## Test Evidence` section stating the expected evidence location for its type
 - Every story file has a `## Acceptance Criteria` section with at least one checkbox item copied from the GDD — at `minimal`, derived from `design/game-brief.md` (its Player goal & fail state and the MVP feature the story implements)
 - Every story file has a `## Dependencies` section naming each story it needs by path (may say "None" but is never omitted)
+- Every story file has a `## Quality Standard` section: the rows of `.claude/docs/game-quality-standard.md` the story touches by ID, each floor row naming the acceptance criterion that carries it, or `None — [reason]`; when the standard file is not found, the line `Quality standard: NOT ASSESSED — .claude/docs/game-quality-standard.md not found`, never `None`. This holds at every tier
 - Every story file has a `## Files` section listing the code and test files it is planned to create or change; `/dev-story` replaces the list with the files it changed, and `/story-done` checks scope against it
 - The EPIC.md `## Stories` table is updated with a row per story including `#`, `Story` title, `Type`, `Status`, and `ADR`
 - Stories with a `Proposed` ADR have `Status: Blocked` and a note: `BLOCKED: ADR-NNNN is Proposed — accept it with /architecture-decision accept ADR-NNNN once decided`; a `Deprecated` or `Superseded` ADR blocks the same way, naming its successor
@@ -61,7 +62,7 @@ and `/story-readiness` + `/dev-story`.
 
 ## Hard Constraints (Never Violate)
 - Never start implementation — this skill stops at the story file level
-- Never invent acceptance criteria — all criteria must come from the GDD (from `design/game-brief.md` at `minimal`)
+- Never invent acceptance criteria — criteria come from the GDD (from `design/game-brief.md` at `minimal`) and from the floor rows of `.claude/docs/game-quality-standard.md` the story carries, and from nowhere else
 - Never invent implementation notes — all guidance must come from the referenced ADR
 - Never write story files without presenting the full story list for approval first
 - Never mark a story `Status: Ready` if its governing ADR has `Status: Proposed`, `Deprecated` or `Superseded`

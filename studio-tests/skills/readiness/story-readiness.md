@@ -42,6 +42,13 @@ Every case's `project.yaml` sets `modes.rigor: minimal` and
 Fixture says otherwise. Rules: `studio-tests/CLAUDE.md` §
 Fixture defaults.
 
+`.claude/docs/game-quality-standard.md` exists, and every fixture story carries a
+`## Quality Standard` section that passes the Quality rows item. Its rows follow
+what the story changes, not its Type: `None — rule change only; no screen,
+control, text, art or audio changed` where that is true, otherwise the advisory
+rows for what it changes, and no fixture story builds a floor row. Case 10 is the
+exception.
+
 ---
 
 ## Test Cases
@@ -322,6 +329,45 @@ Fixture defaults.
 - [ ] Neither a deprecated nor a superseded TR-ID passes as "valid and active"
 - [ ] The verdict is NEEDS WORK, never BLOCKED — nothing outside the story is required
 - [ ] S1 (`status: active`) passes the item, so the deprecated and superseded results come from the registry status and not from the lookup itself
+
+---
+
+### Case 10: Quality rows — a floor row needs its criterion at every tier
+
+**Fixture:**
+- `project.yaml` has no `modes` keys (`workflow: minimal`, `qa.level: minimal`)
+- `.claude/docs/game-quality-standard.md` exists; its Level column marks `Q-ONB-3`
+  **floor** and `Q-UI-1` advisory
+- Story `production/epics/mvp/story-001-first-wave.md` has `Type: UI`, traces to
+  `design/game-brief.md` MVP feature 1, has two testable criteria (AC-1, AC-2), a
+  `## Test Evidence` section naming its screenshot path, and a `## Quality
+  Standard` section listing `Q-ONB-3 (floor): AC-4 — evidence:
+  production/qa/evidence/first-run/` and `Q-UI-1 (advisory)`. There is no AC-4,
+  and no criterion says onboarding can be skipped
+
+**Input:** `/story-readiness production/epics/mvp/story-001-first-wave.md`
+
+**Expected behavior:**
+1. Phase 2 reads the standard once and takes which rows are floor from its Level
+   column
+2. The Quality rows item fails: `Q-ONB-3` is floor and names a criterion the story
+   does not have
+3. Verdict NEEDS WORK; the `Fix:` asks for the criterion, worded as the row's
+   evidence
+
+**Assertions:**
+- [ ] Verdict is NEEDS WORK at `workflow: minimal` and `qa.level: minimal` — the item is not waived with tests
+- [ ] The gap names `Q-ONB-3` by ID and does not restate the row's text as a new rule
+- [ ] `Q-UI-1`, an advisory row with no criterion, is not a gap
+- [ ] Variant — the story has no `## Quality Standard` section: NEEDS WORK, and the `Fix:` asks for the section with rows or `None — [reason]`
+- [ ] Variant — the section reads `None — no player-facing change` on this story, whose criteria change a screen: NEEDS WORK
+- [ ] Variant — a `Type: Logic` story whose criteria change a damage formula and nothing on screen, section `None — pure calculation`: the item passes
+- [ ] Variant — a `Type: Logic` story whose criteria bind the keys that move the player, section `None`: NEEDS WORK — the Type does not decide it
+- [ ] Variant — AC-4 exists and says onboarding can be skipped, but the `Q-ONB-3` line gives no evidence path: NEEDS WORK, and the `Fix:` asks for the path
+- [ ] Variant — the line reads `Q-ONB-3: N/A — the brief specifies no onboarding step`, and `design/game-brief.md` says so: the item passes with no criterion and no evidence for that row, and the report notes `/story-done` confirms it against the build
+- [ ] Variant — the same line, but the brief says nothing about onboarding: NEEDS WORK; the `Fix:` is to carry the row
+- [ ] Variant — the story's criteria do not mention controls but its `## Files` plans a change to the start screen's control hint, and `Q-ONB-5` is not listed: NEEDS WORK naming `Q-ONB-5`
+- [ ] Variant — `.claude/docs/game-quality-standard.md` does not exist: the item reads `NOT ASSESSED — .claude/docs/game-quality-standard.md not found`, the verdict is NOT ASSESSED, never READY
 
 ---
 

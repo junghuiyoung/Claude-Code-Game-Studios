@@ -257,6 +257,34 @@ minimal`. Report exactly one line, plain text starting `Run result:` (no bold:
 Only the feel half of a Visual/Feel criterion (timing, weight) is DEFERRED to
 `/team-qa`: a still cannot show it.
 
+**The quality floor's evidence.** You write these files yourself, in this step:
+the programmer agents stay on code and tests. Read the story's `## Quality
+Standard` section, and for each floor row it lists read the row and the section
+of `.claude/docs/game-quality-standard.md` that says what its evidence is.
+
+- **A first-run row** ("The first-run record"): launch from the game's real entry
+  point as a new player (the scene launch above does not stand in for it). Write
+  a new record under `production/qa/evidence/first-run/`, never over an old one,
+  with its `-start.png`, one `-hint-[method].png` per supported input method, and
+  its stamp. The stamp covers every file under the code root, not only this
+  story's changes, because every story reuses the record: list them with Glob,
+  then `bash .claude/scripts/review-receipts.sh hash <every file under the code root> > production/qa/evidence/first-run/[record name].stamp.txt`.
+- **The key list** ("The key list"): write
+  `production/qa/evidence/[story-slug]/keys.md` from every binding in the code
+  root and its input settings, in files this story did not change too: each
+  bound key, its action, whether play needs it, and the other input that does
+  the same thing.
+
+The story names the folder or the fixed file, so nothing in the story is edited
+when evidence is captured again. The Phase 7 summary carries one line, on every
+run:
+
+- `Quality floor evidence: [each path written this run]`;
+- `Quality floor evidence: NOT WRITTEN — <which, and why>` (no engine, the game
+  cannot start from its entry point yet); `/story-done` holds the story open;
+- `Quality floor evidence: not required — the story lists no floor row`, or `… —
+  the story has no Quality Standard section`.
+
 This skill pre-approves `godot` on PATH. An engine run through `engine.path` or
 the executable `commands.test` names asks first: the user approves it once, or
 adds `Bash(<that executable> *)` to `.claude/settings.local.json`.
@@ -271,6 +299,7 @@ adds `Bash(<that executable> *)` to `.claude/settings.local.json`.
 - `[test path]` — [N] test functions
 **Test evidence**: waived at `qa.level: minimal` — no test was required or written   (Logic/Integration at minimal, instead of the test line)
 **Verification**: [command] — [exit code and result | parse NOT VERIFIED — <reason>]
+**Quality floor evidence**: [paths | NOT WRITTEN — <which, and why> | not required — <why>]
 
 **Acceptance criteria**:
 - [x] [criterion] — [file:function | test name | OBSERVED in <image path>]

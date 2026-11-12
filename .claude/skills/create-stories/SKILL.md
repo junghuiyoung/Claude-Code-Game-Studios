@@ -7,7 +7,7 @@ allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, Bash(bash 
 model: opus
 ---
 
-!`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys review_mode,review_gate,automation,workflow,docs.density,story_granularity,qa.level,system_overrides`
+!`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys review_mode,review_gate,automation,workflow,docs.density,story_granularity,qa.level,system_overrides,input_methods`
 
 Resolved above — use as-is; `--review` overrides `review_mode`. No block →
 defaults in `.claude/docs/config-resolution.md`.
@@ -35,8 +35,8 @@ Checklist (copy it and tick as you go):
 
 ```
 - [ ] Phase 1: epic found, tier resolved
-- [ ] Phase 2: inputs loaded, each ADR's status reported
-- [ ] Phase 3-4: stories drafted, typed, Ready or Blocked
+- [ ] Phase 2: inputs loaded, each ADR's status reported, quality standard read
+- [ ] Phase 3-4: stories drafted, typed, Ready or Blocked, quality rows listed
 - [ ] Phase 5: QA lead review run, or its skip noted
 - [ ] Phase 6: story list shown, one ask to write
 - [ ] Phase 7: stories, EPIC.md and index.md written (or index absence said)
@@ -102,7 +102,8 @@ named.
 4. **One story per MVP feature, in Build order**, each traced to the brief. No
    story is blocked on ADR grounds: this tier has none.
 
-Read no GDD, control manifest, TR registry or ADR at `minimal`. Go to Phase 3.
+Read no GDD, control manifest, TR registry or ADR at `minimal`. Go on to "Every
+tier: the quality standard" below, then Phase 3.
 
 ### `standard` and `full`: the epic and what governs it
 
@@ -154,6 +155,23 @@ ADRs: ADR-0001 Accepted · ADR-0002 Accepted · ADR-0003 Accepted · ADR-0004 Pr
 Never say "all present" when one is missing, or name a manifest version when there
 is none.
 
+### Every tier: the quality standard
+
+Read `.claude/docs/game-quality-standard.md`. Decide each row's **Applies**
+condition as its "How a row applies" section says: `web` from `platform.targets`
+in `project.yaml`; `keyboard` and the supported input methods from the controls
+the brief or GDD names; the rest from the brief or GDD. The `input_methods` line
+above is a hint only: it lists `keyboard/mouse` for every PC or Web target and
+`none` on an incomplete `platform` block. A condition that cannot be read is
+unknown: ask once ("Which inputs does the game support: keyboard, mouse, touch,
+gamepad?" / "Does it run in a browser?"), and never take unset or `none` as no.
+Rows marked `crazygames` are not story work: leave them to
+`/release-checklist --target crazygames`.
+
+**File not found:** say `Quality standard: NOT ASSESSED —
+.claude/docs/game-quality-standard.md not found`, write that line in each story's
+`## Quality Standard` section, and go on. Never write `None` for it.
+
 ## Phase 3: Type each story
 
 | Type | When its criteria reference |
@@ -192,6 +210,29 @@ UI last. For each story:
   date, else its `## Date`, else `unversioned` (the `version` column). `/dev-story`
   trusts the story's ADR summary while this still matches the ADR.
 - **Engine risk:** from the ADR's Engine Compatibility (its knowledge risk).
+- **Quality rows:** the rows of the standard this story touches, decided by the
+  standard's "When a story touches a row" from what the story changes, never from
+  its Type.
+  - A **floor** row that applies becomes an acceptance criterion of the story that
+    builds the thing the row is about. The criterion names both the behaviour and
+    where its evidence goes (`Q-ONB-3`: "Onboarding can be skipped and play
+    continues after the skip, shown by a first-run record under
+    `production/qa/evidence/first-run/`"). The evidence location is the one the
+    standard fixes for the row: that folder for a first-run row, never a file in
+    it, and `production/qa/evidence/[story-slug]/keys.md` for the key list.
+    `/dev-story` writes those files in its run-and-look step, so the story's
+    Dependencies name whatever must be built before a new player can reach play.
+    The row is added to an existing story, never as a story of its own.
+  - An advisory row is listed with where its evidence will be. It adds no
+    criterion.
+  - A row the story touches that does not apply to the game: `Q-ID: N/A —
+    [what the design says]`, e.g. "the brief specifies no onboarding step". No
+    criterion, no evidence; `/story-done` confirms the reason against the build.
+    A reason the design does not state is not N/A: carry the row.
+  - A story that changes no first-run flow, screen, control, player-facing text,
+    art or audio: `None — [reason]`.
+  - Each floor row that applies to the game is carried by a story of this epic,
+    or the Phase 6 list names it as not carried here.
 - **Estimate:** propose a t-shirt size from the criteria and the files the story
   touches: `S` (a few hours), `M` (about a day) or `L` (several days). It is a
   proposal: Phase 6 shows it and the user can change it. `/story-readiness` fails
@@ -214,6 +255,7 @@ ADRs: ADR-0001 Accepted · ADR-0002 Accepted · ADR-0004 Proposed   (every ADR, 
 Story 001: [title] — Logic — ADR-0001 — Ready — Estimate M
   Covers: TR-[system]-001 ([one-line requirement])
   Test required: tests/unit/[system]/[slug]_test.[ext]
+  Quality: None — no player-facing change
 
 Story 002: [title] — Integration — ADR-0004 — BLOCKED (ADR-0004 is Proposed) — Estimate L
   Covers: TR-[system]-002, TR-[system]-003
@@ -222,10 +264,18 @@ Story 002: [title] — Integration — ADR-0004 — BLOCKED (ADR-0004 is Propose
 Story 003: [title] — Visual/Feel — ADR-0001 — Ready — Estimate S
   Covers: TR-[system]-004
   Evidence required: retained screenshot + sign-off in production/qa/evidence/[slug]-evidence.md
+  Quality: Q-ONB-5 floor → AC-3 · Q-ONB-4 advisory · Q-UI-1 advisory
 
 [N stories: N Logic, N Integration, N Visual/Feel, N UI, N Config/Data; N Blocked]
 QL-STORY-READY: [skipped — Solo mode | its verdicts]
+Quality floor: Q-ONB-1 → story 003 · Q-ONB-3 → story 003 · Q-ONB-5 → story 003 · Q-KEY-2 N/A — not a web game
 ```
+
+Every story has a `Quality:` line, and the `Quality floor:` line names every row
+the standard marks floor, every time, each as `→ story NNN`, `not carried by this epic`,
+`N/A — [why]` or `NOT ASSESSED — [condition] unknown`. A floor row that applies
+and that no story of this epic carries is said in words under the list, with the
+epic that should carry it if one is known.
 
 At `minimal`, each line traces to `Brief MVP feature N`, there is no ADRs line, and
 there is one story per MVP feature: no extra stories for brief items outside the
@@ -258,7 +308,7 @@ exactly:
 | Engine | `engine.name` + `engine.version` |
 | Risk | the level `docs/engine-reference/<engine>/VERSION.md` gives the pinned version (its timeline row, or its overall rating). No file or no level: `NOT ASSESSED (no VERSION.md risk rating)`, never a guess. `/dev-story` reads NOT ASSESSED as HIGH |
 | Engine Notes | `none (no ADR engine-compatibility analysis at minimal)` |
-| Acceptance Criteria | from the brief's **Player goal & fail state** and the MVP feature, made concrete and testable; never invented from a bare bullet |
+| Acceptance Criteria | from the brief's **Player goal & fail state** and the MVP feature, made concrete and testable, plus one per floor row the story carries (Phase 4); never invented from a bare bullet |
 
 At every tier:
 - **QA Test Cases:** when the review was skipped, write
@@ -266,6 +316,10 @@ At every tier:
   Never improvise test cases.
 - **Test Evidence:** `qa.level` governs it. At `qa.level: minimal` tests are
   waived (advisory), but a Visual/Feel or UI story's retained screenshot is not.
+- **Quality Standard:** the rows from Phase 4, one line each, as the template
+  lays them out: a floor row names its criterion (`AC-N`) and the evidence
+  location the standard fixes for it, an advisory row its evidence. Never leave the template's brackets, and never
+  restate a row's text: the ID is the reference.
 - **Estimate:** the size from Phase 6, with any change the user made.
 - **Dependencies:** name each story this one needs by its path.
 - **Files:** the code and test files the story is planned to create or change,
@@ -308,8 +362,9 @@ that apply:
 - Stop here for this session
 
 Never start implementation or write code: this skill stops at the story files.
-Acceptance criteria come from the GDD (the brief at `minimal`), implementation
-notes from the ADRs, rules from the manifest; none are invented.
+Acceptance criteria come from the GDD (the brief at `minimal`) and from the floor
+rows of the quality standard, implementation notes from the ADRs, rules from the
+manifest; none are invented.
 
 **The run's last reply ends with this block**, after the question above is
 answered (repeat it if you showed it earlier):
@@ -317,6 +372,7 @@ answered (repeat it if you showed it earlier):
 ```
 Verdict: COMPLETE — [N] stories written to production/epics/[epic-slug]/ ([N] Ready, [N] Blocked)
 Review: [QL-STORY-READY skipped — Solo mode | skipped — Lean mode | its verdicts]
+Quality floor: [each floor row of the standard: → story NNN | not carried by this epic | N/A — why | NOT ASSESSED — why]
 Index: [production/epics/index.md updated | Epics index not updated: production/epics/index.md absent]
 Next step: [/dev-story [first-story-path] | /story-readiness [first-story-path]]
 ```

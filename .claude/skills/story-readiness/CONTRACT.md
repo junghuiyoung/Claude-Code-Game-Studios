@@ -10,7 +10,8 @@ implementation and produces a READY / NEEDS WORK / BLOCKED / NOT ASSESSED verdic
 ### Files That Must Exist
 | File | Required Fields / Sections | Read-Only? |
 |------|---------------------------|-----------|
-| `production/epics/[epic-slug]/story-NNN-[slug].md` | All header fields (`Status:`, `Layer:`, `Type:`, `Manifest Version:`), `## Context` (GDD path, TR-ID, ADR reference, Engine Notes, Control Manifest Rules), `## Acceptance Criteria`, `## Test Evidence`, `## Dependencies`, `## Out of Scope` | Yes |
+| `production/epics/[epic-slug]/story-NNN-[slug].md` | All header fields (`Status:`, `Layer:`, `Type:`, `Manifest Version:`), `## Context` (GDD path, TR-ID, ADR reference, Engine Notes, Control Manifest Rules), `## Acceptance Criteria`, `## Quality Standard`, `## Test Evidence`, `## Dependencies`, `## Out of Scope` | Yes |
+| `.claude/docs/game-quality-standard.md` | Row IDs and the Level column (which rows are floor) | Yes (absent = the Quality rows item is NOT ASSESSED, and no story is READY) |
 | `docs/architecture/control-manifest.md` | `Manifest Version:` date in header, layer rules | Yes (if exists) |
 | `docs/architecture/tr-registry.yaml` | `id`, `status` fields per TR entry | Yes (if exists) |
 | `docs/architecture/adr-NNNN-[slug].md` (all ADRs referenced in stories) | `## Status`, the `**Layer**` row (read through `adr-status.sh`) | Yes |

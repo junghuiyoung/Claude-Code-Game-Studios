@@ -30,8 +30,9 @@ fixes in the conversation.
    `Draft`; or a criterion holds an UNRESOLVED design question with no owner.
 2. **NEEDS WORK**: a blocking checklist item fails. The story can be fixed now.
 3. **NOT ASSESSED**: the story could not be evaluated. The file is unreadable,
-   a referenced ADR has no readable `## Status`, or the design document it names
-   cannot be found. Name what could not be read. It is never READY: a story
+   a referenced ADR has no readable `## Status`, the design document it names
+   cannot be found, or the quality standard cannot be found. Name what could not
+   be read. It is never READY: a story
    nobody could check has not been shown ready. It ranks below the two failures,
    because a known blocker is more useful than an unknown.
 4. **READY**: every item passes, is N/A with a reason, or is advisory. Advisory
@@ -89,6 +90,10 @@ Say "Checking [N] story files." before going on.
    item passes for every story.
 5. **Sprint priority** (`sprint` scope): which stories are Must Have and Should
    Have, from the newest plan in `production/sprints/`.
+6. **Quality standard.** Read `.claude/docs/game-quality-standard.md` once: its
+   row IDs, which rows its Level column marks **floor**, each row's Evidence, and
+   its "When a story touches a row" section. Missing file: note it once; the
+   Quality rows item is NOT ASSESSED for every story.
 
 **Tier per story.** `workflow` is resolved per story: use the `system_overrides`
 row for the story's system (the GDD filename stem of its `GDD:` path; the `[system]`
@@ -199,6 +204,32 @@ lowers READY by itself.
   | `balanced` | 2 | 2 | 1 |
   | `fine` | 1 | 1 | 1 |
 
+- [ ] **Quality rows stated**: the story's `## Quality Standard` section lists
+  rows of the standard by ID, or reads `None — [reason]`. It blocks at every
+  tier and every `qa.level`: the floor is not a test, so nothing waives it.
+  - No section, or the template's brackets still in it: NEEDS WORK. Fix: add the
+    section with the rows the story touches, or `None — [reason]`.
+  - A row the standard marks **floor** passes only when it names an acceptance
+    criterion the story has, that criterion states the row's behaviour, and the
+    line gives the evidence location the standard fixes for the row
+    (`production/qa/evidence/first-run/`, or the story's `keys.md`). Otherwise
+    NEEDS WORK. Fix: add the criterion and the location.
+  - `None`, when the story's criteria or `## Files` change a first-run flow, a
+    screen, a control, player-facing text, art or audio (the standard's "When a
+    story touches a row"; the story's Type does not decide it): NEEDS WORK; name
+    the rows for what it changes.
+  - A floor row that applies and that the story's criteria, or the changes its
+    `## Files` section plans, touch (the first thing a new player does, an
+    onboarding step, a control hint, a key binding), and that the section does
+    not list: NEEDS WORK; name the row.
+  - `Q-ID: N/A — [reason]` passes when the design the story traces to states the
+    reason ("the brief specifies no onboarding step"); it needs no criterion and
+    no evidence, and `/story-done` confirms it against the build. A reason the
+    design does not state: NEEDS WORK; carry the row.
+  - An ID the standard does not have: NEEDS WORK; name it.
+  - Standard not found (Phase 2): `NOT ASSESSED —
+    .claude/docs/game-quality-standard.md not found`, listed under Gaps. No story
+    is READY on a standard nobody could read.
 - [ ] **Performance noted**: a story touching the gameplay loop, rendering or
   physics states a budget, or "no performance impact expected — [reason]".
 - [ ] **Type declared**: no `type_missing` or `type_unknown` row. Fix: add

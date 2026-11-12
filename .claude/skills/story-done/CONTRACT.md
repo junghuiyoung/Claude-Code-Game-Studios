@@ -13,6 +13,7 @@ Closes the implementation loop for a single story by verifying every acceptance 
 | GDD section referenced by each TR-ID | Acceptance criteria and key rules for cross-check | Yes |
 | `docs/architecture/adr-NNNN-[slug].md` (referenced ADR) | `## Decision`, `## Consequences` | Yes |
 | `docs/architecture/control-manifest.md` | `Manifest Version:` header date, forbidden patterns | Yes (existence checked; absent = skip staleness check) |
+| `.claude/docs/game-quality-standard.md` | The rows the story's `## Quality Standard` section lists, and their Level | Yes (absent = quality rows NOT ASSESSED; a floor row's missing evidence blocks at every `qa.level`, and the rows are decided from what the story changes, not only from what its section lists) |
 | `production/session-state/active.md` | Active story path (used when no argument given) | No — `<!-- CHECKPOINT -->` block overwritten |
 
 > **Tier.** The TR registry, GDD-section and ADR rows are `standard`/`full` inputs.
@@ -57,7 +58,7 @@ then `COMPLETE`; see the verdict section of `SKILL.md`.
 | `production/session-state/active.md` | `<!-- CHECKPOINT -->` block: current task (story path, verdict, closed or left open), next step (the next story, or the fix the verdict named), blocker, tech debt count | written on every verdict, closed or not, by `session-state.sh checkpoint`: the block is replaced, never appended (the file is created from `.claude/docs/templates/session-state.md` if absent) |
 
 ### Output Guarantees
-- `Status: Complete` is written only after the user explicitly approves: on a COMPLETE or COMPLETE WITH NOTES verdict, or — on a BLOCKED or NOT ASSESSED verdict — only when the user explicitly asks to close anyway (the Phase 7 override, which always prompts as a `scope_changes` decision), with the override risk recorded in `## Completion Notes`
+- `Status: Complete` is written only after the user explicitly approves: on a COMPLETE or COMPLETE WITH NOTES verdict, or — on a BLOCKED or NOT ASSESSED verdict — only when the user explicitly asks to close anyway (the Phase 7 override, which always prompts as a `scope_changes` decision), with the override risk recorded in `## Completion Notes`. The override does not reach the quality floor: a story with an applicable floor row of `.claude/docs/game-quality-standard.md` that failed, lacks evidence or is NOT ASSESSED stays open
 - `## Completion Notes` always contains: completion date, criteria pass count, deviation summary, test evidence path (or "None required"), code review status, and a Reviewed by line: `lead-programmer`, `/code-review (you said you ran it; not verified here)`, or `self, no independent review` when nobody else reviewed the work
 - Session state always records the final verdict and the next recommended story path
 

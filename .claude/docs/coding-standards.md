@@ -18,6 +18,20 @@
   per engine: `.claude/docs/run-and-observe.md`. Not waived at
   `qa.level: minimal` — tests are, the look is not.
 
+# Game Quality Standard
+
+- Every game is held to `.claude/docs/game-quality-standard.md`. Read it on
+  demand and cite its rows by ID (`Q-ONB-1`); never restate a row elsewhere.
+- Its four **floor** rows block a story's close and a release at every
+  `modes.rigor` and `qa.level`: a first-run record (`Q-ONB-1`), skippable
+  onboarding (`Q-ONB-3`), controls shown for every supported input (`Q-ONB-5`),
+  and a web game that can be played without a browser-reserved key (`Q-KEY-2`).
+  Each holds where its Applies condition does.
+- Every other row is advisory: checked and reported by ID, never dropped in
+  silence.
+- A row applies by facts about the game (web, keyboard, ads, multiplayer). Only
+  the rows marked `crazygames` wait for a CrazyGames release.
+
 # Design Document Standards
 
 - All design docs use Markdown

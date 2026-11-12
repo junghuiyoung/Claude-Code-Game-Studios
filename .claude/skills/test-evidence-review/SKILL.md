@@ -17,7 +17,10 @@ every file write follows `.claude/docs/automation-modes.md`
 
 **`qa.level` and `testing.strict`** (resolved above) decide what this review may
 call a blocker — the same rules `/story-done` closes stories by, so a BLOCKING
-item here is one that would stop `/story-done`:
+item here is one that would stop `/story-done`. These rules cover the test
+evidence of each story type only. The quality floor
+(`.claude/docs/game-quality-standard.md`) is not reviewed here: `/story-done`
+checks it at every `qa.level`, and `testing.strict` cannot waive it:
 - **`qa.level: minimal`** waives tests. A Logic, Integration or Config/Data story
   with no test evidence (for Config/Data, no smoke report) is
   `WAIVED (qa.level: minimal)` — not MISSING — and raises no BLOCKING item; a

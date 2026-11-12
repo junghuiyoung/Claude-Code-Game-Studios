@@ -41,6 +41,13 @@ Every case's `project.yaml` sets `modes.rigor: minimal` and
 Fixture says otherwise. Rules: `studio-tests/CLAUDE.md` §
 Fixture defaults.
 
+`.claude/docs/game-quality-standard.md` exists, and every fixture story carries a
+`## Quality Standard` section whose rows follow what the story changes, not its
+Type: `None — rule change only; no screen, control, text, art or audio changed`
+where that is true (Case 1's pickup rule), otherwise advisory rows only, each
+naming the story's retained image as its evidence. No fixture story builds a
+floor row. Case 9 is the exception.
+
 ---
 
 ## Test Cases
@@ -312,6 +319,61 @@ Fixture defaults.
 - [ ] Lean, no sprint plan: the transcript shows no read of any `references/*.md` file
 - [ ] Variant: each reference file is read before the step it holds begins, never at the start of the run
 - [ ] The resolved settings (`review_mode`, `workflow`, `qa.level`, `automation`) still govern every step: lean still asks the `/code-review` question, and Phase 7 still asks before editing the story file
+
+---
+
+### Case 9: Quality floor — missing evidence blocks at `qa.level: minimal`
+
+**Fixture:**
+- `project.yaml` has no `modes` keys (`workflow: minimal`, `qa.level: minimal`,
+  `review_mode: solo`); no sprint plan
+- `.claude/docs/game-quality-standard.md` exists; its Level column marks `Q-ONB-1`
+  and `Q-ONB-3` **floor** and `Q-UI-1` advisory
+- `production/epics/mvp/story-001-first-wave.md` has `Type: UI`, `Status: In
+  Progress`, and criteria AC-1 "The first wave starts within 5 seconds of launch
+  with no screen before it", AC-2 "The tutorial hint can be skipped, and play
+  continues after the skip". Its `## Quality Standard` section lists `Q-ONB-1
+  (floor): AC-1 — evidence: production/qa/evidence/first-run/`, `Q-ONB-3 (floor):
+  AC-2 — evidence:` the same folder, and `Q-UI-1 (advisory)`
+- `production/qa/evidence/story-001-first-wave/01-first-wave.png` exists and shows
+  the first wave with the hint; **no file exists under
+  `production/qa/evidence/first-run/`**
+
+**Input:** `/story-done production/epics/mvp/story-001-first-wave.md`
+
+**Expected behavior:**
+1. UI test evidence stays required at `qa.level: minimal`; the retained
+   screenshot satisfies it
+2. Phase 4 reads the story's Quality Standard section and, in the standard, "How
+   a row applies", "When a story touches a row", "The first-run record" and the
+   rows, and takes which are floor from its Level column
+3. The folder both floor rows name holds no first-run record: a BLOCKING gap for
+   each
+4. `Q-UI-1` is reported from the retained image, or as `not observed`
+5. Verdict BLOCKED; the close question offers only "Don't close yet" and names
+   the first-run record to write
+
+**Assertions:**
+- [ ] The verdict is BLOCKED at `qa.level: minimal` — the floor is not waived with the tests
+- [ ] The report has a `### Quality Standard` block with one line per row the story touches, by ID
+- [ ] "Close anyway, accepting the deviations" is not offered: the override does not reach a floor row
+- [ ] The missing first-run record is named by its folder, with both rows that need it
+- [ ] `Q-UI-1` never appears as a gap
+- [ ] Variant — `first-run-2026-11-12-1530.md` exists there with every field the standard requires, its `-start.png`, one `-hint-[method].png` for every supported input method, and a `.stamp.txt` for which `review-receipts.sh check`, given every file under the code root, prints `UNCHANGED:` for each; it shows 3 seconds to the first core-gameplay action and a used skip: both floor rows are covered and the verdict is COMPLETE
+- [ ] Variant — the same record, but the stamp check prints `CHANGED: src/scenes/first-wave.ts`: a BLOCKING gap, "re-capture the first run"; the record's date plays no part
+- [ ] Variant — the same record, but the check prints `NEW: src/scenes/intro.ts`, a file added after the capture that the story did not list: a BLOCKING gap all the same — the stamp covers the code root, not the story's files
+- [ ] Variant — the same record with no `.stamp.txt`: the check, given the code root's files, prints `RECEIPT: NONE` and a `NEW:` line for each of them. Both rows read NOT ASSESSED and the verdict is NOT ASSESSED, not BLOCKED and not COMPLETE — the missing stamp is decided before the `NEW:` lines are read
+- [ ] Variant — a stamp file holding no `Reviewed-Content-Hash:` line: the same NOT ASSESSED result
+- [ ] Variant — the record exists but has no time-to-first-action field: both rows read NOT ASSESSED and the verdict is NOT ASSESSED, not BLOCKED
+- [ ] Variant — two records exist in the folder: the newest is the evidence, and the story file is not edited to point at it
+- [ ] Variant — the section reads `None — no player-facing change` on this story, whose criteria build the first thing a new player does: `Q-ONB-1 (floor): NOT LISTED — BLOCKING` and the same for `Q-ONB-3`
+- [ ] Variant — the section lists both floor rows but not `Q-UI-1`: the report adds `Q-UI-1 (advisory): not observed`, and it is not a gap
+- [ ] Variant — the story also lists `Q-ONB-5 (floor)`, the game supports keyboard and touch, and only `…-hint-keyboard.png` is beside the record: `Q-ONB-5: NOT ASSESSED — missing hint screenshot for touch`, the verdict is NOT ASSESSED and the story stays open
+- [ ] Variant — `…-hint-touch.png` exists and shows the start screen with no touch hint on it: the criterion that carries `Q-ONB-5` FAILS and the verdict is BLOCKED
+- [ ] Variant — the story lists `Q-ONB-3: N/A — the brief specifies no onboarding step` and the current record says there is none: the line reads `N/A — … confirmed by` the record; with no current record it reads `NOT ASSESSED — N/A reason not confirmed`
+- [ ] Variant — the record exists and says the hint cannot be skipped: AC-2 FAILS and the verdict is BLOCKED
+- [ ] Variant — the story has no `## Quality Standard` section: `Quality rows: NOT ASSESSED — the story has no Quality Standard section`, and on this story, which changes a screen, the verdict is at best NOT ASSESSED
+- [ ] Variant — a story with no section whose criteria change a rule and nothing a player sees, hears or presses, every criterion covered: the same line is an information line and the verdict stays COMPLETE
 
 ---
 
