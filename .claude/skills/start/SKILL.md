@@ -170,7 +170,8 @@ other.
 4. `/dev-story`: the first line of game code
 
 **`standard`**
-- Concept: `/setup-engine` → `/brainstorm` → `/prototype` → `/art-bible` → `/gate-check`
+- Concept: `/setup-engine` → `/brainstorm` → `/prototype` → `/concept-art` (optional) →
+  `/art-bible` → `/gate-check`
 - Systems Design: `/map-systems` → `/design-system` (once per system) → `/review-all-gdds` →
   `/gate-check`
 - Architecture: `/create-architecture` → `/architecture-decision` (once per decision) →

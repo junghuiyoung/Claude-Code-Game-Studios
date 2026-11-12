@@ -12,7 +12,7 @@ Two model families do this studio's work, split by the kind of work:
 
 | Work | Runs on | Set in |
 |---|---|---|
-| 71 skills | Claude `opus` | the skill's `model:` |
+| 73 skills | Claude `opus` | the skill's `model:` |
 | `/help`, `/scope-check`, `/sprint-status` | Claude `haiku` | the skill's `model:` |
 | 16 reviewer agents | Claude `opus` | the agent's `model:` |
 | 10 code-writing agents: asking, planning, approval | Claude `opus` | the agent's `model:` |
@@ -20,6 +20,7 @@ Two model families do this studio's work, split by the kind of work:
 | 23 Codex proxy agents: the job | Codex `gpt-6.1-sol`, effort `xhigh` | the `--effort` in the proxy section |
 | 23 Codex proxy agents: the relay shell | Claude `opus` | the agent's `model:` |
 | Images, 3D, audio | Higgsfield → Codex image / Blender / ElevenLabs → Higgsfield | `/asset-generate` |
+| Concept images | Higgsfield → Codex image | `/concept-art` |
 
 A tier is written as the alias `model:` takes, never a model ID. Claude Code
 resolves each alias to the current model in that family on your provider. The

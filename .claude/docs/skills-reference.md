@@ -1,6 +1,6 @@
 # Available Skills (Slash Commands)
 
-74 slash commands organized by phase. Type `/` in Claude Code to access any of them.
+76 slash commands organized by phase. Type `/` in Claude Code to access any of them.
 
 ## Onboarding & Navigation
 
@@ -28,6 +28,7 @@
 
 | Command | Purpose |
 |---------|---------|
+| `/concept-art` | Generate concept images before the art bible: style candidates of one scene, then gameplay mockups, a lineup sheet and UI mockups in the chosen style (Higgsfield, Codex fallback). Asks before every paid call |
 | `/art-bible` | Guided, section-by-section Art Bible authoring — creates visual identity spec before asset production begins |
 | `/asset-spec` | Generate per-asset visual specifications and AI generation prompts from GDDs, level docs, or character profiles |
 | `/asset-generate` | Generate files from approved asset specs: images (Higgsfield, Codex fallback), 3D (Higgsfield GLB plus Blender cleanup), audio (ElevenLabs, Higgsfield fallback). Asks before every paid call |

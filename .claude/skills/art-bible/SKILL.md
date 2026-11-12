@@ -54,6 +54,21 @@ Identity Anchor or platform):
 - **Visual Identity Anchor** section if present (from brainstorm Phase 4 art-director output)
 - Target platform (if noted)
 
+**Concept art**: Glob `design/concept/concept-art.md`, the record `/concept-art`
+writes. Say which of these three applies before Phase 1:
+- **A chosen style.** Find `## Chosen style` with Grep and Read that section
+  only. Keep the style's name, rule line, reference image path and the "Take
+  from it" and "Avoid" lines. They go into Phase 1's note and into every
+  `art-director` brief in Phases 2–4, each of which asks the agent to open the
+  reference image and to say in its answer whether it did. An answer that does
+  not say it opened the image is reported to the user as `Reference image NOT
+  VIEWED by art-director — authored from the style's text record`.
+- **The record exists, the section reads `Chosen style: NOT CHOSEN`.** Say:
+  "Concept art exists but no style was chosen — authoring from text.
+  `/concept-art styles` picks one."
+- **No record.** Say: "No concept art — authoring from text only.
+  `/concept-art` generates style candidates first (optional)." Continue.
+
 **Retrofit mode detection**: Glob `design/art/art-bible.md`. If the file exists,
 build the status table **without reading the document** — you are about to author
 only the *incomplete* sections, so loading the complete ones is loading exactly
@@ -137,6 +152,9 @@ Use `AskUserQuestion` with two tabs:
 If the game-concept.md has a Visual Identity Anchor section, note it:
 > "Found a visual identity anchor from brainstorm: '[anchor name] — [one-line rule]'. I'll use this as the foundation for the art bible."
 
+If Phase 0 found a chosen concept-art style, note it:
+> "Found a chosen style from `/concept-art`: '[style name] — [rule line]', reference image `[path]`. The art bible will describe that image; where it and the anchor disagree, I'll ask."
+
 **Author only the sections in the chosen scope.** Phases 2–4 run only the
 sections inside it — for `Resume`, the Empty and Placeholder rows of the
 retrofit table — and skip every other section, and any phase left with none.
@@ -172,8 +190,12 @@ If a visual anchor exists from game-concept.md: present it and ask:
 - "Revise it before expanding?"
 - "Start fresh with new options?"
 
+If a chosen concept-art style exists, ask the same three questions about it.
+With both an anchor and a chosen style, the chosen style is the default
+foundation: the user picked it by looking at it.
+
 **Agent delegation (MANDATORY)**: Spawn `art-director` via `Agent`:
-- Provide: game concept (elevator pitch, core fantasy), full pillar set, platform target, any reference games/art from Phase 1 framing, the visual anchor if it exists
+- Provide: game concept (elevator pitch, core fantasy), full pillar set, platform target, any reference games/art from Phase 1 framing, the visual anchor if it exists, and the chosen concept-art style if it exists (name, rule line, "Take from it" and "Avoid" lines, and the reference image path to open)
 - Ask: "Draft a Visual Identity Statement for this game. Provide: (1) a one-line visual rule that could resolve any visual decision ambiguity, (2) 2–3 supporting visual principles, each with a one-sentence design test ('when X is ambiguous, this principle says choose Y'). Anchor all principles directly in the stated pillars — each principle must serve a specific pillar. (From a one-page brief, which has no pillars, anchor them in its pitch and "what they feel" line.)"
 
 Present the art-director's draft to the user. Use `AskUserQuestion`:
@@ -193,7 +215,8 @@ For each major game state (e.g., exploration, combat, victory, defeat, menus —
 
 **Agent delegation for Sections 2–4 — one call, issued here.** Spawn
 `art-director` via `Agent` with the locked Visual Identity Statement and pillar set,
-and ask for all three sections in a single brief:
+plus the chosen concept-art style and its reference image path when Phase 0
+found one, and ask for all three sections in a single brief:
 
 1. **Mood & atmosphere** — "Define mood and atmosphere targets for each major game state in this game. Be specific — 'dark and foreboding' is not enough. Name the exact emotional target, the lighting character (warm/cool, high/low contrast, time of day direction), and at least one visual element that carries the mood. Each game state must feel visually distinct from the others."
 2. **Shape language** — "Define the shape language for this game. Connect each shape principle back to the visual identity statement and a specific game pillar. Explain what these shape choices communicate to the player emotionally."

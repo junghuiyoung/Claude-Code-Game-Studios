@@ -123,13 +123,21 @@ phases:
         required: false
         description: "Validate the game concept (recommended before proceeding)"
 
+      - id: concept-art
+        name: "Concept Art"
+        command: /concept-art
+        required: false
+        artifact:
+          glob: "design/concept/concept-art.md"
+        description: "Generate concept images before the art bible: 3-4 style candidates of one scene, then gameplay mockups, a lineup sheet and UI mockups in the chosen style. Needs Higgsfield or Codex image generation; every paid call asks first. /art-bible reads the chosen style."
+
       - id: art-bible
         name: "Art Bible"
         command: /art-bible
         required: true
         artifact:
           glob: "design/art/art-bible.md"
-        description: "Author the visual identity specification (9 sections). Uses the Visual Identity Anchor produced by /brainstorm. Run after game concept is formed, before systems design."
+        description: "Author the visual identity specification (9 sections). Uses the Visual Identity Anchor produced by /brainstorm and the chosen style from /concept-art when there is one. Run after game concept is formed, before systems design."
 
       - id: map-systems
         name: "Systems Map"

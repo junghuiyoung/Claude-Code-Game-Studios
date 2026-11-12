@@ -169,7 +169,9 @@ List every step, in order.
 **Design-first** (the concept is well defined):
 1. `/setup-engine`: configure the engine and its version-aware reference docs
 2. `/art-bible`: the visual identity, before any GDD. Required before the Technical Setup gate at
-   `full`; at `standard` only when the game has visual-asset stories
+   `full`; at `standard` only when the game has visual-asset stories. Optional before it:
+   `/concept-art` generates style candidates and target images, and the art bible then
+   describes the style the user picked
 3. `/design-review design/gdd/game-concept.md`: check the concept is complete
 4. The `creative-director` agent: refine the pillars
 5. `/map-systems`: the systems, their dependencies and priorities, in the systems index
@@ -183,7 +185,7 @@ List every step, in order.
 **Prototype-first** (the core mechanic is unproven):
 1. `/setup-engine`
 2. `/prototype [core mechanic]`: is it fun, in a day at most, throwaway code
-3. PROCEED: `/art-bible`, then design-first steps 5-10 with what the prototype taught
+3. PROCEED: `/concept-art` (optional), `/art-bible`, then design-first steps 5-10 with what the prototype taught
 4. PIVOT: `/brainstorm` again with the learnings
 5. After design and architecture, `/vertical-slice` before committing to sprints
 

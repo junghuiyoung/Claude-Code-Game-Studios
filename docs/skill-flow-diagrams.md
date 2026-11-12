@@ -44,6 +44,7 @@ PHASE 1: CONCEPT
         │ PROCEED                                                  (validate idea BEFORE writing GDDs)
         ▼
   /design-review [game-concept.md] ────────────────────────────► concept validated
+  /concept-art (optional) ─────────────────────────────────────► design/concept/concept-art.md
   /art-bible ──────────────────────────────────────────────────► design/art/art-bible.md
   /map-systems ────────────────────────────────────────────────► design/gdd/systems-index.md
   /gate-check ─────────────────────────────────────────────────► PASS → advance to systems-design

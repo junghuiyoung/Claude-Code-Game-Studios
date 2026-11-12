@@ -111,6 +111,7 @@ Ask yourself: "What department would handle this in a real studio?"
 | `/quick-design` | Lightweight spec for small changes — tuning, tweaks, minor additions |
 | `/review-all-gdds` | Cross-GDD consistency and game design theory review |
 | `/propagate-design-change` | Find ADRs and stories affected by a GDD change |
+| `/concept-art` | Generate concept images before the art bible — style candidates, then gameplay, lineup and UI targets in the chosen style |
 | `/art-bible` | Guided, section-by-section Art Bible authoring — creates visual identity spec before asset production |
 | `/asset-spec` | Generate per-asset visual specifications and AI generation prompts from GDDs or character profiles |
 | `/ux-design` | Author UX specs (screen/flow, HUD, interaction patterns) |
@@ -300,7 +301,7 @@ project.yaml                       -- Machine-readable project config (engine, m
 .claude/
   settings.json                    -- Claude Code hooks and project settings
   agents/                          -- 49 agent definitions (YAML frontmatter)
-  skills/                          -- 74 slash command definitions (YAML frontmatter)
+  skills/                          -- 76 slash command definitions (YAML frontmatter)
   hooks/                           -- 15 event hooks (.sh, wired by settings.json) + yaml-helper.sh, update-check.sh
   rules/                           -- 14 path-specific rule files
   docs/

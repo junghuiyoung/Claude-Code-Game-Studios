@@ -3,7 +3,7 @@
 > **How to go from zero to a shipped game using the Agent Architecture.**
 >
 > This guide walks you through every phase of game development using the
-> 49-agent system, 74 slash commands, and 15 automated hooks. It assumes you
+> 49-agent system, 76 slash commands, and 15 automated hooks. It assumes you
 > have Claude Code installed and are working from the project root.
 >
 > The pipeline has 7 phases. At `rigor: standard` and `full`, each phase has
@@ -297,13 +297,34 @@ This step is **required** before proceeding to Phase 2. Research from 155 game
 postmortems confirms that skipping systems enumeration costs 5-10x more in
 production.
 
-### Step 1.5: Art Bible
+### Step 1.5: Concept Art (Optional)
+
+```
+/concept-art
+```
+
+Generates concept images before any visual rule is written down, under
+`design/concept/images/`, with a record in `design/concept/concept-art.md`.
+It runs in two passes:
+
+- **Style candidates** -- the same gameplay scene in 3-4 styles. You pick one.
+- **Visual targets** in that style -- gameplay mockups (early and late), a
+  lineup sheet of the avatar and enemies, and a mockup of each key screen.
+  Key art, a progression palette strip, a peak-chaos frame and a second
+  orientation are optional.
+
+It needs Higgsfield or Codex image generation and asks before every paid call.
+The mockups are targets, not specs: the generator invents numbers and labels.
+
+### Step 1.6: Art Bible
 
 ```
 /art-bible
 ```
 
 Authors `design/art/art-bible.md`, the visual identity every asset follows.
+When `/concept-art` recorded a chosen style, the art bible describes that
+image instead of starting from text alone.
 Run it once the concept is approved; `/art-bible` suggests doing it before
 `/map-systems` (Step 1.4). Sections 1–4 are needed before `/gate-check pre-production`, and all
 9 before `/gate-check production`. At `standard` it is required only when the
@@ -1698,11 +1719,12 @@ conflicts go to `producer`.
 | `/hotfix` | Emergency fix workflow | 7+ |
 | `/day-one-patch` | Scoped patch for issues found after gold master | 7+ |
 
-#### Creative (4)
+#### Creative (5)
 
 | Command | Purpose | Phase |
 |---------|---------|-------|
 | `/prototype` | Concept prototype — validate core idea before GDDs | 1 |
+| `/concept-art` | Concept images — style candidates, then targets in the chosen style | 1 |
 | `/art-bible` | Guided Art Bible authoring — visual identity spec | 1-4 |
 | `/vertical-slice` | Production-quality end-to-end build before Production | 4 |
 | `/localize` | String extraction and validation | 6-7 |
@@ -1732,6 +1754,7 @@ conflicts go to `producer`.
 2. /brainstorm (collaborative ideation, pick a concept)
 3. /setup-engine (pin engine and version)
 4. /design-review on concept doc (optional, recommended)
+   /concept-art then /art-bible (concept images are optional; see Steps 1.5-1.6)
 5. /map-systems (decompose concept into systems with deps and priorities)
 6. /gate-check systems-design (verify you're ready for Systems Design)
 7. /design-system per system (guided GDD authoring)
