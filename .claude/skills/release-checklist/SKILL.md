@@ -281,7 +281,7 @@ here would hand an `itch` project Steamworks rows.
 ### Platform Requirements: PC
 - [ ] Minimum and recommended specs verified and documented
 - [ ] Keyboard+mouse controls fully functional
-- [ ] Controller support tested (Xbox, PlayStation, generic)
+- [ ] Controller support tested (Xbox, PlayStation, generic) -- or `N/A — gamepad not supported`
 - [ ] Resolution scaling tested (1080p, 1440p, 4K, ultrawide)
 - [ ] Windowed, borderless, and fullscreen modes working
 - [ ] Graphics settings save and load correctly

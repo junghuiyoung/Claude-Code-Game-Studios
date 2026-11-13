@@ -67,6 +67,7 @@ Store the "return focus" element reference before pushing so it can be restored 
 | Platform | Input | Behavior |
 |----------|-------|---------|
 | PC (keyboard) | Escape | Close top-most modal / go back one screen in stack / if at root screen (main menu), open "quit?" confirmation |
+| Web (browser) | Another supported input, always (an on-screen back control, or a key the browser does not reserve). Escape only as a second way | Same as Escape on PC, but never the only way: the browser takes Escape to leave fullscreen before the game sees it (`Q-KEY-2`, `.claude/docs/game-quality-standard.md`) |
 | PC (gamepad) | B (Xbox layout) / Circle (PS layout) | Same as Escape |
 | Xbox | B button | Same as Escape |
 | PlayStation | Circle button | Same as Escape |

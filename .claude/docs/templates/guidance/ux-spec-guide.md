@@ -207,10 +207,12 @@ Example:
 
 > **Why this section exists**: This section is the source of truth for what every
 > input does on this screen. It forces the designer to think through every input
-> method (mouse, keyboard, gamepad, touch) and every interactive state (hover, focus,
+> method the game supports (mouse, keyboard, gamepad, touch: the ones the design
+> names, and no others) and every interactive state (hover, focus,
 > pressed, disabled). Gaps in this table are bugs waiting to happen. The
 > interaction map is also the input for the accessibility audit — if an action is
-> only reachable by mouse, it will fail the keyboard and gamepad columns.
+> only reachable by mouse, it will fail the column of every other supported
+> method. A method the game does not support has no column.
 
 **Worked example — navigation inputs (7.1)**:
 

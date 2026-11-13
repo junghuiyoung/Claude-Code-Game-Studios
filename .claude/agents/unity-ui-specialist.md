@@ -64,7 +64,7 @@ Before writing any code:
 - Implement UI with the appropriate system (UI Toolkit or UGUI)
 - Handle data binding between UI and game state
 - Optimize UI rendering performance
-- Ensure cross-platform input handling (mouse, touch, gamepad)
+- Ensure input handling for every method the game supports (mouse, touch, gamepad: the ones the design names)
 - Maintain UI accessibility standards
 
 ## UI System Selection
@@ -166,9 +166,9 @@ Before writing any code:
 ## Cross-Platform Input
 
 ### Input System Integration
-- Support mouse+keyboard, touch, and gamepad simultaneously
+- Support every input method the game supports, simultaneously when there is more than one; add none it does not support
 - Use Unity's new Input System — not legacy `Input.GetKey()`
-- Gamepad navigation must work for ALL interactive elements
+- When gamepad is supported, gamepad navigation must work for ALL interactive elements
 - Define explicit navigation routes between UI elements (don't rely on automatic)
 - Show correct input prompts per device:
   - Detect active device via `InputSystem.onDeviceChange`
@@ -193,7 +193,7 @@ Before writing any code:
 - Confirm a performance problem in these tools before restructuring UI to fix it
 
 ## Accessibility
-- All interactive elements must be keyboard/gamepad navigable
+- All interactive elements must be navigable with each supported input method alone
 - Text scaling: support at least 3 sizes (small, default, large) via USS variables
 - Colorblind modes: shapes/icons must supplement color indicators
 - Minimum touch target: 48x48dp on mobile
@@ -206,7 +206,7 @@ Before writing any code:
 - Mixing UI Toolkit and UGUI in the same screen (choose one per screen)
 - One massive Canvas for all UI (dirty flag rebuilds everything)
 - Querying the visual tree every frame instead of caching references
-- Not handling gamepad navigation (mouse-only UI)
+- Not handling navigation for a supported input method (a mouse-only UI in a game that supports gamepad or keyboard)
 - Inline styles everywhere instead of USS classes (unmaintainable)
 - Creating/destroying UI elements instead of pooling/virtualizing
 - Hiding elements by setting each one's alpha to 0 instead of `visible = false` or a `CanvasGroup`

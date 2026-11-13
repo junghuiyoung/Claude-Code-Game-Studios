@@ -76,7 +76,7 @@
 **Modal behavior**: [Modal (blocks everything behind it, requires explicit dismiss) | Non-modal (game continues behind it) | Overlay (renders over game world, game paused) | Overlay-live (renders over game world, game continues)]
 
 > If this screen is modal: document the dismiss behavior. Can it be dismissed by pressing
-> Back/B? By pressing Escape? By clicking outside it? Can it be dismissed at all, or
+> Back/B? By pressing Escape (never the only way on a web game)? By clicking outside it? Can it be dismissed at all, or
 > must the player complete it? Undismissable modals are high-friction — justify them.
 
 **Reachability — all entry points**:
@@ -174,8 +174,10 @@ behind a tab, a scroll or a button — in that order, with the reason for each.]
 
 [To be designed]
 
-> Cover every input method for the platform target (mouse, keyboard, gamepad,
-> touch). Gaps in this table are bugs waiting to happen. See guide Section 7.
+> Cover every input method the game supports (mouse, keyboard, gamepad, touch:
+> the ones the design names). Delete the block of a method it does not support
+> and say so in one line, so a missing block is a decision and not a gap. Gaps
+> in this table are bugs waiting to happen. See guide Section 7.
 
 ### 7.1 Navigation Inputs
 
@@ -246,7 +248,9 @@ behind a tab, a scroll or a button — in that order, with the reason for each.]
 [To be designed]
 
 > Fill this checklist before marking the spec as Approved. Any unchecked item
-> blocks implementation start.
+> blocks implementation start. Fill only the blocks of the input methods the
+> game supports: an item for a method it does not support reads `N/A — not
+> supported` and blocks nothing.
 
 **Keyboard**
 - [ ] All interactive elements are reachable using Tab and arrow keys alone
@@ -255,6 +259,7 @@ behind a tab, a scroll or a button — in that order, with the reason for each.]
 - [ ] Focus is visible at all times (no element where focus ring disappears)
 - [ ] Focus does not escape the screen while it is open (focus trap for modals)
 - [ ] Esc key closes or cancels (and does not quit the game from within a screen)
+- [ ] Web game: the same close or cancel is reachable without Esc, through another supported input (an on-screen control, or a key the browser does not reserve), since the browser takes Esc to leave fullscreen (`Q-KEY-2`)
 
 **Gamepad**
 - [ ] All interactive elements reachable with D-Pad and left stick
@@ -357,11 +362,12 @@ behind a tab, a scroll or a button — in that order, with the reason for each.]
 - [ ] Scrollable zones scroll smoothly without frame drops when fully populated
 
 **Input**
-- [ ] All interactive elements reachable by keyboard using Tab and arrow keys only
-- [ ] All interactive elements reachable by gamepad using D-Pad and face buttons only
-- [ ] All interactive elements reachable by mouse without keyboard
+- [ ] All interactive elements reachable by keyboard using Tab and arrow keys only (when the game supports keyboard)
+- [ ] All interactive elements reachable by gamepad using D-Pad and face buttons only (when the game supports gamepad)
+- [ ] All interactive elements reachable by touch alone (when the game supports touch)
+- [ ] All interactive elements reachable by mouse without keyboard (when the game supports mouse)
 - [ ] No action requires simultaneous input that is not documented in Section 7
-- [ ] Focus is visible at all times on keyboard and gamepad navigation
+- [ ] Focus is visible at all times on keyboard and gamepad navigation (for each of the two the game supports)
 - [ ] Focus does not escape the screen while it is open
 
 **Events & Data**

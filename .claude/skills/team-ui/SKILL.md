@@ -215,7 +215,7 @@ Delegate to **ui-programmer**:
 - **Use patterns from `design/ux/interaction-patterns.md`** — do not reinvent patterns that are already specified. If a pattern almost fits but needs modification, note the deviation and flag it for ux-designer review.
 - **UI NEVER owns or modifies game state** — display only; emit events for all player actions
 - All text through the localization system — no hardcoded player-facing strings
-- Support both input methods (keyboard/mouse AND gamepad)
+- Support every input method the game supports, each usable alone (keyboard/mouse, touch, gamepad: the ones the UX spec names), and none it does not; on a web game no action needs Escape or Ctrl/Cmd+W (`.claude/rules/ui-code.md`)
 - Implement accessibility features per the committed tier in `design/accessibility-requirements.md`
 - Wire up data binding to game state
 - **If any new interaction pattern is created during implementation** (i.e., something not already in the pattern library), add it to `design/ux/interaction-patterns.md` before marking implementation complete
@@ -224,7 +224,7 @@ Delegate to **ui-programmer**:
 ### Phase 4: Review (parallel)
 
 Delegate in parallel:
-- **ux-designer**: Verify implementation matches wireframes and interaction spec. Test keyboard-only and gamepad-only navigation. Check accessibility features function correctly.
+- **ux-designer**: Verify implementation matches wireframes and interaction spec. Test navigation with each supported input method alone. Check accessibility features function correctly.
 - **art-director**: Verify visual consistency with art bible. Check at minimum and maximum supported resolutions.
 - **accessibility-specialist**: Verify compliance against the committed accessibility tier documented in `design/accessibility-requirements.md`. Flag any violations as blockers. **If that file is absent there is no committed tier, so this gate has no criterion: report `Accessibility: NOT ASSESSED — no committed tier (design/accessibility-requirements.md absent)` and do NOT report the gate as passed**. Carry forward whatever tier Phase 1a recorded as assumed, and say plainly that it was assumed.
 

@@ -77,8 +77,13 @@ Before validating any spec, load:
    `PC` or `Web` is in `targets`; gamepad if `gamepad_support` is Full or
    Partial; touch if `touch_support` is Full or Partial; plus `primary_input`.
    When falling back to `technical-preferences.md`, use its explicit Input
-   Methods field instead. This is the authoritative source for the Input Method
-   Coverage checks in Phase 3A — not the spec's own header. If neither source is
+   Methods field instead. This is the source for the Input Method
+   Coverage checks in Phase 3A — not the spec's own header. One exception: the
+   derived set adds keyboard/mouse for every PC or Web target, so when the brief,
+   the GDD or the spec states that the game does not support a derived method
+   ("touch only"), check the methods the design names, and report the mismatch
+   between the design and `project.yaml` as a finding rather than requiring
+   coverage of a method the game does not have. If neither source is
    configured, fall back to the spec header.
 2. The accessibility tier committed to in `design/accessibility-requirements.md`
    (if it exists)

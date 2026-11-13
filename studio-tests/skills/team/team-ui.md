@@ -166,7 +166,7 @@ Fixture defaults.
 1. Phase 4 begins after implementation is confirmed complete
 2. Three Agent calls issued simultaneously: ux-designer, art-director, accessibility-specialist
 3. Each stream operates independently:
-   - ux-designer: verifies implementation matches wireframes, tests keyboard-only and gamepad-only navigation, checks accessibility features function
+   - ux-designer: verifies implementation matches wireframes, tests navigation with each supported input method alone (keyboard only, gamepad only, touch only: the ones the game supports), checks accessibility features function
    - art-director: verifies visual consistency with art bible at minimum and maximum supported resolutions
    - accessibility-specialist: audits against the Standard accessibility tier in `design/accessibility-requirements.md`; any violation flagged as a blocker
 4. Skill waits for all three results before proceeding to Phase 5

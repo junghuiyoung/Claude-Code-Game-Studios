@@ -615,8 +615,15 @@ These three patterns define how screens enter and exit the navigation stack.
 | Platform | Input | Behavior |
 |----------|-------|---------|
 | [Platform] | [Input] | [Behavior] |
+| Web | Another supported input, always (an on-screen back control, or a key the browser does not reserve); Escape only as a second way | [Behavior. In a browser Escape leaves fullscreen before the game sees it, so "go back" can never depend on it] |
 
 **Rules**: [Never override "go back / cancel"; every screen defines its Escape behavior explicitly in its UX spec]
+
+**Web rule (`Q-KEY-2`, `.claude/docs/game-quality-standard.md`)**: on a web game
+every screen can be left, and every dialog answered, without Escape and without
+Ctrl/Cmd+W. Escape may also go back, but another supported input always does
+the same thing: an on-screen control, or a key the browser does not reserve. Delete this rule and the Web row only for a game
+that does not run in a browser.
 
 ---
 

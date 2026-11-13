@@ -116,7 +116,11 @@ requirements:
   `project.yaml`, derive it: keyboard/mouse if `PC` or `Web` is in `targets`;
   gamepad if gamepad support is Full/Partial; touch if touch support is
   Full/Partial; plus the primary input. When falling back to
-  `technical-preferences.md`, use its explicit Input Methods field.
+  `technical-preferences.md`, use its explicit Input Methods field. The derived
+  set is a starting point, not the answer: it adds keyboard/mouse for every PC
+  or Web target, so a touch-only web game still lists it. When the brief, GDD
+  or the user names the supported inputs and they differ from the derived set,
+  use what the design says and state the difference in one line.
 
 If neither source is configured, ask once:
 > "Input methods aren't configured yet. What does this game target?"

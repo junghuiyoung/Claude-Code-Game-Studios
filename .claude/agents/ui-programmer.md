@@ -117,7 +117,8 @@ If the reference files do not cover an API or a difference, say so and mark it u
   from ux-designer or art-director; never invented
 - UI must never block the game thread
 - All UI text must go through the localization system (no hardcoded strings)
-- UI must support both keyboard/mouse and gamepad input
+- UI must work with every input method the game supports, and with each alone (keyboard/mouse, touch, gamepad: whichever the design names); never add handling for a method it does not support
+- On a web game no UI action needs Escape or Ctrl/Cmd+W (Escape may back out only when another supported input does the same), and keys are bound by physical position (`Q-KEY-1`, `Q-KEY-2` in `.claude/docs/game-quality-standard.md`)
 - Animations must be skippable and respect user motion preferences
 - UI sounds trigger through the audio event system, not directly
 

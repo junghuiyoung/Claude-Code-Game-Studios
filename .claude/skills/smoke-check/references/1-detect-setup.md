@@ -29,9 +29,10 @@ Before running anything, understand the environment:
    a C# test class, an Unreal automation test source. Markdown checklists do not
    count: `/test-setup` always writes `tests/smoke/critical-paths.md`, and
    counting it would hide exactly the zero-test state this step exists to catch.
-   Phaser's generated `tests/phaser-platform.test.mjs` verifies the starter's
-   platform adapter only. Do not count it as a game test or use it to satisfy
-   a game-suite requirement.
+   Phaser's generated `tests/phaser-platform.test.mjs` and
+   `tests/phaser-controls.test.mjs` verify the starter's platform adapter, its
+   controls logic and its scene input wiring, and nothing else. Do not count either as a game test or use it to
+   satisfy a game-suite requirement.
    If none are found **at `qa.level: minimal`**, tests are waived at this level:
    record the automated row as `WAIVED — qa.level: minimal, no game tests`, skip
    the test run in Phase 2 and all of Phase 3 (say so in one line each), run

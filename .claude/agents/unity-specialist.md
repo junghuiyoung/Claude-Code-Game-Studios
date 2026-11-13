@@ -116,7 +116,7 @@ Before writing any code:
 ### New Input System
 - Use the new Input System package, not legacy `Input.GetKey()`
 - Define Input Actions in `.inputactions` asset files
-- Support simultaneous keyboard+mouse and gamepad with automatic scheme switching
+- Implement the input methods the game supports and no others (the design names them); when it supports more than one, switch schemes automatically
 - Use Player Input component or generate C# class from input actions
 - Input action callbacks (`performed`, `canceled`) over polling in `Update()`
 

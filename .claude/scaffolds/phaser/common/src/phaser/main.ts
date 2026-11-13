@@ -1,5 +1,11 @@
 import Phaser from 'phaser';
 import { playCue } from './audio';
+import {
+  MOVEMENT_BINDINGS,
+  getMovementDirection,
+  getMovementKeyLabels,
+  type KeyboardLayoutMap,
+} from './controls';
 import { connectPlatform } from './platform';
 import type { GamePlatform } from './platform-types';
 import './style.css';
@@ -7,6 +13,7 @@ import './style.css';
 const GRID_SIZE = 36;
 const MOVE_SPEED = 240;
 const MARKER_RADIUS = 12;
+const MOVEMENT_CODES = new Set<string>(Object.values(MOVEMENT_BINDINGS).flat());
 
 type DemoState = 'loading' | 'ready' | 'playing' | 'paused';
 
@@ -19,13 +26,39 @@ function requireElement<T extends HTMLElement>(id: string): T {
 const playButton = requireElement<HTMLButtonElement>('play-toggle');
 const resetButton = requireElement<HTMLButtonElement>('reset-demo');
 const status = requireElement<HTMLParagraphElement>('status');
+
+function showMovementKeyLabels(layoutMap?: KeyboardLayoutMap): void {
+  const labels = getMovementKeyLabels(layoutMap);
+  for (const [direction, label] of Object.entries(labels)) {
+    requireElement<HTMLElement>(`movement-${direction}`).textContent = label;
+  }
+  requireElement<HTMLElement>('movement-key-hint').setAttribute(
+    'aria-label',
+    `Move: ${labels.up} up, ${labels.left} left, ${labels.down} down, ${labels.right} right`,
+  );
+}
+
+async function loadMovementKeyLabels(): Promise<void> {
+  showMovementKeyLabels();
+  const keyboard = (navigator as Navigator & {
+    keyboard?: { getLayoutMap?: () => Promise<KeyboardLayoutMap> };
+  }).keyboard;
+  if (!keyboard?.getLayoutMap) return;
+
+  try {
+    showMovementKeyLabels(await keyboard.getLayoutMap());
+  } catch {
+    // Layout access may be denied in an iframe; keep the QWERTY fallback.
+  }
+}
+
+void loadMovementKeyLabels();
 const platformReady = connectPlatform();
 
 class StarterScene extends Phaser.Scene {
   private grid!: Phaser.GameObjects.Graphics;
   private marker!: Phaser.GameObjects.Arc;
-  private cursors?: Phaser.Types.Input.Keyboard.CursorKeys;
-  private wasd?: Record<'up' | 'down' | 'left' | 'right', Phaser.Input.Keyboard.Key>;
+  private heldCodes = new Set<string>();
   private state: DemoState = 'loading';
   private platform?: GamePlatform;
 
@@ -34,13 +67,9 @@ class StarterScene extends Phaser.Scene {
     this.marker = this.add.circle(0, 0, MARKER_RADIUS, 0x72e5bd).setStrokeStyle(2, 0xd0ffee);
     const keyboard = this.input.keyboard;
     if (keyboard) {
-      this.cursors = keyboard.createCursorKeys();
-      this.wasd = {
-        up: keyboard.addKey('W'),
-        down: keyboard.addKey('S'),
-        left: keyboard.addKey('A'),
-        right: keyboard.addKey('D'),
-      };
+      // Phaser 4.2.1 passes the native KeyboardEvent through these events.
+      keyboard.on(Phaser.Input.Keyboard.Events.ANY_KEY_DOWN, this.onKeyDown);
+      keyboard.on(Phaser.Input.Keyboard.Events.ANY_KEY_UP, this.onKeyUp);
     }
     this.centerMarker();
     this.drawGrid();
@@ -52,6 +81,9 @@ class StarterScene extends Phaser.Scene {
     window.addEventListener('blur', this.clearHeldKeys);
     document.addEventListener('visibilitychange', this.clearHeldKeys);
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
+      keyboard?.off(Phaser.Input.Keyboard.Events.ANY_KEY_DOWN, this.onKeyDown);
+      keyboard?.off(Phaser.Input.Keyboard.Events.ANY_KEY_UP, this.onKeyUp);
+      this.clearHeldKeys();
       this.scale.off(Phaser.Scale.Events.RESIZE, this.drawGrid, this);
       this.input.off('pointerup', this.onPointerUp, this);
       playButton.removeEventListener('click', this.togglePlay);
@@ -71,10 +103,7 @@ class StarterScene extends Phaser.Scene {
   update(_time: number, delta: number): void {
     if (this.state !== 'playing' || document.hidden) return;
 
-    const held = (direction: 'up' | 'down' | 'left' | 'right') =>
-      Boolean(this.cursors?.[direction].isDown || this.wasd?.[direction].isDown);
-    const x = Number(held('right')) - Number(held('left'));
-    const y = Number(held('down')) - Number(held('up'));
+    const { x, y } = getMovementDirection(this.heldCodes);
     if (x === 0 && y === 0) return;
 
     const distance = MOVE_SPEED * Math.min(delta, 50) / 1000 / Math.hypot(x, y);
@@ -104,7 +133,21 @@ class StarterScene extends Phaser.Scene {
   };
 
   private clearHeldKeys = (): void => {
-    this.input.keyboard?.resetKeys();
+    this.heldCodes.clear();
+  };
+
+  private onKeyDown = (event: KeyboardEvent): void => {
+    if (event.ctrlKey || event.metaKey || event.altKey) {
+      this.clearHeldKeys();
+      return;
+    }
+    if (!MOVEMENT_CODES.has(event.code)) return;
+    event.preventDefault();
+    this.heldCodes.add(event.code);
+  };
+
+  private onKeyUp = (event: KeyboardEvent): void => {
+    this.heldCodes.delete(event.code);
   };
 
   private onPointerUp(pointer: Phaser.Input.Pointer): void {

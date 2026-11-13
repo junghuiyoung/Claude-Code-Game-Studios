@@ -104,7 +104,17 @@ because the game may still be published somewhere later.
 
 `src/` is the Phaser code root. `npm run typecheck` verifies TypeScript and
 `npm run preview` serves the production build. `npm test` runs the starter's
-platform adapter tests; it does not exercise gameplay or the browser build.
+platform adapter and controls tests; it does not exercise gameplay or the
+browser build.
+
+The starter's `src/phaser/controls.ts` is the model for a new game's input: keys
+are bound by physical position (`KeyboardEvent.code`), the on-screen hint takes
+its key labels from the player's keyboard layout where the browser gives one,
+nothing needs Escape or Ctrl/Cmd+W, and each supported input method has its own
+picture hint (`Q-KEY-1`, `Q-KEY-2`, `Q-ONB-5` in
+`.claude/docs/game-quality-standard.md`). Build the game's controls on it rather
+than on `keyboard.addKey('W')`. It supports keyboard and pointer only: add a
+method only when the design names it.
 Leave `commands.test` and `commands.smoke` unset until the project has
 gameplay tests and a dedicated smoke command, respectively.
 Use the Phaser `/smoke-check` route separately for browser evidence. Never

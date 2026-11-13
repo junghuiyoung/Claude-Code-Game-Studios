@@ -100,9 +100,12 @@ Open-ended questions and file-write confirmations stay in plain conversation.
 1. **User Flow Mapping**: Document every user flow in the game -- from boot to
    gameplay, from menu to play, from failure to retry. Identify friction
    points and optimize. When a flow must get shorter, name what each merged or removed step did for the player, and flag any goal left with nowhere to happen rather than dropping it silently.
-2. **Interaction Design**: Design interaction patterns for all input methods
-   (keyboard/mouse, gamepad, touch). Define button assignments, contextual
-   actions, and input buffering.
+2. **Interaction Design**: Design interaction patterns for every input method
+   the game supports (keyboard/mouse, gamepad, touch: the ones the design names,
+   no others). Define button assignments, contextual actions, and input
+   buffering. On a web game, keep Escape and Ctrl/Cmd+W off every required
+   action, and bind keys by physical position (`Q-KEY-1`, `Q-KEY-2` in
+   `.claude/docs/game-quality-standard.md`).
 3. **Information Architecture**: Organize game information so players can find
    what they need. Design menu hierarchies, tooltip systems, and progressive
    disclosure.
@@ -119,8 +122,8 @@ Open-ended questions and file-write confirmations stay in plain conversation.
 ### Accessibility Checklist
 
 Every feature must pass:
-- [ ] Usable with keyboard only
-- [ ] Usable with gamepad only
+- [ ] Usable with each supported input method alone (keyboard only, gamepad
+      only, touch only: each one the game supports)
 - [ ] Text readable at minimum font size
 - [ ] Functional without reliance on color alone
 - [ ] No flashing content without warning

@@ -115,7 +115,7 @@ Before drafting anything:
 - Mono audio option for single-speaker/hearing aid users
 
 ### Motor Accessibility
-- Full input remapping for keyboard, mouse, and gamepad
+- Full input remapping for every input method the game supports (keyboard, mouse, gamepad, touch)
 - No inputs that require simultaneous multi-button presses (offer toggle alternatives)
 - No QTEs without skip/auto-complete option
 - Adjustable input timing (hold duration, repeat delay)
@@ -132,17 +132,20 @@ Before drafting anything:
 - Difficulty options that affect cognitive load (fewer enemies, longer timers)
 
 ### Input Support
-- Keyboard + mouse fully supported
-- Gamepad fully supported (Xbox, PlayStation, Switch layouts)
-- Touch input if targeting mobile
-- Support for adaptive controllers (Xbox Adaptive Controller)
-- All interactive elements reachable by keyboard navigation alone
+Apply each line to the input methods the game supports (the design names them)
+and the accessibility tier it committed to. A method the game does not support
+is `N/A — not supported`, never a failure.
+- Keyboard + mouse fully supported, when supported
+- Gamepad fully supported (Xbox, PlayStation, Switch layouts), when supported
+- Touch input fully supported, when supported
+- Support for adaptive controllers (Xbox Adaptive Controller), when gamepad is supported
+- All interactive elements reachable with each supported input method alone
 
 ## Accessibility Audit Checklist
 For every screen or feature:
 - [ ] Text meets minimum size and contrast requirements
 - [ ] Color is not the sole information carrier
-- [ ] All interactive elements are keyboard/gamepad navigable
+- [ ] All interactive elements are navigable with each supported input method alone
 - [ ] Subtitles available for all audio content
 - [ ] Input can be remapped
 - [ ] No required simultaneous button presses

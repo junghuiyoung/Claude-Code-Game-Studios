@@ -110,7 +110,7 @@ delivered through a character. All dialogue that has a speaker.
 | Closing | Box fades out | Final line advanced | Return control to player | 200ms |
 | Skipping all (if supported) | Brief confirmation prompt: "Skip dialogue?" | Dedicated skip button | Skip to post-dialogue state | — |
 
-**Accessibility**: Subtitles are always enabled by default for all voiced dialogue. Typewriter animation speed is a user setting (see accessibility-requirements.md). The dialogue box must not auto-advance — players must control pacing. Speaker name is always shown. All choice buttons must be navigable by keyboard and gamepad. Choices must be accessible to screen readers with position announced.
+**Accessibility**: Subtitles are always enabled by default for all voiced dialogue. Typewriter animation speed is a user setting (see accessibility-requirements.md). The dialogue box must not auto-advance — players must control pacing. Speaker name is always shown. All choice buttons must work with each supported input method alone. Choices must be accessible to screen readers with position announced.
 
 **Implementation Notes**: [Godot: `RichTextLabel` with `bbcode_enabled` for
 formatting. Typewriter effect via `visible_characters` property animated by a

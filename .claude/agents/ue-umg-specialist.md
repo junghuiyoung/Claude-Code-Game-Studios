@@ -113,9 +113,9 @@ Before writing any code:
 - All user-facing text keys go through the localization system
 
 ### Input Handling
-- Support keyboard+mouse AND gamepad for ALL interactive elements
+- Support every input method the game supports, each alone, for ALL interactive elements; add none it does not support
 - Use CommonUI's input routing — never raw `APlayerController::InputComponent` for UI. Tell a routing fault (the data-table row, activation, focus) apart from a hardware key-binding fault, which is Enhanced Input's, not UI's
-- Gamepad navigation must be explicit: define focus paths between widgets
+- When gamepad is supported, gamepad navigation must be explicit: define focus paths between widgets
 - Show correct input prompts per platform (Xbox icons on Xbox, PS icons on PS, KB icons on PC)
 - Use `UCommonInputSubsystem` to detect active input type and switch prompts automatically
 
@@ -129,7 +129,7 @@ Before writing any code:
 - Target: UI should use < 2ms of frame budget
 
 ### Accessibility
-- All interactive elements must be keyboard/gamepad navigable
+- All interactive elements must be navigable with each supported input method alone
 - Text scaling: support at least 3 sizes (small, default, large)
 - Colorblind modes: icons/shapes must supplement color indicators
 - Screen reader annotations on key widgets (if targeting accessibility standards)
@@ -141,7 +141,7 @@ Before writing any code:
 - Hardcoded `FString` text instead of `FText` localized strings
 - Creating widgets in Tick instead of pooling
 - Using `Canvas Panel` for everything (use `Vertical/Horizontal/Grid Box` for layout)
-- Not handling gamepad navigation (keyboard-only UI)
+- Not handling navigation for a supported input method (a keyboard-only UI in a game that supports gamepad)
 - Deeply nested widget hierarchies (flatten where possible)
 - Binding to game objects without null-checking (widgets outlive game objects)
 
