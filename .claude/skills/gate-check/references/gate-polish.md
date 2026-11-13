@@ -17,6 +17,11 @@
 - [ ] At least 3 distinct playtest sessions documented in `production/qa/playtests/`
 - [ ] Playtest reports cover: new player experience, mid-game systems, and difficulty curve
 - [ ] Fun hypothesis from Game Concept has been explicitly validated or revised
+- [ ] **Quality floor, every tier** (`.claude/docs/game-quality-standard.md`; which rows are floor comes from its Level column on this run). Two parts, both read from files:
+  - A first-run record exists under `production/qa/evidence/first-run/`. None: a Blocker — the game has not been started once as a new player.
+  - Every `Complete` story carries the record of its floor check: a `## Quality Standard` section, and in its Completion Notes a `**Quality rows**` line in which each floor row the section lists has an evidence path or a confirmed `N/A`. This gate reads that record; it does not redo `/story-done`'s check. A floor row on that line with no evidence path (`MISSING`, `NOT LISTED`, `not observed`, `NOT ASSESSED`): a Blocker naming the story and the row. A `Complete` story with no `## Quality Standard` section or no `**Quality rows**` line: the item is NOT ASSESSED for that story — it was closed before the standard, or its check left no record. The fix has two steps, since `/story-done` checks the section and never writes it: with the user's approval add the `## Quality Standard` section to the story (the rows it touches, as `.claude/docs/templates/story.md` lays them out), then run `/story-done [path]`. The absence of a bad word on the line is never a pass: the line has to be there and name evidence.
+  - No unresolved playtest blocker. Read the `## Quality floor blockers` table of every report in `production/qa/playtests/` (no reports, or tables that read `None observed in this session`: nothing to resolve, and no report is required for this part). Each row is a floor row seen failing in play after the fact, so a story's earlier close record does not answer it. A row is resolved only when some `Complete` story's Completion Notes answer it by name: its `**Quality rows**` line gives that Q-ID an evidence path and `resolves: [that report's path]`, which `/story-done` writes when it closes a story over a playtest blocker. Any story may be the one, so a row saved as `no story carries this row` is resolved the same way once a story takes the row. No date is compared. No such line: a Blocker naming the report and the row, and the story the report named if any
+  - The standard file not found: the whole item is NOT ASSESSED, never passed
 
 **Quality Checks:**
 - [ ] Tests are passing (run test suite via Bash)
@@ -32,6 +37,11 @@
 
 ## Workflow tier reductions
 
+**The quality floor item is outside every reduction below.** It is required at
+`full`, `standard` and `minimal`, and at every `qa.level`: the floor of
+`.claude/docs/game-quality-standard.md` holds at every rigor, and "everything
+else drops" never reaches it.
+
 The checklist above is the **`full` baseline**. At lower tiers apply the
 reduction for the resolved tier; items not named keep their status above.
 Reductions only ever *relax* a requirement — `workflow_overrides` is the
@@ -42,7 +52,7 @@ only thing that adds one.
   **core mechanics + smoke check + playable end-to-end + 1+ documented
   playtest + no open S1 Critical bugs** required
 - **`minimal`** — **smoke check + playable end-to-end + no open S1 Critical
-  bugs** required; the core-mechanics cross-check → recommended; everything
-  else **drops**. Reductions relax what must *exist*, never what must *work* —
+  bugs + the quality floor item** required; the core-mechanics cross-check →
+  recommended; everything else **drops**. Reductions relax what must *exist*, never what must *work* —
   a gate that closes production on "it boots" alone has not asked whether the
   game plays.

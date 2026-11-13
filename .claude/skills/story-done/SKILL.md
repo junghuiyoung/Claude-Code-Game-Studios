@@ -241,6 +241,17 @@ at `workflow: minimal`, where `/story-readiness` does not run.
        source was opened.
 - **An advisory row:** report `[Q-ID]: [what the evidence shows]` or `[Q-ID]: not
   observed`. Never a gap.
+- **A playtest blocker on a row this story lists.** Grep the `## Quality floor
+  blockers` tables under `production/qa/playtests/` for each floor row the story
+  lists. Every report row for that Q-ID that no `Complete` story's `**Quality
+  rows**` line already `resolves:` is open against this close, whichever story
+  the report named (this one, another, or none): a story that lists the row
+  takes on what play showed about it. Say so, naming each report. The row's evidence must show
+  what the report saw is fixed (a first-run record's stamp already forces a new
+  capture after the fix); evidence that still shows it: the criterion FAILS. On
+  close, write `resolves: [report path]` beside that row, once per report, with
+  the path exactly as the file is named. No reports, or no such
+  row: say `Playtest blockers: none open on this story's rows`.
 - **No section** (a story written before the standard): `Quality rows: NOT
   ASSESSED — the story has no Quality Standard section`. When the story changes
   anything in the list above, this keeps the verdict at best NOT ASSESSED;
@@ -383,7 +394,7 @@ the evidence exists.
    **Criteria**: [X/Y passing] ([deferred items])
    **Deviations**: [None, or the advisory ones]
    **Test Evidence**: [path, or "waived at qa.level minimal", or "none required"]
-   **Quality rows**: [each Q-ID with its evidence path or "not observed", or "None — reason", or the NOT ASSESSED line]
+   **Quality rows**: [each Q-ID with its evidence path or "not observed", or "None — reason", or the NOT ASSESSED line; a floor row closed over a playtest blocker adds `resolves: [report path]`, which is what `/gate-check` looks for]
    **Reviewed by**: [value]
    ```
 3. "Close and log as tech debt": read `references/tech-debt-row.md` and add one

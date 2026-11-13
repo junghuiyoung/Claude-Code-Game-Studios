@@ -373,6 +373,10 @@ floor row. Case 9 is the exception.
 - [ ] Variant — the story lists `Q-ONB-3: N/A — the brief specifies no onboarding step` and the current record says there is none: the line reads `N/A — … confirmed by` the record; with no current record it reads `NOT ASSESSED — N/A reason not confirmed`
 - [ ] Variant — the record exists and says the hint cannot be skipped: AC-2 FAILS and the verdict is BLOCKED
 - [ ] Variant — the story has no `## Quality Standard` section: `Quality rows: NOT ASSESSED — the story has no Quality Standard section`, and on this story, which changes a screen, the verdict is at best NOT ASSESSED
+- [ ] Variant — the record is complete and current, and `production/qa/playtests/playtest-2026-11-20-a.md` has a `Quality floor blockers` row for `Q-ONB-3` naming this story that no story yet resolves: the run names the report as open against this close, and on close the `**Quality rows**` line carries `resolves: production/qa/playtests/playtest-2026-11-20-a.md` beside `Q-ONB-3`
+- [ ] Variant — the same, but the new first-run record still says the hint cannot be skipped: AC-2 FAILS, the verdict is BLOCKED, and nothing is written as resolved
+- [ ] Variant — the open report row names another story, `story-003-old-hint.md`, and this story lists `Q-ONB-3` as the fix for it: the row is open against this close all the same, and on close this story's line carries the `resolves:`
+- [ ] Variant — no playtest report exists: the run says `Playtest blockers: none open on this story's rows`
 - [ ] Variant — a story with no section whose criteria change a rule and nothing a player sees, hears or presses, every criterion covered: the same line is an information line and the verdict stays COMPLETE
 
 ---

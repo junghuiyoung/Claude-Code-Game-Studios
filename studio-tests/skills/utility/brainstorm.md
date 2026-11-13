@@ -79,7 +79,9 @@ Fixture defaults.
 1. Tier branch: `full` → full flow
 2. Phase 1 asks discovery questions (favourite games as plain text; the
    Experience / Timeline / Dev level questions, asked together)
-3. Phase 2 presents 3 concepts, then one question with five options to pick
+3. Phase 2 presents 3 concepts, then one question with five options to pick; Phase 3
+   then asks for the first action, the onboarding and how it is skipped, and the
+   supported input methods
 4. After pillars are locked, CD-PILLARS and AD-CONCEPT-VISUAL are spawned in
    parallel; their results are presented as two questions asked together (Pillars / Visual anchor)
 5. Phase 6 asks for platform and engine (the engine question always prompts);
@@ -95,6 +97,7 @@ Fixture defaults.
 - [ ] TD-FEASIBILITY spawns before scope tiers are defined; PR-SCOPE after
 - [ ] "May I write it to `design/gdd/game-concept.md`?" is asked before writing
 - [ ] The concept document includes a Visual Identity Anchor section
+- [ ] Its Flow State Design has the First minute and Controls lines filled from the user's answers, listing only the input methods the user named
 - [ ] Next-step handoff lists `/map-systems`
 - [ ] Verdict is COMPLETE
 
@@ -165,7 +168,9 @@ Fixture defaults.
 1. Tier branch: `minimal` → Lean Brief flow; Phases 1–5 are skipped
 2. From the hint, proposes 2–3 one-line concepts and asks one question to pick or combine
 3. Fills the brief fields conversationally (pitch, core loop, player goal & fail
-   state, MVP, out of scope, build order) and presents the brief for one confirmation
+   state, first minute & controls, MVP, out of scope, build order) and presents the
+   brief for one confirmation. For controls it asks which input methods the game
+   takes and lists only those
 4. Asks "Brief is ready. May I write it to `design/game-brief.md`?" with
    `[A] Yes — write it` / `[B] Revise a field first`
 5. Next steps: `/create-stories`, then `/dev-story`; `/setup-engine` is NOT listed

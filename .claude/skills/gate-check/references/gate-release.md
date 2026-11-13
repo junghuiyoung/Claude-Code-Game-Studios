@@ -16,6 +16,8 @@
 - [ ] No test regressions from previous sprint (test suite passes fully)
 - [ ] Balance data has been reviewed (`/balance-check` run)
 - [ ] Release checklist completed (`/release-checklist` run)
+- [ ] **Quality floor, every tier:** the newest release checklist in `production/releases/` has a `### Quality Standard` section, written for this candidate, in which every floor row that applies is ticked. A floor row it reports as failed: a Blocker. A floor row it reports as `NOT ASSESSED`, a checklist with no such section (written before the standard), or no checklist at all: this item is NOT ASSESSED — run `/release-checklist` — never passed. **This item reads the Floor rows of that section and nothing else in the checklist.** Its advisory rows, its other sections and its overall Go / No-Go never reach this item: a checklist whose Go / No-Go is NOT ASSESSED only because of a section this tier dropped (certification, store, launch) still passes this item when every floor row is ticked. One more source, at every tier:
+  - No unresolved playtest blocker. Read the `## Quality floor blockers` table of every report in `production/qa/playtests/` (no reports, or tables that read `None observed in this session`: nothing to resolve, and no report is required for this part). Each row is a floor row seen failing in play after the fact, so a story's earlier close record does not answer it. A row is resolved only when some `Complete` story's Completion Notes answer it by name: its `**Quality rows**` line gives that Q-ID an evidence path and `resolves: [that report's path]`, which `/story-done` writes when it closes a story over a playtest blocker. Any story may be the one, so a row saved as `no story carries this row` is resolved the same way once a story takes the row. No date is compared. No such line: a Blocker naming the report and the row, and the story the report named if any
 - [ ] Store metadata prepared (if applicable)
 - [ ] Changelog / patch notes drafted
 
@@ -32,6 +34,13 @@
 
 ## Workflow tier reductions
 
+**The quality floor item is outside every reduction below.** It is required at
+`full`, `standard` and `minimal`, and at every `qa.level`: the floor of
+`.claude/docs/game-quality-standard.md` holds at every rigor, and "everything
+else drops" never reaches it. At `minimal` the "Release checklist completed"
+item itself drops, so the floor item is what makes `/release-checklist` run
+before a release.
+
 The checklist above is the **`full` baseline**. At lower tiers apply the
 reduction for the resolved tier; items not named keep their status above.
 Reductions only ever *relax* a requirement — `workflow_overrides` is the
@@ -39,4 +48,4 @@ only thing that adds one.
 
 - **`full`** — all features + content complete + localization + QA sign-off + smoke (PASS) + no open S1–S3 bugs all required
 - **`standard`** — content-complete audit + QA sign-off + localization → recommended; **all features + smoke + no open S1 Critical bugs** required; open S2 High and S3 Medium bugs → recommended
-- **`minimal`** — only **smoke + no open S1 Critical bugs** required; everything else **drops**
+- **`minimal`** — only **smoke + no open S1 Critical bugs + the quality floor item** required; everything else **drops**

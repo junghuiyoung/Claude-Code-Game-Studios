@@ -93,6 +93,7 @@ When multiple sounds compete, this priority determines what plays:
 - Master output must never clip — use a limiter on the master bus
 - All volumes must be adjustable by the player (per bus)
 - Default mix should sound good on both speakers and headphones
+- One loudness target for every sound, so levels are consistent and nothing is too loud or too quiet, and music that fits what is on screen (`Q-AES-2`, `Q-FUN-4` in `.claude/docs/game-quality-standard.md`). Record how the target is measured
 
 ### Dynamic Range
 - [Specify loudness targets, e.g., "Target -14 LUFS integrated, -1 dBTP true peak"]

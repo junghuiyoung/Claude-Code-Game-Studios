@@ -41,7 +41,7 @@ question is not an answer: ask again in plain text.
 ## Lean Brief flow (`workflow: minimal`)
 
 A few exchanges, not fifteen: capture the thinking that carries the game on one page, then get to
-code. Write from the template `.claude/docs/templates/game-brief.md` (six required fields, three
+code. Write from the template `.claude/docs/templates/game-brief.md` (seven required fields, four
 one-liners). If `design/game-brief.md` exists, read it and refine it instead of starting over.
 
 1. **Concept.** From the hint typed after the skill name (or one quick open question if there is
@@ -55,13 +55,20 @@ one-liners). If `design/game-brief.md` exists, read it and refine it instead of 
    - **Core loop:** the 2 to 4 steps the player repeats.
    - **Player goal & fail state**: what the player tries to do, and how they lose.
      `/create-stories` turns it into acceptance criteria.
+   - **First minute & controls**: the first core action and when it comes, how the game
+     teaches it inside play and how that is skipped, and each supported input method with what
+     it does. A method the user does not name is not supported: ask which of keyboard, mouse,
+     touch and gamepad the game takes, and never add one. `/create-stories` builds the onboarding
+     and key criteria of `.claude/docs/game-quality-standard.md` from this field.
    - **MVP:** the short list that makes it the game; each item becomes a story. **More than 7
      items: push back.** Say it is too long for an MVP, propose which items to cut (the ones the
      core loop works without), and keep the brief to 7 or fewer.
    - **Out of scope:** what they are deliberately not building (the cut items go here).
    - **Build order:** the riskiest or least proven part first.
-   - **Who it's for and what they feel**, **Art & audio direction**, **Reference game** (the
-     closest shipped game, and the part of it the MVP keeps): one line each; offer, don't force.
+   - **Who it's for and what they feel**, **Art & audio direction**, **Name check** (what was
+     searched to see the title is not another game's or a generic word; "not checked yet" is an
+     honest answer, never left blank), **Reference game** (the closest shipped game, and the part
+     of it the MVP keeps): one line each; offer, don't force.
 3. **Show the filled brief in full.** Then ask, as its own question: "Brief is ready. May I write it
    to `design/game-brief.md`?" `Yes — write it` / `Revise a field first`. Write only on an explicit
    yes to this question; agreeing to a cut or saying "go on" is not a yes to the write. On a

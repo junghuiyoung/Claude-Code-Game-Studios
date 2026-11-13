@@ -105,7 +105,9 @@ Fixture defaults.
    ask, and the verdict is COMPLETE — blank template output; nothing saved
 
 **Assertions:**
-- [ ] Output contains the headings Session Info, Test Focus, First Impressions, Gameplay Flow, Bugs Encountered, Feature-Specific Feedback, Quantitative Data, Overall Assessment and Top 3 Priorities
+- [ ] Output contains the headings Session Info, Test Focus, First Impressions, Gameplay Flow, Bugs Encountered, Feature-Specific Feedback, Quantitative Data, Overall Assessment, Quality Standard rows observed, Quality floor blockers and Top 3 Priorities
+- [ ] First Impressions asks for the seconds from launch to the first core-gameplay action, whether the core action was done without help, and what happened with onboarding
+- [ ] The Quality Standard rows section lists, by ID, the rows `.claude/docs/game-quality-standard.md` checks at `playtest`, read from the file on this run, each left for the observer to fill; when that file is absent the section reads `NOT ASSESSED — .claude/docs/game-quality-standard.md not found` and is still present
 - [ ] Placeholders (e.g. `[Date]`, `[Name/ID]`) are left unfilled
 - [ ] No notes file is read and no findings are fabricated
 - [ ] No "May I write" ask and no file written
@@ -189,6 +191,49 @@ Fixture defaults.
 - [ ] In lean mode, the skip note names CD-PLAYTEST and Lean mode
 - [ ] In solo mode, the skip note names CD-PLAYTEST and Solo mode
 - [ ] No other director gate is spawned in any mode
+
+---
+
+### Case 6: Analyze Mode — Quality Standard rows are observations, and a floor contradiction is routed
+
+**Fixture:**
+- `.claude/docs/game-quality-standard.md` exists; its rows checked at `playtest`
+  include `Q-GEN-1`, `Q-GEN-2` and `Q-FUN-8` (all advisory), and its Level column
+  marks `Q-ONB-3` floor
+- `production/epics/mvp/story-001-first-wave.md` lists `Q-ONB-3 (floor)` in its
+  `## Quality Standard` section and is `Complete`
+- Notes at `production/qa/playtests/raw-2026-11-12.md` say: the tester reached the
+  first wave 4 seconds after launch; asked "what am I supposed to do?" twice;
+  tried to skip the tutorial hint and found no way to; called the third wave
+  "the same thing again". They say nothing about audio or story
+
+**Input:** `/playtest-report analyze production/qa/playtests/raw-2026-11-12.md`
+
+**Expected behavior:**
+1. First Impressions records 4 seconds, the goal as not understood, and
+   onboarding as "tried to skip and could not"
+2. The Quality Standard rows section lists every row checked at `playtest`, by ID:
+   `Q-GEN-1` with the tester's question, `Q-FUN-8` with the quote, and the rows
+   the notes do not cover as `not observed in this session`
+3. The floor is checked on its own, from the standard's Level column: the failed
+   skip contradicts `Q-ONB-3`, which is not among the rows checked at `playtest`
+4. The Quality floor blockers table has one row: `Q-ONB-3`, the note it rests on,
+   `production/epics/mvp/story-001-first-wave.md`, and the fix with its re-check
+5. Phase 3 routes that row before the four buckets, naming `/story-done` on the
+   story after the fix
+6. On the write ask and after a yes, the saved file holds the Quality Standard
+   rows section and the blockers table
+
+**Assertions:**
+- [ ] Every row checked at `playtest` appears, including the ones with nothing observed; none is inferred to have gone well
+- [ ] Each filled row points at what the notes say, as an observation and not a score
+- [ ] The onboarding that could not be skipped is in the Quality floor blockers table and routed first, not listed as a pain point or polish item only
+- [ ] The blocker names the story that carries the row, found from the stories' `## Quality Standard` sections
+- [ ] The saved report still holds the blockers table
+- [ ] Rows whose condition is false for the game read `N/A — why` (no story: the story row)
+- [ ] Variant — no story lists `Q-ONB-3`: the table reads `no story carries this row`, and it is still routed as a blocker
+- [ ] Variant — `production/qa/playtests/playtest-2026-11-12-a.md` already exists: the write ask names `playtest-2026-11-12-a-2.md`, that file is written, and the earlier report is unchanged
+- [ ] Variant — the notes show no floor row failing: the table is replaced by `None observed in this session`, and nothing says the floor is met
 
 ---
 

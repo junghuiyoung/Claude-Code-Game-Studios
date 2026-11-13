@@ -294,7 +294,7 @@ Write the approved section to file.
 
 **Agent delegation**: Spawn in parallel:
 - **`art-director`**: Visual style for UI — diegetic vs. screen-space HUD, typography direction (font personality, weight, size hierarchy), iconography style (flat/outlined/illustrated/photorealistic), animation feel for UI elements
-- **`ux-designer`**: UX alignment check — does the visual direction support the interaction patterns this game requires? Flag any conflicts between art direction and readability/accessibility needs.
+- **`ux-designer`**: UX alignment check — does the visual direction support the interaction patterns this game requires? Flag any conflicts between art direction and readability/accessibility needs. Also return the rule for how buttons are labelled and sized, so the way forward is clear and no button steers the player by its size: the template's Section 7 asks for it, for rows `Q-UI-1` and `Q-UI-2` of `.claude/docs/game-quality-standard.md` (have the agent read those two rows).
 
 Collect both. If they conflict (e.g., art-director wants elaborate diegetic UI but ux-designer flags it would reduce combat readability), surface the conflict explicitly with both positions. Do NOT silently resolve — use `AskUserQuestion` to let the user decide.
 
@@ -303,7 +303,7 @@ Write the approved section to file.
 ### Section 8: Asset Standards
 
 **Agent delegation**: Spawn in parallel:
-- **`art-director`**: File format preferences, naming convention direction, texture resolution tiers, LOD level expectations, export settings philosophy
+- **`art-director`**: File format preferences, naming convention direction, texture resolution tiers, LOD level expectations, export settings philosophy. Also return two production rules the template's Section 8 asks for, for rows `Q-AES-1` and `Q-AES-3` of `.claude/docs/game-quality-standard.md` (have the agent read them): the one source resolution or pixel density every asset is made at and how it is scaled, with what counts as a compression defect; and what keeps every scene in the one style of Sections 1 to 6.
 - **`technical-artist`**: Engine-specific hard constraints — poly count budgets per asset category, texture memory limits, material slot counts, importer constraints, anything from the performance budgets (`performance.*` in `project.yaml`, falling back to `.claude/docs/technical-preferences.md`)
 
 If any art preference conflicts with a technical constraint (e.g., art-director wants 4K textures but performance budget requires 2K for mobile), surface the conflict explicitly with both positions — the ideal and the constrained standard, and the tradeoff. Do NOT silently resolve it — use `AskUserQuestion` to let the user pick (options: the ideal standard, the constrained standard, or document both and let per-asset judgment apply). Ambiguity in asset standards is where production costs are born.

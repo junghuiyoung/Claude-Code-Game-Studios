@@ -54,6 +54,12 @@ Every case's `project.yaml` sets `modes.rigor: minimal` and
 Fixture says otherwise. Rules: `studio-tests/CLAUDE.md` §
 Fixture defaults.
 
+`.claude/docs/game-quality-standard.md` exists. Every fixture document answers
+the rows checked at `UX spec` that it owns, and each floor row it does not own
+has a named owner (`design/ux/first-play.md` holds the control hints), so the
+Quality Standard dimension is assessed and raises nothing. The design names the
+game's controls. Case 6 is the exception.
+
 ---
 
 ## Test Cases
@@ -182,6 +188,51 @@ Fixture defaults.
 
 ---
 
+### Case 6: Quality Standard rows — a floor row the spec contradicts blocks approval
+
+**Fixture:**
+- As Case 1, but the game is a web game: `platform.targets: [Web]`, the brief's
+  controls are "keyboard: arrows to move, Escape to open the pause menu · touch:
+  tap to move", and the spec is `design/ux/pause-menu.md`
+- The spec's Interaction Map opens and closes the pause menu with Escape only;
+  there is no on-screen pause or resume control and no other key, so a touch
+  player cannot pause or resume at all
+- No other UX document exists: nothing owns the game's control hints
+- `.claude/docs/game-quality-standard.md` exists; its rows checked at `UX spec`
+  include `Q-KEY-2` and `Q-ONB-5` (floor) and `Q-UI-1` (advisory)
+
+**Input:** `/ux-review design/ux/pause-menu.md`
+
+**Expected behavior:**
+1. Phase 3A reads the standard and takes the rows checked at `UX spec`, and which
+   are floor, from the file
+2. `Q-KEY-2` applies (web and keyboard, read from the brief's controls) and this
+   screen owns its own keys: a required action is on Escape alone. A BLOCKING
+   issue naming the row
+3. `Q-ONB-5` applies to the game, but the pause menu does not own the first-play
+   control hints, and no document does: `Q-ONB-5: NOT ASSESSED — no document owns
+   this row yet`. Not a blocking issue of this spec
+4. `Q-UI-1` is reported with the section that answers it, or as an ADVISORY issue
+   when this spec owns it and does not address it
+5. The report has a `### Quality Standard` block with one line per row; verdict
+   NEEDS REVISION
+
+**Assertions:**
+- [ ] The rows come from the standard's Checked at column on this run, cited by ID and not restated
+- [ ] A contradicted floor row is BLOCKING; a floor row another screen would own is not demanded of this spec; an unaddressed advisory row the spec owns is ADVISORY
+- [ ] Verdict is NEEDS REVISION, not APPROVED: the known contradiction outranks the row that could not be assessed
+- [ ] Variant — the spec adds an on-screen control that both pauses and resumes, usable by pointer and touch, and `design/ux/first-play.md` exists and holds the control hints: `Q-KEY-2` is answered, `Q-ONB-5` reads `owned by design/ux/first-play.md`, and the verdict is APPROVED when nothing else blocks
+- [ ] Variant — the same fix, but still no document owns the control hints: the dimension is NOT ASSESSED and the verdict is NOT ASSESSED, not APPROVED
+- [ ] Variant — the spec is `design/ux/first-play.md` itself and shows a keyboard hint but none for touch: it owns `Q-ONB-5` and leaves it unaddressed for a supported method, a BLOCKING issue
+- [ ] Variant — `platform.targets: [Web]`, the brief says "touch only", and the spec's Interaction Map uses touch controls with every key binding removed (pause and resume are on-screen buttons): `keyboard` is false although the derived input set lists keyboard/mouse, and `Q-KEY-2` reads `N/A — touch only, no key bound`
+- [ ] Variant — the game is not a web game (`platform.targets: [PC]`): `Q-KEY-2` reads `N/A — not a web game`, and Escape-only is not raised under this dimension
+- [ ] Variant — `project.yaml` has no `platform` block and the design names no targets: `Q-KEY-2` reads `NOT ASSESSED — web unknown`, never N/A
+- [ ] Variant — `.claude/docs/game-quality-standard.md` does not exist: `Quality Standard: NOT ASSESSED — …not found`, it counts among the dimensions not assessed, and the verdict is not APPROVED
+- [ ] Variant — a HUD design (`> **Template**: HUD Design`): the same rows are checked through Phase 3B
+- [ ] Variant — `/ux-review patterns`: `Quality Standard: N/A — the rows are checked on each spec, not on the library`
+
+---
+
 ## Protocol Compliance
 
 - [ ] Loads cross-reference context (platform config, accessibility tier, pattern library, referenced GDDs, player journey) before validating
@@ -199,7 +250,8 @@ Fixture defaults.
 - MAJOR REVISION NEEDED (fundamental issues with scope, player need or
   completeness) is not tested with a dedicated fixture.
 - The pattern library checklist (Phase 3C, `patterns` argument) is not
-  fixture-tested.
+  fixture-tested, apart from Case 6's variant that its Quality Standard
+  dimension reads N/A.
 - The no-argument prompt ("which spec to validate") is not tested.
 - The fallback to `.claude/docs/technical-preferences.md`, and then to the spec
   header, when `project.yaml` has no `platform` block is not tested.

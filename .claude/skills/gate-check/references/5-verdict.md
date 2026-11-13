@@ -110,6 +110,17 @@ Emit it when any of:
 - A referenced upstream verdict is itself `NOT ASSESSED` — it propagates upward
   rather than resolving to a pass.
 
+  > **Only through an item the resolved tier kept, and only for what that item
+  > reads.** A `NOT ASSESSED` in an upstream report propagates when the gate item
+  > that cites the report is still required at this tier and the unassessed part
+  > is the part the item reads. The "Quality floor, every tier" item of the
+  > Polish → Release gate reads the Floor rows of the release checklist's Quality
+  > Standard section and nothing else, so a floor row that is `NOT ASSESSED`
+  > propagates, at every tier. That checklist's overall Go / No-Go being `NOT
+  > ASSESSED` because of a section the tier dropped does not: at `minimal`, where
+  > "Release checklist completed" itself drops, an unanswered certification
+  > question in the checklist must not hold the gate.
+
 Never resolve an unknown by assuming the permissive reading. If the check could
 not run, that fact is the finding.
 

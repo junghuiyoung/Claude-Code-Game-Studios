@@ -418,6 +418,51 @@ before it is made.
 
 ---
 
+### Case 11: The quality floor item survives the `minimal` reduction
+
+**Fixture:**
+- `project.yaml` sets only `modes.rigor: minimal` → `workflow: minimal`,
+  `qa.level: minimal`, `review_mode: solo`; `project.stage: Polish`
+- A smoke report with a PASS verdict exists in `production/qa/`; `production/qa/bugs/`
+  holds no open S1 bug
+- `.claude/docs/game-quality-standard.md` exists
+- `production/releases/` holds no release checklist
+
+**Input:** `/gate-check release`
+
+**Expected behavior:**
+1. The Polish → Release gate file is loaded and its `minimal` reduction applied:
+   smoke and the S1 item stay; "everything else drops"
+2. The item marked "Quality floor, every tier" is not dropped: the reduction text
+   and `references/2b-workflow-tier.md` both hold it outside every reduction
+3. There is no release checklist, so the floor item is NOT ASSESSED, with
+   `/release-checklist` named as what settles it
+4. The verdict is NOT ASSESSED, not PASS; the stage is not written
+
+**Assertions:**
+- [ ] The floor item is listed among the required items at `workflow: minimal` and `qa.level: minimal`
+- [ ] A missing release checklist makes it NOT ASSESSED, never passed and never silently dropped with "Release checklist completed"
+- [ ] Variant — the newest release checklist's `### Quality Standard` section ticks every floor row that applies: the item passes, and with smoke and S1 clean the verdict is PASS
+- [ ] Variant — the same checklist, whose own Go / No-Go is NOT ASSESSED only because `platform.cert_tier` is unset: the floor item still passes and the gate verdict is PASS — the item reads the Floor rows and nothing else, and at `minimal` the certification section is not this gate's to hold
+- [ ] Variant — that section reports a floor row as failed: a Blocker, verdict FAIL
+- [ ] Variant — that section reports a floor row as `NOT ASSESSED`: the item is NOT ASSESSED
+- [ ] Variant — the checklist has no `### Quality Standard` section (written before the standard): NOT ASSESSED, with "re-run `/release-checklist`"
+- [ ] Variant — an advisory row reads `not observed`: the gate is not affected
+- [ ] Variant — `/gate-check polish` at the same tier with no file under `production/qa/evidence/first-run/`: the Production → Polish floor item is a Blocker ("the game has not been started once as a new player"), although the `minimal` reduction drops the playtest items
+- [ ] Variant — `/gate-check polish`, a first-run record exists, and a `Complete` story's Completion Notes read `**Quality rows**: Q-ONB-5: not observed`: a Blocker naming the story and the row — no evidence path is not a pass
+- [ ] Variant — `/gate-check polish`, and a `Complete` story has no `## Quality Standard` section and no `**Quality rows**` line: the item is NOT ASSESSED for that story, with `/story-done [path]` named, and the verdict is not PASS
+- [ ] Variant — `/gate-check polish`, every `Complete` story's `**Quality rows**` line gives each listed floor row an evidence path or a confirmed `N/A`, and no playtest report records a floor blocker: the item passes
+- [ ] Variant — the same valid close records, but `production/qa/playtests/playtest-2026-11-20-a.md` has a `Quality floor blockers` row for `Q-ONB-3` naming `story-001-first-wave.md`, and no story's `**Quality rows**` line `resolves:` that report: the row is unresolved, a Blocker naming the report, the row and the story, and the verdict is FAIL at `workflow: minimal` although the playtest items are dropped there
+- [ ] Variant — that story was fixed and closed again, and its line reads `Q-ONB-3: production/qa/evidence/first-run/ — resolves: production/qa/playtests/playtest-2026-11-20-a.md`: the row is resolved and the item passes, whatever the dates are, the same day included
+- [ ] Variant — the story was closed again the same day with an evidence path for `Q-ONB-3` but no `resolves:`: still a Blocker — the close record does not say it answers this report
+- [ ] Variant — that report is resolved, and a second session the same day by the same tester is saved as `playtest-2026-11-20-a-2.md` with a new `Q-ONB-3` blocker: the `resolves:` for the first report does not cover it, and it is a Blocker
+- [ ] Variant — the blockers row reads `no story carries this row`, and later `story-007-skip-hint.md` lists `Q-ONB-3`, is `Complete`, and its line `resolves:` that report: resolved, and the item passes. With no story resolving it: a Blocker
+- [ ] Variant — no playtest report exists at all: this part has nothing to resolve; no report is required for the floor item
+- [ ] Variant — a `Complete` story with no `## Quality Standard` section: the report names both steps of the fix — add the section with the user's approval, then `/story-done [path]`
+- [ ] Variant — `/gate-check release` with every floor row ticked in the release checklist and the same unresolved playtest blocker: a Blocker, verdict FAIL
+
+---
+
 ## Protocol Compliance
 
 - [ ] Asks before updating the stage ("May I update `project.stage` in `project.yaml` … (and the legacy `production/stage.txt`)?")
@@ -431,9 +476,10 @@ before it is made.
 
 ## Coverage Notes
 
-- The Production → Polish and Polish → Release gates are not covered here
-  because they require complex multi-artifact setups (sprint plans, playtest
-  data, QA sign-off); these are deferred to dedicated follow-up specs.
+- The Production → Polish and Polish → Release gates are covered only for their
+  "Quality floor, every tier" item, at `minimal` (Case 11). Their other items
+  need complex multi-artifact setups (sprint plans, playtest data, QA sign-off)
+  and are deferred to dedicated follow-up specs.
 - The `minimal`-tier Concept gate target (`design/game-brief.md` instead of
   `game-concept.md`) and `system_overrides` key validation are not covered.
 - The Vertical Slice validation block (Pre-Production → Production gate at

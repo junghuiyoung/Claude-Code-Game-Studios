@@ -130,6 +130,8 @@ Which player types does this game primarily serve?
 Flow occurs when challenge matches skill. How does this game maintain flow?
 
 - **Onboarding curve**: [How do the first 10 minutes teach the player?]
+- **First minute**: [The first core action and about how many seconds after launch it comes; how the game teaches it inside play; how the player skips that. `Q-ONB-1` to `Q-ONB-4` in `.claude/docs/game-quality-standard.md`]
+- **Controls**: [Each supported input method and what it does. Keyboard, mouse, touch, gamepad: list only the supported ones; a method not listed is not supported. `Q-ONB-5`, `Q-KEY-1`, `Q-KEY-2`]
 - **Difficulty scaling**: [How does challenge grow with player skill?]
 - **Feedback clarity**: [How does the player know they're improving?]
 - **Recovery from failure**: [How quickly can they try again? Is failure punishing or educational?]

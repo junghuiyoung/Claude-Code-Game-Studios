@@ -80,6 +80,11 @@ about the next layer", "Surprised that this feels different from similar games",
 the 2-hour Steam window", "Put it down and never return", "Post a negative
 first impression", "Recommend it to no one."]
 
+**Quality rows this phase answers**: [One line per row of
+`.claude/docs/game-quality-standard.md` under Onboarding and General principles:
+how these five minutes meet it, or `N/A — why`. e.g. "`Q-ONB-1`: the first wave
+starts 3 seconds after launch, with no screen before it."]
+
 ---
 
 ### Phase 2: Orientation (5-30 minutes)

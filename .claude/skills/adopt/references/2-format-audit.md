@@ -53,8 +53,11 @@ informational):
   numeric rules (rates, curves, thresholds, costs — the system's `Category` is a
   hint, not the test); Player Fantasy and Tuning Knobs are advisory.
 - **`minimal`** — GDDs are not expected; audit `design/game-brief.md` instead,
-  against `.claude/docs/templates/game-brief.md`: each of the six required fields
-  present and not a placeholder; the three one-liners advisory. Any GDD that
+  against `.claude/docs/templates/game-brief.md`: each of the seven required fields
+  present and not a placeholder; the four one-liners advisory. A brief written
+  before the template gained **First minute & controls** lacks that field: report
+  it as the gap it is, since `/create-stories` reads the supported input methods
+  from it. Any GDD that
   does exist is checked at the `standard` bar, advisorily.
 
 The script's 8 canonical labels are: Overview, Player Fantasy, Detailed Rules,

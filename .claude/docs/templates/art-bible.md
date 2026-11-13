@@ -52,13 +52,20 @@ area type, and environmental storytelling guidelines.
 [To be designed] — diegetic versus screen-space HUD, typography (personality,
 weight, size hierarchy, minimum readable size), iconography style, UI animation
 feel, and any art-direction versus readability conflict and how it was decided.
+How buttons are labelled and sized, so the way forward is clear and no button
+steers the player by its size (`Q-UI-1`, `Q-UI-2` in
+`.claude/docs/game-quality-standard.md`).
 
 ## 8. Asset Standards
 
 [To be designed] — file formats, naming convention, texture resolution tiers,
 LOD levels, export settings, and the engine's hard limits (poly budgets per
 asset category, texture memory, material slots). Where an art preference and a
-technical limit disagree, record both and the trade-off chosen.
+technical limit disagree, record both and the trade-off chosen. Name the one
+source resolution or pixel density every asset is made at and how it is scaled,
+so the game keeps one resolution throughout and ships no visible compression
+defect (`Q-AES-1`), and say what keeps every scene in the one style of Sections
+1 to 6 (`Q-AES-3`).
 
 ## 9. Reference Direction
 

@@ -160,7 +160,10 @@ is none.
 Read `.claude/docs/game-quality-standard.md`. Decide each row's **Applies**
 condition as its "How a row applies" section says: `web` from `platform.targets`
 in `project.yaml`; `keyboard` and the supported input methods from the controls
-the brief or GDD names; the rest from the brief or GDD. The `input_methods` line
+the design names (the brief's **First minute & controls** field, or the GDD's
+controls; a method it does not list is not supported); the rest from the brief
+or GDD. A brief with no such field predates it: ask which inputs the game
+supports rather than guessing. The `input_methods` line
 above is a hint only: it lists `keyboard/mouse` for every PC or Web target and
 `none` on an incomplete `platform` block. A condition that cannot be read is
 unknown: ask once ("Which inputs does the game support: keyboard, mouse, touch,

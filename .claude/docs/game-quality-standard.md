@@ -343,6 +343,10 @@ package-lock.json only`, and `N/A` only when the game installs no package.
 | `/dev-story` | Writes the evidence a floor row names: the first-run record, the key list, the ledger rows for what the story added. |
 | `/story-done` | Checks each listed row's evidence. A floor row without it blocks the close. |
 | `/release-checklist` | Checks every row that applies against the release candidate. |
+| `/gate-check` | Production → Polish needs a first-run record and no story closed over an open floor row; Polish → Release needs every floor row ticked in the release checklist. Both need every floor blocker a playtest report recorded to be fixed and closed again. All at every tier. |
+| `/brainstorm` | Fills the brief's **First minute & controls** field, where the first action, the onboarding and the supported input methods are decided, and its name check. |
+| `/ux-review` | Checks the rows the standard checks at `UX spec` against a UX spec or HUD design. A floor row the document contradicts blocks approval, and so does one it owns and leaves out; a row another document owns is cited, not demanded again. |
+| `/playtest-report` | Lists the rows the standard checks at `playtest`, each with what the tester did or said, and records any floor row seen failing in play as a blocker for the story that carries it. |
 | `validate-commit.sh` | Warns when a commit takes a font, image, audio, video or model file no ledger row covers. It never blocks. |
 
 A skill that reads this file and cannot find it reports

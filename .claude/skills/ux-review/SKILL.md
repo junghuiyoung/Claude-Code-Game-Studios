@@ -184,6 +184,50 @@ Run all checks against a `ux-spec.md`-based document.
 - [ ] Resolution criterion present
 - [ ] No criterion requires reading another document to evaluate
 
+**Quality Standard rows**
+
+Read `.claude/docs/game-quality-standard.md` and take every row whose Checked at
+column names `UX spec`. Take the rows, and which of them are floor, from the file
+on this run, never from memory.
+
+Two different questions decide what each row asks of this document:
+
+- **Does the row apply to the game?** By the standard's "How a row applies". For
+  the supported input methods and the `keyboard` condition, read the controls the
+  design names first (the brief's **First minute & controls**, the GDD, the
+  spec's own Interaction Map). The set Phase 2 derived from `platform.targets`
+  is a hint only: it lists keyboard/mouse for every PC or Web target.
+- **Does this document own the row?** A screen or flow owns a row when it is
+  where that thing is decided or changed: the onboarding or first-play screen
+  owns the control hints (`Q-ONB-5`); every screen with a required key action
+  owns its own keys (`Q-KEY-2`); an inventory screen does not own the first-play
+  hints. Scope is not the Applies condition: a row can apply to the game and
+  belong to another document.
+
+- [ ] A row that applies and that this document owns is answered by it: report
+  `[Q-ID]: [the section that answers it]`
+- [ ] **Any explicit contradiction of a floor row is BLOCKING**, whoever owns the
+  row (a supported input method this screen takes with no way to use it, a web
+  game where an action this screen requires is on Escape or Ctrl/Cmd+W alone)
+- [ ] A floor row this document owns and does not address is BLOCKING: the
+  document is where the row is decided before it is built
+- [ ] A floor row that applies and that another document owns: `[Q-ID]: owned by
+  [document, section]`. Not an issue. No document can be named as its owner:
+  `[Q-ID]: NOT ASSESSED — no document owns this row yet`
+- [ ] An advisory row this document owns and does not address is ADVISORY, never
+  blocking
+- A row whose condition cannot be read: `[Q-ID]: NOT ASSESSED — [condition]
+  unknown` for a floor row, `[Q-ID]: condition unknown — [condition]` for an
+  advisory one
+- The standard file is not found: `Quality Standard: NOT ASSESSED —
+  .claude/docs/game-quality-standard.md not found`
+
+**How the dimension counts.** A BLOCKING issue here is a blocking issue like any
+other. With none, the dimension is **NOT ASSESSED** when the standard file is
+missing or any floor row came out `NOT ASSESSED`; an advisory row's `condition
+unknown` never does that. A known problem outranks an unknown, and an unknown
+keeps the verdict from APPROVED.
+
 ---
 
 ## Phase 3B: HUD Validation Checklist
@@ -221,6 +265,11 @@ Run all checks against a `hud-design.md`-based document.
 
 - [ ] All systems in `design/gdd/systems-index.md` with UI category have
   representation in HUD (or justified absence)
+
+### Quality Standard rows
+
+Run the **Quality Standard rows** block of Phase 3A against the HUD design, with
+the same rows and the same rules.
 
 ---
 
@@ -282,6 +331,15 @@ Run all checks against a `hud-design.md`-based document.
 ### Pattern Library: [CONSISTENT / INCONSISTENCIES FOUND / N/A]
 - [findings]
 
+### Quality Standard: [N rows checked / NOT ASSESSED / N/A]
+- [Q-ID] ([floor | advisory]): [the section that answers it | owned by [document, section] | not addressed | contradicted — how | N/A — why | NOT ASSESSED — why | condition unknown — which]
+
+> **UX spec and HUD design:** the rows are the ones the standard checks at `UX
+> spec`, read from the file on this run. **Pattern library:** `Quality Standard:
+> N/A — the rows are checked on each spec, not on the library`. If the standard
+> file is absent: `Quality Standard: NOT ASSESSED —
+> .claude/docs/game-quality-standard.md not found`; it is never reported as met.
+
 > **For a HUD design there is no Pattern Library checklist to run it against (Phase 3B has none), so Pattern Library is N/A, excluded from the dimension count.**
 > Report `Pattern Library: N/A — no pattern library checklist for this document
 > type`.
@@ -303,7 +361,7 @@ Run all checks against a `hud-design.md`-based document.
 [For APPROVED]: This spec is ready for handoff to `/team-ui` Phase 2
 (Visual Design).
 
-[For NOT ASSESSED]: [N] of the four review dimensions could not be evaluated:
+[For NOT ASSESSED]: [N] of the [M] review dimensions that apply to this document (a dimension reported `N/A` is not counted) could not be evaluated:
 [name them]. The spec may well be sound — this review cannot say either way for
 those dimensions. [For each: the one input that would make it checkable.]
 Handoff to `/team-ui` is not recommended on this result.

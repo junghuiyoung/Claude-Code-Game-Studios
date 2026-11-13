@@ -66,6 +66,19 @@ Then work through, in the reply:
 - **Progression loop:** how the player grows, the long-term goal, when the game is done.
 - **Motivation (self-determination theory):** autonomy, competence, relatedness.
 
+Then settle the first minute, as its own short exchange: these three answers are
+decisions, not something to infer from the loops above.
+- **First action:** the first core action a new player takes, and about how many seconds after
+  launch it comes.
+- **Onboarding:** how the game teaches that action inside play, and how the player skips it; or
+  that there is none.
+- **Controls:** which input methods the game supports (keyboard, mouse, touch, gamepad) and what
+  each does. Ask; never add a method the user did not name.
+
+They fill the **First minute** and **Controls** lines of the template's Flow State Design, which
+`/create-stories` and `/ux-review` read for the onboarding and key rows of
+`.claude/docs/game-quality-standard.md`.
+
 ## Phase 4: Pillars and boundaries
 
 Draft **3 to 5 pillars**, each with a name, a one-sentence definition and a design test ("debating
@@ -144,7 +157,8 @@ again, or record scope as not assessed, never as REALISTIC.
 ## Phase 7: Write the concept
 
 Fill every section of the template from the conversation, including the MDA analysis, motivation
-profile and flow design, plus a **Visual Identity Anchor** section: the direction's name, its
+profile and flow design (its First minute and Controls lines from the Phase 3 answers, never from
+a guess), plus a **Visual Identity Anchor** section: the direction's name, its
 one-line visual rule, 2-3 supporting principles with design tests, and the colour philosophy.
 
 The Core Identity table's Estimated Scope matches the full-vision timeline in Scope Tiers: write

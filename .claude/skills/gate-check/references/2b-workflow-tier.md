@@ -63,6 +63,19 @@ across all of them:
 > does not run for it — note "Director Panel skipped — gate not applicable at
 > `workflow: [tier]`" — and the Section 6 stage write still asks first.
 >
+> **The quality floor is outside every reduction too.** The Production → Polish
+> and Polish → Release gate files each carry one item marked "Quality floor,
+> every tier". No workflow tier and no `qa.level` drops it or makes it
+> recommended: `.claude/docs/game-quality-standard.md` ("The floor") holds at
+> every `modes.rigor`. It is not test evidence, so the `qa.level` relaxation
+> above does not reach it, and it counts as a required artifact when deciding
+> whether a gate has any left. The item also reads the `Quality floor blockers`
+> table of every saved playtest report, at every tier, although the `minimal`
+> reduction drops the gate's playtest items: those items ask that playtests
+> exist, this one asks that a floor row a playtest saw failing was fixed and
+> closed again. No playtest report is required for it. Only the floor is held this way: the advisory
+> rows of the standard never block a gate at any tier.
+>
 > **`performance.enforce` is likewise independent of the tier, and a tier
 > reduction never suppresses it.** The performance check in Section 3 runs at
 > every workflow tier, and `block` makes a breach a Blocker at every workflow
