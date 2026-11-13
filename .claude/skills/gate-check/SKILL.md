@@ -7,7 +7,7 @@ allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, Bash(bash 
 model: opus
 ---
 
-!`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys review_mode,workflow,qa.level,testing.strict,performance.enforce,team.size,project.stage,system_overrides`
+!`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys review_mode,workflow,qa.level,testing.strict,performance.enforce,team.size,project.stage,system_overrides,distribution_targets`
 
 Resolved above — use as-is; `--review` overrides `review_mode`. No block →
 defaults in `.claude/docs/config-resolution.md`.

@@ -151,6 +151,13 @@ and go on without one.
 
 ## Phase 5: Hand out the work
 
+**CrazyGames rows, before any work is handed out.** When the story's `## Quality
+Standard` section lists a `CG-` line, read that row in `docs/CRAZYGAMES.md` now
+and put its wording in the brief you give the implementer: the line in the story
+is a pointer, the guide holds the rule. The guide missing or without that row:
+hand the work out anyway and say so in the Phase 7 summary as `CrazyGames rows:
+NOT READ — [why]`.
+
 Hand the implementation to the programmer agent. The brief points at files; never
 paste whole documents into it.
 

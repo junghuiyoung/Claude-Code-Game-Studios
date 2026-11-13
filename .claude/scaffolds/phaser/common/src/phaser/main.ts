@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { playCue } from './audio';
+import { playCue, setMuted } from './audio';
 import {
   MOVEMENT_BINDINGS,
   getMovementDirection,
@@ -63,6 +63,8 @@ class StarterScene extends Phaser.Scene {
   private platform?: GamePlatform;
 
   create(): void {
+    let shutdown = false;
+    let removeMutedListener: (() => void) | undefined;
     this.grid = this.add.graphics();
     this.marker = this.add.circle(0, 0, MARKER_RADIUS, 0x72e5bd).setStrokeStyle(2, 0xd0ffee);
     const keyboard = this.input.keyboard;
@@ -81,6 +83,9 @@ class StarterScene extends Phaser.Scene {
     window.addEventListener('blur', this.clearHeldKeys);
     document.addEventListener('visibilitychange', this.clearHeldKeys);
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
+      shutdown = true;
+      this.platform?.setPlaying(false);
+      removeMutedListener?.();
       keyboard?.off(Phaser.Input.Keyboard.Events.ANY_KEY_DOWN, this.onKeyDown);
       keyboard?.off(Phaser.Input.Keyboard.Events.ANY_KEY_UP, this.onKeyUp);
       this.clearHeldKeys();
@@ -93,9 +98,14 @@ class StarterScene extends Phaser.Scene {
     });
 
     void platformReady.then((platform) => {
+      if (shutdown) return;
       this.platform = platform;
+      setMuted(platform.muted);
+      removeMutedListener = platform.onMutedChange(setMuted);
       document.documentElement.dataset.applicationType = platform.applicationType;
       document.documentElement.dataset.offline = String(platform.offline);
+      if (platform.deviceType === undefined) delete document.documentElement.dataset.deviceType;
+      else document.documentElement.dataset.deviceType = platform.deviceType;
       this.setState('ready');
     });
   }
@@ -123,7 +133,7 @@ class StarterScene extends Phaser.Scene {
     if (this.state === 'loading') return;
     this.clearHeldKeys();
     this.setState(this.state === 'playing' ? 'paused' : 'playing');
-    playCue();
+    if (this.platform?.muted === false) playCue();
   };
 
   private reset = (): void => {
@@ -153,7 +163,7 @@ class StarterScene extends Phaser.Scene {
   private onPointerUp(pointer: Phaser.Input.Pointer): void {
     if (this.state !== 'playing') return;
     this.moveMarker(pointer.x, pointer.y);
-    playCue();
+    if (this.platform?.muted === false) playCue();
   }
 
   private moveMarker(x: number, y: number): void {

@@ -448,6 +448,16 @@ before it is made.
 - [ ] Variant — that section reports a floor row as `NOT ASSESSED`: the item is NOT ASSESSED
 - [ ] Variant — the checklist has no `### Quality Standard` section (written before the standard): NOT ASSESSED, with "re-run `/release-checklist`"
 - [ ] Variant — an advisory row reads `not observed`: the gate is not affected
+- [ ] Variant — `platform.distribution_targets: [crazygames]` and the newest release checklist is a CrazyGames report whose `### CrazyGames requirements` section shows a due `required` row broken: a Blocker naming the row, verdict FAIL at `workflow: minimal`
+- [ ] Variant — the same target, and the newest checklist is a device-form one with no such section: the CrazyGames requirements item is NOT ASSESSED, with `/release-checklist` named
+- [ ] Variant — the same target, the user says this release is for Basic Launch, the report is a Basic Launch report for this candidate with a line for every `CG-` row of the guide, every due `required` row ticked, a `recommended` row `not observed` and the `CG-F` rows `not due`: the item passes
+- [ ] The set of rows to expect is read from `docs/CRAZYGAMES.md` on the run, with each row's Force and stage, and compared with the report
+- [ ] Variant — the report has no line for one `CG-B` row of the guide: the item is NOT ASSESSED naming the row, although no line shows a failure
+- [ ] Variant — the report marks a `CG-B` row `not due`: NOT ASSESSED — only a `CG-F` row at Basic Launch may be `not due`
+- [ ] Variant — the user says this release is for Full Launch and the newest report is a Basic Launch report: NOT ASSESSED — a Basic Launch report cannot stand for a Full Launch release
+- [ ] Variant — the report names another build than the candidate: NOT ASSESSED
+- [ ] Variant — `platform.distribution_targets: []`: the item reads `N/A — not a CrazyGames game` and is not counted as a required artifact
+- [ ] Variant — the key is unset: the skill asks whether the game is released on CrazyGames and goes by the answer; it never reads unset as no
 - [ ] Variant — `/gate-check polish` at the same tier with no file under `production/qa/evidence/first-run/`: the Production → Polish floor item is a Blocker ("the game has not been started once as a new player"), although the `minimal` reduction drops the playtest items
 - [ ] Variant — `/gate-check polish`, a first-run record exists, and a `Complete` story's Completion Notes read `**Quality rows**: Q-ONB-5: not observed`: a Blocker naming the story and the row — no evidence path is not a pass
 - [ ] Variant — `/gate-check polish`, and a `Complete` story has no `## Quality Standard` section and no `**Quality rows**` line: the item is NOT ASSESSED for that story, with `/story-done [path]` named, and the verdict is not PASS

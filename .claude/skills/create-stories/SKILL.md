@@ -7,7 +7,7 @@ allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, Bash(bash 
 model: opus
 ---
 
-!`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys review_mode,review_gate,automation,workflow,docs.density,story_granularity,qa.level,system_overrides,input_methods`
+!`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys review_mode,review_gate,automation,workflow,docs.density,story_granularity,qa.level,system_overrides,input_methods,distribution_targets`
 
 Resolved above — use as-is; `--review` overrides `review_mode`. No block →
 defaults in `.claude/docs/config-resolution.md`.
@@ -171,6 +171,20 @@ gamepad?" / "Does it run in a browser?"), and never take unset or `none` as no.
 Rows marked `crazygames` are not story work: leave them to
 `/release-checklist`.
 
+**The `CG-` rows, for a CrazyGames game only.** Read the
+`platform.distribution_targets` line above, whole:
+
+- It lists `crazygames`: read the two tables under "What CrazyGames requires" in
+  `docs/CRAZYGAMES.md`. They are that platform's own rules, cited by ID like the
+  quality rows and never restated.
+- It reads `none (project.yaml sets an empty list)`: skip them, and say
+  `CrazyGames rows: not read — platform.distribution_targets is empty`.
+- It is unset, or lists only items named `unknown:`: ask once, "Is this game
+  released on CrazyGames?", and go by the answer. Never take unset as no.
+- The game is a CrazyGames game and the guide is missing or has no such tables:
+  say `CrazyGames rows: NOT ASSESSED — docs/CRAZYGAMES.md has no CG- rows`, and
+  go on.
+
 **File not found:** say `Quality standard: NOT ASSESSED —
 .claude/docs/game-quality-standard.md not found`, write that line in each story's
 `## Quality Standard` section, and go on. Never write `None` for it.
@@ -243,6 +257,18 @@ UI last. For each story:
     art or audio, and adds no asset file or package: `None — [reason]`.
   - Each floor row that applies to the game is carried by a story of this epic,
     or the Phase 6 list names it as not carried here.
+- **CrazyGames rows**, for a CrazyGames game only (Phase 2): the `CG-` rows whose
+  "Decided at" names `story` or `UX spec` and that this story touches, by the
+  same test as a quality row: it changes the thing the row is about (a screen
+  with links or buttons, the controls shown per device, audio, an ad offer, the
+  save). One line each in the story's `## Quality Standard` section: `CG-ID
+  ([required | recommended], [Basic | Full]): [AC-N, or how the story keeps the
+  rule]`. A row adds a criterion only when the story builds the thing itself
+  (the rewarded-ad offer screen for `CG-F-7`); otherwise the line is a rule the
+  builder keeps (`CG-B-8`: "no fullscreen button on this screen"). A `CG-F` row
+  is listed with its stage: it binds at Full Launch, and building to it now is
+  the cheap time to do it. A game that is not a CrazyGames game has no such
+  line.
 - **Estimate:** propose a t-shirt size from the criteria and the files the story
   touches: `S` (a few hours), `M` (about a day) or `L` (several days). It is a
   proposal: Phase 6 shows it and the user can change it. `/story-readiness` fails
@@ -384,6 +410,7 @@ answered (repeat it if you showed it earlier):
 Verdict: COMPLETE — [N] stories written to production/epics/[epic-slug]/ ([N] Ready, [N] Blocked)
 Review: [QL-STORY-READY skipped — Solo mode | skipped — Lean mode | its verdicts]
 Quality floor: [each floor row of the standard: → story NNN (a rights row: → stories NNN, NNN) | not carried by this epic | N/A — why | NOT ASSESSED — why]
+CrazyGames rows: [listed on [N] stories | not read — platform.distribution_targets is empty | not read — the user said this is not a CrazyGames game | NOT ASSESSED — docs/CRAZYGAMES.md has no CG- rows]
 Index: [production/epics/index.md updated | Epics index not updated: production/epics/index.md absent]
 Next step: [/dev-story [first-story-path] | /story-readiness [first-story-path]]
 ```

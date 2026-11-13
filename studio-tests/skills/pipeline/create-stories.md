@@ -343,6 +343,10 @@ Fixture defaults.
 - [ ] Variant — feature 1 says "enemy sprites and a hit sound" and feature 2 "the HUD in the Nunito font, installed as a package": story 001 lists `Q-RGT-2 (floor)` and story 002 lists `Q-RGT-3 (floor)` (the font arrives as a package, so no font file is added and `Q-RGT-1` is not touched), each with a criterion naming `production/qa/evidence/rights-ledger.md`; the `Quality floor:` line reads `Q-RGT-1 not carried by this epic · Q-RGT-2 → story 001 · Q-RGT-3 → story 002`, and a rights row two stories carry reads `→ stories 001, 002`
 - [ ] Variant — the user answers that it is not a browser game: the `Quality floor:` line reads `Q-KEY-2 N/A — not a web game`, and the other three rows are still carried
 - [ ] Variant — `.claude/docs/game-quality-standard.md` does not exist: each story's section reads `Quality standard: NOT ASSESSED — .claude/docs/game-quality-standard.md not found`, never `None`, and the stories are still written
+- [ ] Variant — `platform.distribution_targets: [crazygames]`: the `CG-` tables of `docs/CRAZYGAMES.md` are read; story 001, which builds the first screen, lists the rows it touches as `CG-ID (required, Basic): …` lines (no fullscreen button, no outbound link), by ID and not restated; story 002 (save data) lists the cloud-save row with `Full`; the closing block reads `CrazyGames rows: listed on 2 stories`
+- [ ] Variant — the key is unset: the skill asks once whether the game is released on CrazyGames; on "no" no `CG-` line is written and the closing block says the user said so
+- [ ] Variant — `platform.distribution_targets: []`: the tables are not read, nothing is asked, and the closing block reads `CrazyGames rows: not read — platform.distribution_targets is empty`
+- [ ] A `CG-` row adds an acceptance criterion only where the story builds the thing itself; otherwise its line is a rule to keep
 
 ---
 

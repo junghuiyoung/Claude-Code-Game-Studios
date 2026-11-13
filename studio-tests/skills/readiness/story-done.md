@@ -377,6 +377,13 @@ floor row. Case 9 is the exception.
 - [ ] Variant — the same, but the new first-run record still says the hint cannot be skipped: AC-2 FAILS, the verdict is BLOCKED, and nothing is written as resolved
 - [ ] Variant — the open report row names another story, `story-003-old-hint.md`, and this story lists `Q-ONB-3` as the fix for it: the row is open against this close all the same, and on close this story's line carries the `resolves:`
 - [ ] Variant — no playtest report exists: the run says `Playtest blockers: none open on this story's rows`
+- [ ] Variant — the story also lists `CG-B-8 (required, Basic)`, the guide has that row, and the retained screenshot shows no fullscreen button: the line reads `CG-B-8: no fullscreen control on the screen`, it is not treated as an unknown ID, and the verdict is unaffected
+- [ ] Variant — the story also lists `CG-B-8 (required, Basic)` and the retained screenshot shows a fullscreen button: a BLOCKING deviation naming the row, verdict BLOCKED
+- [ ] Variant — the story lists `CG-B-9` and the changed code adds a link to this game's Steam page on the main menu of a desktop game: reported, and not a deviation — the row allows it there; an App Store link is BLOCKING
+- [ ] Variant — the story lists a `CG-` line and `docs/CRAZYGAMES.md` has no `CG-` tables: `CrazyGames rows: NOT ASSESSED — docs/CRAZYGAMES.md has no CG- rows`, and the verdict is at best NOT ASSESSED
+- [ ] Variant — the story lists a `CG-F` row and the build plainly breaks it: an ADVISORY deviation, "binds at Full Launch"; it does not block the close
+- [ ] Variant — a listed `CG-` row with nothing in the build or the changed files to show it: `CG-ID: not observed`, not a deviation
+- [ ] Variant — the story lists no `CG-` line: the report says `CrazyGames rows: none listed`
 - [ ] Variant — a story with no section whose criteria change a rule and nothing a player sees, hears or presses, every criterion covered: the same line is an information line and the verdict stays COMPLETE
 
 ---

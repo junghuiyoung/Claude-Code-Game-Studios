@@ -367,6 +367,9 @@ exception.
 - [ ] Variant — the line reads `Q-ONB-3: N/A — the brief specifies no onboarding step`, and `design/game-brief.md` says so: the item passes with no criterion and no evidence for that row, and the report notes `/story-done` confirms it against the build
 - [ ] Variant — the same line, but the brief says nothing about onboarding: NEEDS WORK; the `Fix:` is to carry the row
 - [ ] Variant — the story's criteria do not mention controls but its `## Files` plans a change to the start screen's control hint, and `Q-ONB-5` is not listed: NEEDS WORK naming `Q-ONB-5`
+- [ ] Variant — the section also holds `CG-B-8 (required, Basic): no fullscreen button on this screen`, and `docs/CRAZYGAMES.md` has a `CG-B-8` row: the line passes; it is looked up in the guide, not in the standard, and is not reported as an unknown ID
+- [ ] Variant — the line reads `CG-B-99`, which the guide does not have: NEEDS WORK naming it
+- [ ] Variant — the story lists a `CG-` line and `docs/CRAZYGAMES.md` has no `CG-` tables: `NOT ASSESSED — docs/CRAZYGAMES.md has no CG- rows`, and the story is not READY
 - [ ] Variant — `.claude/docs/game-quality-standard.md` does not exist: the item reads `NOT ASSESSED — .claude/docs/game-quality-standard.md not found`, the verdict is NOT ASSESSED, never READY
 
 ---

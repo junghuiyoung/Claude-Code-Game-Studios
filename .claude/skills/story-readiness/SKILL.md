@@ -229,7 +229,14 @@ lowers READY by itself.
     reason ("the brief specifies no onboarding step"); it needs no criterion and
     no evidence, and `/story-done` confirms it against the build. A reason the
     design does not state: NEEDS WORK; carry the row.
-  - An ID the standard does not have: NEEDS WORK; name it.
+  - A `Q-` ID the standard does not have: NEEDS WORK; name it.
+  - A `CG-` line (a CrazyGames game only) is looked up in `docs/CRAZYGAMES.md`,
+    not in the standard: it passes when the guide has a row with that ID. A
+    `CG-` ID the guide does not have: NEEDS WORK; name it. The guide missing or
+    without `CG-` tables while the story lists a `CG-` line: `NOT ASSESSED —
+    docs/CRAZYGAMES.md has no CG- rows`, listed under Gaps, and the story is not
+    READY on it. A `CG-` line needs no criterion and no evidence path unless it
+    names one.
   - Standard not found (Phase 2): `NOT ASSESSED —
     .claude/docs/game-quality-standard.md not found`, listed under Gaps. No story
     is READY on a standard nobody could read.

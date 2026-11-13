@@ -420,6 +420,20 @@ apps are unavailable. Other shared checks have evidence.
 - [ ] Variant — `platform.distribution_targets: [none]`: the resolved line is `none (project.yaml; unknown: none)`, which is not the empty list; the same result as `[itchio]`, never Not applicable
 - [ ] Variant — `platform.distribution_targets: []` and `/release-checklist --target crazygames`: the typed flag wins; the CrazyGames report runs and its `crazygames` rows apply
 - [ ] The no-argument CrazyGames report asks no `platform.cert_tier` question although the key is unset
+- [ ] The report has a `### CrazyGames requirements — stage: Basic Launch` section with one line per `CG-` row of `docs/CRAZYGAMES.md`, read on this run: every `CG-B` row assessed, every `CG-F` row `not due — a Full Launch row at Basic Launch`
+- [ ] A row another group answers (the package limits, the Portal Preview) reads `see [that group]` and is not assessed twice
+- [ ] Variant — the code root calls `this.scale.startFullscreen()` from a button: the fullscreen row is a blocking item and Go / No-Go is NOT READY
+- [ ] Variant — the code root holds a link to the game's privacy policy and none to a store: the search is reported with the number of files searched, and the cross-promotion row is ticked — a hit is an observation, and the row's wording decides
+- [ ] Variant — a single-player game with no accounts, chat, uploads, purchases or sitelock, at Basic Launch: the `CG-B` rows whose condition is false (own back-end accounts, chat, user-generated content, purchases, sitelock) read `N/A — why`, never `NOT ASSESSED`; the row forbidding ads from outside the SDK applies to every game and is assessed; every `CG-F` row reads `not due`, not `N/A`
+- [ ] No `CG-B` row ever reads `not due`
+- [ ] Variant — the user confirms Full Launch: the heading names Full Launch, the `CG-F` rows are assessed, one whose condition is false (no ads: the ad rows) reads `N/A — why`, one with no evidence reads `NOT ASSESSED`, and none reads `not due`
+- [ ] Variant — Full Launch, and the game sells in-game items: the Basic row that forbids purchases reads `N/A — purchases are allowed at Full Launch`, never broken and never `not due`, and the Full purchases row is assessed
+- [ ] Variant — Full Launch, a single-player game with its own back-end accounts that shows the player's name: the username-and-avatar row applies and is assessed alongside the own-accounts row; it is not `N/A` because the game has a back-end
+- [ ] Variant — Full Launch, an online game for 20 or more players that puts an instant-multiplayer launch straight into public play where friends can join at once: the Online with Friends row is not broken by the absence of a private room
+- [ ] Variant — the code root links to this game's Steam page from the main menu of a desktop game: reported as a hit, and the cross-promotion row is ticked under the game-store allowance; the same link on an in-play screen breaks the row; a link to an App Store breaks it anywhere
+- [ ] Variant — a `recommended` row reads `not observed`: Go / No-Go is not affected
+- [ ] Variant — `docs/CRAZYGAMES.md` has no `CG-` tables: the section reads `NOT ASSESSED — docs/CRAZYGAMES.md has no CG- rows` and is still present
+- [ ] The device form (`/release-checklist pc`) has no `### CrazyGames requirements` section
 - [ ] Variant — `project.local.yaml` sets `platform.distribution_targets: [crazygames]` and `project.yaml` does not: the key reads unset, and the device form runs
 
 ---

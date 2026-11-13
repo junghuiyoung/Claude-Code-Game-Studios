@@ -7,7 +7,7 @@ allowed-tools: Read, Glob, Grep, Write, WebSearch, Agent, AskUserQuestion, Bash(
 model: opus
 ---
 
-!`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys review_mode,automation,docs.density,workflow`
+!`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys review_mode,automation,docs.density,workflow,distribution_targets`
 
 Resolved above; use as-is. No block → the defaults in `.claude/docs/config-resolution.md`
 (`workflow: minimal`, `review_mode: solo`, `automation: collaborative`, `docs.density: terse`), and
@@ -69,6 +69,22 @@ one-liners). If `design/game-brief.md` exists, read it and refine it instead of 
      searched to see the title is not another game's or a generic word; "not checked yet" is an
      honest answer, never left blank), **Reference game** (the closest shipped game, and the part
      of it the MVP keeps): one line each; offer, don't force.
+   **CrazyGames.** Decide whether this is a CrazyGames game from the
+   `platform.distribution_targets` line above and what the user has said: the
+   line lists `crazygames`, or the user named CrazyGames: yes. The line reads
+   `none (project.yaml sets an empty list)` and the user has not named it: no;
+   say `CrazyGames design targets: not read — platform.distribution_targets is
+   empty`. Otherwise (unset, and not mentioned) ask once: "Will this game be
+   released on CrazyGames?" `Yes` / `No` / `Not decided`. On "Not decided", say
+   `CrazyGames design targets: not checked — release target undecided`. For a
+   CrazyGames game: before showing the brief, read "Design targets: what Basic Launch measures" in
+   `docs/CRAZYGAMES.md`, and the `CG-` rows there whose "Decided at" names
+   `brief`. Say in a line each how the concept stands against the three
+   measures (a session that holds about ten minutes, a reason to come back the
+   next day, play within seconds on a small build) and name any row the brief
+   decides against. These are the platform's descriptions of games that did
+   well, not pass marks: state the risk, and let the user decide. On "No", say
+   nothing more about them.
 3. **Show the filled brief in full.** Then ask, as its own question: "Brief is ready. May I write it
    to `design/game-brief.md`?" `Yes — write it` / `Revise a field first`. Write only on an explicit
    yes to this question; agreeing to a cut or saying "go on" is not a yes to the write. On a

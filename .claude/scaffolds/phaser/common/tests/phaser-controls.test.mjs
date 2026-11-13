@@ -5,6 +5,7 @@ import { test } from 'node:test';
 import vm from 'node:vm';
 import ts from 'typescript';
 import * as controls from '../src/phaser/controls.ts';
+import { standalonePlatform } from '../src/phaser/platform-types.ts';
 
 const {
   MOVEMENT_BINDINGS,
@@ -118,7 +119,11 @@ test('movement bindings contain exactly the physical letter and arrow codes and 
 });
 
 // Integration fixture: run main.ts itself; mock only its browser/platform/rendering dependencies.
-async function sceneFixture(t) {
+async function sceneFixture(t, {
+  platformReady = Promise.resolve(standalonePlatform),
+  audio = { playCue() {}, setMuted() {} },
+  shutdownBeforeReady = false,
+} = {}) {
   const elements = new Map();
   for (const id of ['play-toggle', 'reset-demo', 'status', 'movement-key-hint',
     'movement-up', 'movement-left', 'movement-down', 'movement-right']) {
@@ -133,7 +138,6 @@ async function sceneFixture(t) {
     getElementById: (id) => elements.get(id),
   });
   const keyboard = new EventEmitter();
-  const platformReady = Promise.resolve({ applicationType: 'web', offline: false, setPlaying() {} });
   let scene;
   let marker;
 
@@ -173,7 +177,7 @@ async function sceneFixture(t) {
   const modules = {
     phaser: { default: Phaser },
     './controls': controls,
-    './audio': { playCue() {} },
+    './audio': audio,
     './platform': { connectPlatform: () => platformReady },
     './style.css': {},
   };
@@ -191,9 +195,10 @@ async function sceneFixture(t) {
     window: new EventTarget(),
     navigator: {},
   });
+  if (shutdownBeforeReady) scene.events.emit('shutdown');
   await platformReady;
   elements.get('play-toggle').dispatchEvent(new Event('click'));
-  return { scene, keyboard, marker };
+  return { scene, keyboard, marker, document, elements };
 }
 
 function keyboardEvent(code, key) {
@@ -227,4 +232,108 @@ test('the scene stays still for code KeyZ even when the key character is w', asy
 
   // Assert
   assert.deepEqual({ x: marker.x, y: marker.y }, before);
+});
+
+test('a playing scene reports a stop on shutdown without disposing the shared platform', async (t) => {
+  // Arrange: the fixture presses Start after platform readiness.
+  const playingStates = [];
+  let disposals = 0;
+  const platform = {
+    ...standalonePlatform,
+    setPlaying(playing) { playingStates.push(playing); },
+    dispose() { disposals++; },
+  };
+  const { scene } = await sceneFixture(t, { platformReady: Promise.resolve(platform) });
+  assert.deepEqual(playingStates, [false, true]);
+
+  // Act
+  scene.events.emit('shutdown');
+  scene.events.emit('shutdown');
+
+  // Assert
+  assert.deepEqual(playingStates, [false, true, false]);
+  assert.equal(disposals, 0, 'the page owns the platform, not an individual scene');
+});
+
+test('the scene applies startup mute, follows changes, and unsubscribes on shutdown', async (t) => {
+  // Arrange
+  const listeners = new Set();
+  const muteChanges = [];
+  let cues = 0;
+  const platform = {
+    ...standalonePlatform,
+    muted: true,
+    onMutedChange(listener) {
+      listeners.add(listener);
+      return () => listeners.delete(listener);
+    },
+  };
+  const audio = { setMuted: (muted) => muteChanges.push(muted), playCue() { cues++; } };
+  const { scene, elements } = await sceneFixture(t, { platformReady: Promise.resolve(platform), audio });
+
+  // Act / Assert: the fixture presses Start while muted.
+  assert.equal(cues, 0);
+  assert.deepEqual(muteChanges, [true]);
+  assert.equal(listeners.size, 1);
+  platform.muted = false;
+  for (const listener of listeners) listener(false);
+  elements.get('play-toggle').dispatchEvent(new Event('click'));
+  assert.equal(cues, 1);
+  platform.muted = true;
+  for (const listener of listeners) listener(true);
+  elements.get('play-toggle').dispatchEvent(new Event('click'));
+  scene.input.emit('pointerup', { x: 0, y: 0 });
+  assert.equal(cues, 1, 'muted button and pointer gestures stay silent');
+  assert.deepEqual(muteChanges, [true, false, true]);
+  scene.events.emit('shutdown');
+  assert.equal(listeners.size, 0);
+});
+
+for (const deviceType of ['desktop', 'tablet', 'mobile', undefined]) {
+  test(`the scene exposes SDK device type ${String(deviceType)} only when supplied`, async (t) => {
+    // Arrange
+    const platform = { ...standalonePlatform, deviceType };
+
+    // Act
+    const { document } = await sceneFixture(t, { platformReady: Promise.resolve(platform) });
+
+    // Assert
+    assert.equal(document.documentElement.dataset.deviceType, deviceType);
+    assert.equal(Object.hasOwn(document.documentElement.dataset, 'deviceType'), deviceType !== undefined);
+    assert.equal(document.documentElement.dataset.applicationType, 'web');
+    assert.equal(document.documentElement.dataset.offline, 'false');
+  });
+}
+
+test('each arrow key still moves the marker through the production scene', async (t) => {
+  // Arrange
+  const { scene, keyboard, marker } = await sceneFixture(t);
+  const cases = [
+    { code: 'ArrowUp', x: 0, y: -1 }, { code: 'ArrowDown', x: 0, y: 1 },
+    { code: 'ArrowLeft', x: -1, y: 0 }, { code: 'ArrowRight', x: 1, y: 0 },
+  ];
+
+  // Act / Assert
+  for (const { code, x, y } of cases) {
+    const before = { x: marker.x, y: marker.y };
+    keyboard.emit('keydown', keyboardEvent(code, code));
+    scene.update(0, 16);
+    keyboard.emit('keyup', keyboardEvent(code, code));
+    assert.equal(Math.sign(marker.x - before.x), x, code);
+    assert.equal(Math.sign(marker.y - before.y), y, code);
+  }
+});
+
+test('a scene shut down before platform readiness does not register a mute listener', async (t) => {
+  // Arrange
+  let registrations = 0;
+  const platform = {
+    ...standalonePlatform,
+    onMutedChange() { registrations++; return () => {}; },
+  };
+  // Act
+  await sceneFixture(t, { platformReady: Promise.resolve(platform), shutdownBeforeReady: true });
+
+  // Assert
+  assert.equal(registrations, 0);
 });

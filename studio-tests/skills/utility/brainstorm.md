@@ -243,6 +243,10 @@ Fixture defaults.
 
 - [ ] Checks `workflow` before anything else and runs exactly one flow
 - [ ] Full flow presents 3 concepts before the user commits; Lean Brief flow presents 2–3 one-liners
+- [ ] When the user says the game is for CrazyGames, or `platform.distribution_targets` lists it, the Lean Brief flow reads the design targets in `docs/CRAZYGAMES.md` before showing the brief and says how the concept stands against each of the three measures, as risks and not pass marks
+- [ ] With the key unset and CrazyGames not mentioned, it asks once whether the game will be released there; "Not decided" is recorded as `CrazyGames design targets: not checked — release target undecided`, and "No" ends the matter
+- [ ] With `platform.distribution_targets: []` it does not ask, and says `CrazyGames design targets: not read — platform.distribution_targets is empty`
+- [ ] In the full flow the CrazyGames check comes after the platform question, and a game with no web target is not asked
 - [ ] Concept selection always asks, regardless of `modes.automation`
 - [ ] Gates spawn at their own points in full mode (CD-PILLARS + AD-CONCEPT-VISUAL together; TD-FEASIBILITY; PR-SCOPE)
 - [ ] In the full flow (`workflow: standard` / `full`), all 4 gates are skipped in lean and solo modes, each noted by name; the Lean Brief flow spawns no gate at all

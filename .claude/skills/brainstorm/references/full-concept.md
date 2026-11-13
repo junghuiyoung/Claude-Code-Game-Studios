@@ -130,6 +130,15 @@ it is not for, and successful games that serve the same player.
   Android)` / `Console` / `Web / Browser` / `Multiple platforms`. Record it for `/setup-engine`.
   Note what the platform implies, without recommending an engine: `/setup-engine` makes that call
   against the pinned engine reference.
+- **CrazyGames**, after the platform answer. The `platform.distribution_targets` line lists
+  `crazygames`, or the user named CrazyGames: read "Design targets: what Basic Launch measures" in
+  `docs/CRAZYGAMES.md` and the `CG-` rows decided at `brief`, and say how the concept stands
+  against each measure and any row it decides against. They are not pass marks; state the risk
+  and let the user decide. The line reads `none (project.yaml sets an empty list)`: say
+  `CrazyGames design targets: not read — platform.distribution_targets is empty`. Otherwise, when
+  the platform answer includes the web, ask once: "Will this game be released on CrazyGames?"
+  `Yes` / `No` / `Not decided`; on "Not decided" say `CrazyGames design targets: not checked —
+  release target undecided`. A game with no web target is not asked.
 - **Engine.** Ask in every automation mode, `autonomous` included: "Do you already have an engine
   you work in?" `Godot` / `Unity` / `Unreal Engine 5` / `No preference — help me decide`. Never
   pick an engine for the user. A named engine is recorded as their preference without second

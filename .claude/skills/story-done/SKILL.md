@@ -184,7 +184,9 @@ at `workflow: minimal`, where `/story-readiness` does not run.
   does not list (a `None` section included): a BLOCKING gap. Name the row.
 - **An advisory row the section leaves out**, or a `None` that only advisory rows
   contradict: report each as `[Q-ID] (advisory): not observed`. Never a gap.
-- **An ID the standard does not have:** a BLOCKING gap; the line checks nothing.
+- **A `Q-` ID the standard does not have:** a BLOCKING gap; the line checks
+  nothing. A `CG-` line is not a row of the standard: it is looked up in
+  `docs/CRAZYGAMES.md` and handled in Phase 5, step 6.
 - **`None — [reason]`** on a story that changes no first-run flow, screen,
   control, player-facing text, art or audio, and whose `## Files` add no font,
   image, audio, video or model file and no package: accept it.
@@ -294,8 +296,24 @@ Run, by tier (`minimal` skips 1 and 3):
    **Files in progress** when its Current task names this story; else report
    `Scope: NOT ASSESSED — the story lists no files`. A clean working tree: report
    `Scope: not checked — no uncommitted changes to compare`.
+6. **CrazyGames rows**, at every tier, when the story's `## Quality Standard`
+   section lists any `CG-` line: read those rows in `docs/CRAZYGAMES.md` and
+   report each from the build and the changed files, as `CG-ID: [what the build
+   shows]` or `CG-ID: not observed`. A `required` `CG-B` row the evidence plainly
+   shows broken, read by the row's own wording (a fullscreen button on the
+   retained screenshot; an App Store link in the changed code, which the row
+   never allows; a game-store link placed where the row does not allow one):
+   BLOCKING. A `CG-F` row shown broken: ADVISORY, "binds at Full Launch". A
+   `recommended` row shown broken: ADVISORY. `not observed` is never a
+   deviation: `/release-checklist` is where every row is assessed. A `CG-` ID
+   the guide does not have: BLOCKING; the line checks nothing. The story lists
+   none: `CrazyGames rows: none listed`. The guide is missing or has no such
+   rows while the story lists one: `CrazyGames rows: NOT ASSESSED —
+   docs/CRAZYGAMES.md has no CG- rows`, which keeps the verdict at best NOT
+   ASSESSED: the rules the story was written to keep cannot be read.
 
-Each deviation is **BLOCKING** (contradicts the GDD or ADR), **ADVISORY** (drifts
+Each deviation is **BLOCKING** (contradicts the GDD or ADR, or breaks a
+`required` `CG-B` row), **ADVISORY** (drifts
 but works the same; the user decides) or **OUT OF SCOPE** (for awareness). State
 them as facts; the user judges them.
 
@@ -358,8 +376,9 @@ the `NOT ASSESSED — …` line from Phase 4]
 2. **NOT ASSESSED:** a criterion could not be evaluated: it names no observable
    outcome, the user answered "Not tested yet", a review gate returned NOT ASSESSED
    and its input was not supplied, evidence exists but cannot be read, the GDD
-   or ADR a deviation would be judged against is missing, or Phase 4's quality
-   rows came out NOT ASSESSED in a way it says holds the verdict. Name each one and what
+   or ADR a deviation would be judged against is missing, Phase 4's quality
+   rows came out NOT ASSESSED in a way it says holds the verdict, or Phase 5's
+   CrazyGames rows could not be read. Name each one and what
    would settle it. It outranks the two passes and never hides a failure.
 3. **COMPLETE WITH NOTES:** every criterion passes or is DEFERRED, with advisory
    items listed. Information lines are not advisory items: the evidence-stamp
@@ -393,6 +412,7 @@ the evidence exists.
    **Completed**: [date]
    **Criteria**: [X/Y passing] ([deferred items])
    **Deviations**: [None, or the advisory ones]
+   **CrazyGames rows**: [each listed CG-ID with what the build shows or "not observed"; leave the line out when the story lists none]
    **Test Evidence**: [path, or "waived at qa.level minimal", or "none required"]
    **Quality rows**: [each Q-ID with its evidence path or "not observed", or "None — reason", or the NOT ASSESSED line; a floor row closed over a playtest blocker adds `resolves: [report path]`, which is what `/gate-check` looks for]
    **Reviewed by**: [value]

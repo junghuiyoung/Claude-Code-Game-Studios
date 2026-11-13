@@ -76,6 +76,12 @@ across all of them:
 > closed again. No playtest report is required for it. Only the floor is held this way: the advisory
 > rows of the standard never block a gate at any tier.
 >
+> **The Polish → Release gate's "CrazyGames requirements" item is held the same
+> way**, for a game whose `platform.distribution_targets` lists `crazygames`:
+> every tier, every `qa.level`. It reads the `CG-` lines of the release
+> checklist's CrazyGames report and nothing else in it. For a game that is not
+> released on CrazyGames it is `N/A`, and is not counted as a required artifact.
+>
 > **`performance.enforce` is likewise independent of the tier, and a tier
 > reduction never suppresses it.** The performance check in Section 3 runs at
 > every workflow tier, and `block` makes a breach a Blocker at every workflow

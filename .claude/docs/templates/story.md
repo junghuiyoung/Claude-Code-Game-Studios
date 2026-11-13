@@ -45,6 +45,7 @@
 - [Q-ID] (floor): [AC-N] — evidence: [`production/qa/evidence/first-run/` for a first-run row, `production/qa/evidence/[story-slug]/keys.md` for the key list, `production/qa/evidence/rights-ledger.md` for a rights row]
 - [Q-ID] (advisory): evidence: [path, or how it is observed]
 - [Q-ID]: N/A — [what the design says that makes the row not apply; `/story-done` confirms it against the build]
+- [CG-ID] ([required | recommended], [Basic | Full]): [AC-N, or how the story keeps the rule] *(only for a game released on CrazyGames: the rows of `docs/CRAZYGAMES.md` this story touches)*
 
 *A story that changes no first-run flow, screen, control, player-facing text, art or audio, and adds no asset file or package, reads:* `None — [reason]`
 

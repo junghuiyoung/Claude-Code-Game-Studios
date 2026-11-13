@@ -1468,13 +1468,15 @@ must tell them apart)
 >
 > `/release-checklist` resolves it. With no argument and `crazygames` listed it
 > runs the CrazyGames report, and it decides whether the rows marked
-> `crazygames` in `.claude/docs/game-quality-standard.md` apply.
+> `crazygames` in `.claude/docs/game-quality-standard.md` apply. It also switches
+> on the platform's own requirement rows (`CG-`, in `docs/CRAZYGAMES.md`) in
+> `/brainstorm`, `/create-stories` and `/gate-check release`.
 
 **Controls:** Which storefronts or portals the game is released on, where one has release rules of its own
 **Values:** a list. Known targets: `crazygames`. `[]` is a decision: none
 **Default:** *none* — unset stays unset, so the skills ask or report the condition as unknown
 **Set by:** `/setup-engine phaser --target crazygames`, which adds `crazygames` and keeps what is already listed; otherwise edit `project.yaml` and write it as an inline list, `distribution_targets: [crazygames]`
-**Read by:** `/release-checklist`
+**Read by:** `/release-checklist`, `/brainstorm`, `/create-stories`, `/gate-check`
 
 **Priority chain:** `platform.distribution_targets` in `project.yaml` → unset
 (`platform.*` is locked to `project.yaml`, so `project.local.yaml` cannot set it;
@@ -1510,6 +1512,9 @@ it is not the way to write this key.
 | Skill | unset | `[]` | `[crazygames]` |
 |-------|-------|------|----------------|
 | **release-checklist** | No argument: the device form, as before. The `crazygames` quality rows read `condition unknown — crazygames` | The device form. Those rows are N/A | No argument: the CrazyGames report, naming this key as the reason. A device argument still selects the device form, with the `crazygames` quality rows applied |
+| **brainstorm** | The CrazyGames design targets are read only when the user names CrazyGames | Not read | The design targets and the `CG-` rows decided at the brief are checked against the concept |
+| **create-stories** | Asks once whether the game is released on CrazyGames | The `CG-` rows are not read, and the closing block says so | Each story lists the `CG-` rows it touches |
+| **gate-check** (release) | Asks whether the game is released on CrazyGames | The CrazyGames requirements item is `N/A` | The CrazyGames requirements item is required at every tier |
 
 `--target crazygames` on the command line selects the CrazyGames report whatever
 this key holds, and changes no setting.

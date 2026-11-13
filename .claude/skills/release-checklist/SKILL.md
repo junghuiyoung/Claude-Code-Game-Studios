@@ -271,6 +271,45 @@ If the candidate visibly still contains the starter's marker demo or other
 confirmed placeholder gameplay, mark Content Complete as a blocking failure.
 This does not stop a separate local template test from passing.
 
+**The `CG-` rows, in the CrazyGames report only.** Read the two tables under
+"What CrazyGames requires" in `docs/CRAZYGAMES.md` and give every row a line, by
+ID, taken from the file on this run and never from memory:
+
+```markdown
+### CrazyGames requirements — stage: [Basic Launch | Full Launch]
+- [ ] [CG-ID] ([required | recommended]) — [what the evidence shows, with its path | see [the group that holds it] | N/A — why | NOT ASSESSED — what is missing | not due — a Full Launch row at Basic Launch]
+```
+
+- **Stage.** Basic Launch unless the user confirmed Full Launch (Phase 1). The
+  section's heading names the stage, and the report names the build it was
+  written for. At Basic Launch every `CG-B` row is assessed and every `CG-F`
+  row is listed as `not due — a Full Launch row at Basic Launch`, whatever its
+  Applies condition, so what comes next is visible; those lines are never part
+  of Go / No-Go. `not due` is for a `CG-F` row at Basic Launch and nothing
+  else: a `CG-B` row is never `not due`. At Full Launch both tables are
+  assessed.
+- **Applies**, for a row that is due. A row whose condition is false for this
+  game is `N/A — why`. A condition that cannot be decided is `NOT ASSESSED —
+  [condition] unknown`, never `N/A`.
+- **A `required` row that is due:** tick it only on evidence for this candidate.
+  Evidence that shows it broken is a blocking item, named in the Rationale. No
+  evidence is `NOT ASSESSED — [what is missing]`.
+- **A `recommended` row:** one line with what was seen, or `not observed`. Never
+  part of Go / No-Go.
+- **A row another group already answers** (the package check, the Portal
+  Preview, the app checks, the submission materials): `see [that group]`, with
+  the same result. Do not assess it twice.
+- **Rows about what the code does** (touch detection, a fullscreen call, links
+  and outbound URLs): Grep the code root and report what was found with the
+  number of files searched, as Phase 3 requires for every scan. A hit is an
+  observation: the row's own wording decides whether it breaks the rule (a
+  privacy-policy link does not; an App Store link always does; a game-store
+  link does only outside the places the row allows). Code root unresolved:
+  `NOT ASSESSED — code root unresolved`.
+- `docs/CRAZYGAMES.md` has no such tables (a guide from before them), or is
+  missing: the section reads `NOT ASSESSED — docs/CRAZYGAMES.md has no CG- rows`,
+  and it is never left out.
+
 For a positional device or the default `all`, add **device** sections based on
 the argument. These carry no certification or storefront-SDK items — those
 are gated on `platform.cert_tier` in the next subsection, and repeating them
