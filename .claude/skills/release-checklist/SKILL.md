@@ -3,7 +3,7 @@ name: release-checklist
 description: "Pre-release checklist — build verification, certification requirements, store metadata, launch readiness."
 argument-hint: "[pc|console|mobile|all] | --target crazygames (no argument: platform.distribution_targets decides)"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Bash(bash "*/.claude/skills/release-checklist/../../hooks/yaml-helper.sh" resolve_config *), Bash(node .claude/scripts/check-crazygames-build.mjs *), Bash(bash .claude/scripts/review-receipts.sh check *)
+allowed-tools: Read, Glob, Grep, Write, Bash(bash "*/.claude/skills/release-checklist/../../hooks/yaml-helper.sh" resolve_config *), Bash(node .claude/scripts/check-crazygames-build.mjs *), Bash(node .claude/scripts/rights-scan.mjs *), Bash(bash .claude/scripts/review-receipts.sh check *)
 model: opus
 ---
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys rigor,workflow,project.stage,cert_tier,automation,input_methods,distribution_targets`
@@ -121,6 +121,7 @@ question. Keep the configured tier for other release targets.
 - Read the open bugs from `production/qa/bugs/`: grep the `**Severity**` and `**Status**` lines of `production/qa/bugs/*.md`, as `/bug-triage` does. A bug is open unless its Status is `Closed` or `Verified Fixed`. The bug items use the thresholds `/gate-check release` applies for the resolved `workflow`: at `full` an open S1, S2 or S3 bug fails its item; at `standard` and `minimal` only an open S1 does, and an open S2 or S3 is listed in the Rationale as a risk. Each failing bug is named in the Rationale as a blocking item. **No bug files in `production/qa/bugs/`** → the bug items read `NOT ASSESSED — no bug records` — never zero and never ticked, since an absent record and a clean one must not produce the same checklist; bugs are filed with `/bug-report`.
 - Read `.claude/docs/game-quality-standard.md`: every row of its tables, with its Applies condition and Level. Decide each condition as its "How a row applies" section says — `web` from `platform.targets` in `project.yaml`; `keyboard` and the supported input methods from the controls the design names and the keys the code root binds (the `input_methods` line above is a hint only: it lists `keyboard/mouse` for every PC or Web target and `none` on an incomplete `platform` block); `crazygames` as the "A `crazygames` row" rule in Phase 4 says: true for a CrazyGames report or when the `platform.distribution_targets` line lists `crazygames`, false on the empty list, unknown when the key is unset or lists only unknown items. A condition that cannot be read is unknown, never false. **File not found** → the Quality Standard section reads `NOT ASSESSED — .claude/docs/game-quality-standard.md not found`.
 - Find the newest first-run record, `production/qa/evidence/first-run/first-run-*.md`, and note its date and the build it names. None → say so; the rows that need it are `NOT ASSESSED`. Whether it is current is never judged by its date: list the files under the code root with Glob and run `bash .claude/scripts/review-receipts.sh check production/qa/evidence/first-run/[record name].stamp.txt <every file under the code root>` as its own Bash call. Read the result in the standard's order, first match wins: (1) `RECEIPT: NONE`, or a stamp file with no `Reviewed-Content-Hash:` line, means the record has no usable stamp — the `NEW:` lines printed beside it say the stamp is empty, not that the code changed; (2) a `CHANGED:`, `GONE:` or `NEW:` line means the code changed after the capture; (3) an `UNRESOLVED:` line, a failed check, no `UNCHANGED:` line at all, or an unresolved code root means the stamp could not be checked; (4) only every file reading `UNCHANGED:` makes the record evidence for this candidate. In cases 1 to 3 it is not, and the report says which case.
+- Run the rights scan as its own Bash call: `node .claude/scripts/rights-scan.mjs --code-root <code root>`, adding `--notices <file>` when the build or the project has a third-party notices file (Glob for it; none → the `Q-RGT-5` line reads `not observed — no notices file`). Keep its output for the Quality Standard section and read it as the standard's "The rights ledger" table says. `node` absent, or the script not found → the `Q-RGT` rows read `NOT ASSESSED — rights scan did not run: [why]`.
 
 ---
 
@@ -193,6 +194,7 @@ Generated: [Date]
 
 ### Quality Standard
 First-run record: [path, its date and build, stamp check: current — N files unchanged | changed: files | could not be checked: why] | [none found]
+Rights scan: [its SUMMARY line, and each `NOT RUN` check] | [did not run: why]
 
 Floor (part of Go / No-Go):
 - [ ] [Q-ID] — [what the evidence shows, with its path | NOT ASSESSED — what is missing | N/A — why]
@@ -220,6 +222,13 @@ added to the standard is checked the next time this skill runs.
   record [names build X | lacks Y | stamp could not be checked | predates a
   change to Z]`. For the key-binding row, list each bound key with its
   action, whether play needs it, and the other input that does the same thing.
+  For a rights row the evidence is the scan from Phase 2 and the ledger. A `NO
+  ROW` line anywhere, or a marked `PACKAGE:` line with `ledger: no row`, shows
+  the row failing: a blocking item, naming each file, folder or package. No
+  ledger while the scan lists files the row covers, a `NOT RUN` check the row
+  needs, or an `empty cell` line: `NOT ASSESSED — [which]`. Ticked only when the scan ran and printed none of those;
+  then add `rows not verified against their sources` unless the ledger's Proof
+  cells were opened on this run.
 - **An advisory row that applies:** one line, what was seen and where, or `not
   observed`. It never changes Go / No-Go.
 - **A floor row whose condition is unknown:** `NOT ASSESSED — [condition]
@@ -384,7 +393,7 @@ emitting every track; if it cannot be determined, emit
   - [ ] PEGI
   - [ ] Other regional ratings as required
 - [ ] Legal notices, EULA, and privacy policy in place
-- [ ] Third-party license attributions complete
+- [ ] Third-party license attributions complete (`Q-RGT-5` in the Quality Standard section says what the scan found)
 - [ ] Pricing configured for all regions
 
 ### Launch Readiness

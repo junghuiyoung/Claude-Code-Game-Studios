@@ -274,6 +274,18 @@ of `.claude/docs/game-quality-standard.md` that says what its evidence is.
   root and its input settings, in files this story did not change too: each
   bound key, its action, whether play needs it, and the other input that does
   the same thing.
+- **A rights row** ("The rights ledger"): for every font, image, audio, video
+  or model file this story added or replaced, and every package it added, add
+  or update the row in `production/qa/evidence/rights-ledger.md` (create the
+  file with the standard's table header when it is absent). Fill a row from the
+  licence or terms you opened at the source in this run, never from what a
+  licence of that name usually says. A file the user supplied, or a source that
+  is not in this session: ask the user. A source nobody could open: leave the
+  Source or Licence cell empty and say which. Then run
+  `node .claude/scripts/rights-scan.mjs --code-root <code root>` as its own Bash
+  call, and carry its `FILE:`, `FILES:`, `LEDGER:` and marked `PACKAGE:` lines
+  into the summary. `node` absent, or a `NOT RUN` line: say so; never write that
+  the ledger is complete.
 
 The story names the folder or the fixed file, so nothing in the story is edited
 when evidence is captured again. The Phase 7 summary carries one line, on every

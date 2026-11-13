@@ -212,15 +212,18 @@ lowers READY by itself.
   - A row the standard marks **floor** passes only when it names an acceptance
     criterion the story has, that criterion states the row's behaviour, and the
     line gives the evidence location the standard fixes for the row
-    (`production/qa/evidence/first-run/`, or the story's `keys.md`). Otherwise
+    (`production/qa/evidence/first-run/`, the story's `keys.md`, or
+    `production/qa/evidence/rights-ledger.md` for a rights row). Otherwise
     NEEDS WORK. Fix: add the criterion and the location.
   - `None`, when the story's criteria or `## Files` change a first-run flow, a
-    screen, a control, player-facing text, art or audio (the standard's "When a
-    story touches a row"; the story's Type does not decide it): NEEDS WORK; name
+    screen, a control, player-facing text, art or audio, or add an asset file
+    or a package (the standard's "When a story touches a row"; the story's Type
+    does not decide it): NEEDS WORK; name
     the rows for what it changes.
   - A floor row that applies and that the story's criteria, or the changes its
     `## Files` section plans, touch (the first thing a new player does, an
-    onboarding step, a control hint, a key binding), and that the section does
+    onboarding step, a control hint, a key binding, a font, image, audio, video
+    or model file, a package), and that the section does
     not list: NEEDS WORK; name the row.
   - `Q-ID: N/A — [reason]` passes when the design the story traces to states the
     reason ("the brief specifies no onboarding step"); it needs no criterion and

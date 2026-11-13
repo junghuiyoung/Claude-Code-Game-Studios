@@ -22,11 +22,13 @@
 
 - Every game is held to `.claude/docs/game-quality-standard.md`. Read it on
   demand and cite its rows by ID (`Q-ONB-1`); never restate a row elsewhere.
-- Its four **floor** rows block a story's close and a release at every
+- Its seven **floor** rows block a story's close and a release at every
   `modes.rigor` and `qa.level`: a first-run record (`Q-ONB-1`), skippable
   onboarding (`Q-ONB-3`), controls shown for every supported input (`Q-ONB-5`),
-  and a web game that can be played without a browser-reserved key (`Q-KEY-2`).
-  Each holds where its Applies condition does.
+  a web game that can be played without a browser-reserved key (`Q-KEY-2`), and
+  a rights-ledger row for every font (`Q-RGT-1`), every other asset file
+  (`Q-RGT-2`) and every GPL-family or unlicensed package (`Q-RGT-3`) the game
+  ships. Each holds where its Applies condition does.
 - Every other row is advisory: checked and reported by ID, never dropped in
   silence.
 - A row applies by facts about the game (web, keyboard, ads, multiplayer). Only

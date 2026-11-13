@@ -172,7 +172,7 @@ beside it is not evidence: a described check is an assertion.
 **Quality rows, every type, every `qa.level`.** Read the story's `## Quality
 Standard` section, and in `.claude/docs/game-quality-standard.md`: "How a row
 applies", "When a story touches a row", "The first-run record", "The key list",
-and the rows. Which rows are **floor** comes from that file's Level column, never
+"The rights ledger", and the rows. Which rows are **floor** comes from that file's Level column, never
 from memory.
 
 First decide what the story touches, from its criteria and `## Files`, not from
@@ -186,7 +186,8 @@ at `workflow: minimal`, where `/story-readiness` does not run.
   contradict: report each as `[Q-ID] (advisory): not observed`. Never a gap.
 - **An ID the standard does not have:** a BLOCKING gap; the line checks nothing.
 - **`None — [reason]`** on a story that changes no first-run flow, screen,
-  control, player-facing text, art or audio: accept it.
+  control, player-facing text, art or audio, and whose `## Files` add no font,
+  image, audio, video or model file and no package: accept it.
 - **`Q-ID: N/A — [reason]`:** confirm the reason against the build (for
   `Q-ONB-3`, the current first-run record says there is no onboarding step).
   Confirmed: the row needs no other evidence. No current record to confirm it
@@ -194,8 +195,9 @@ at `workflow: minimal`, where `/story-readiness` does not run.
 - **A floor row that applies.** Its evidence is at the location the standard
   fixes: for a first-run row, the newest `first-run-*.md` under
   `production/qa/evidence/first-run/` with its screenshots and stamp; for the key
-  list, `production/qa/evidence/[story-slug]/keys.md`. Open it and check it shows
-  what the row asks.
+  list, `production/qa/evidence/[story-slug]/keys.md`; for a rights row,
+  `production/qa/evidence/rights-ledger.md` and a run of the rights scan. Open it
+  and check it shows what the row asks.
   - Nothing there: a BLOCKING gap, whatever `qa.level` and `gate_level` say.
   - It exists but cannot be read, or lacks a field or a screenshot the standard
     requires: `[Q-ID]: NOT ASSESSED — [what is missing]`, which keeps the verdict
@@ -221,6 +223,22 @@ at `workflow: minimal`, where `/story-readiness` does not run.
     shows no hint for its method: the criterion that carries the row FAILS.
   - It shows the row failing (onboarding with no way to skip, play that needs
     Escape with no other input): the criterion that carries the row FAILS.
+  - A rights row: run `node .claude/scripts/rights-scan.mjs --code-root <code root>`
+    as its own Bash call, and read its lines as the standard's "The rights
+    ledger" table says. Judge this story by what it brought in:
+    1. No ledger file, or a `NO ROW` line for a file the story's `## Files` add
+       or replace, or a marked `PACKAGE:` line with `ledger: no row` for a
+       package the story added: a BLOCKING gap. Name the file or package.
+    2. A `LEDGER: … — empty cell` line for a row that covers one of the story's
+       files, a `CHECK: … — NOT RUN` line for a part the row needs, or a scan
+       that could not start (`node` absent): `[Q-ID]: NOT ASSESSED — [which]`.
+    3. A `NO ROW` line for a file this story did not touch: report it as
+       `[Q-ID]: [N] files outside this story have no ledger row`. It is not this
+       story's gap; `/release-checklist` blocks on it.
+    4. None of those: the row is met for this story. The scan reads that a
+       licence is named, not that it is true: say so once, as `ledger rows not
+       verified against their sources`, unless the story's summary shows the
+       source was opened.
 - **An advisory row:** report `[Q-ID]: [what the evidence shows]` or `[Q-ID]: not
   observed`. Never a gap.
 - **No section** (a story written before the standard): `Quality rows: NOT

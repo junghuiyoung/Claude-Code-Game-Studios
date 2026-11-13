@@ -308,22 +308,25 @@ Fixture defaults.
 **Fixture:**
 - As Case 6's first fixture, plus `project.yaml` has `platform.targets: [Web]`, and
   the brief's controls line reads "arrow keys or WASD to move, mouse to aim"
-- `.claude/docs/game-quality-standard.md` exists with four rows marked **floor**
-  in its Level column: `Q-ONB-1`, `Q-ONB-3`, `Q-ONB-5` and `Q-KEY-2`
+- `.claude/docs/game-quality-standard.md` exists with seven rows marked **floor**
+  in its Level column: `Q-ONB-1`, `Q-ONB-3`, `Q-ONB-5`, `Q-KEY-2`, `Q-RGT-1`,
+  `Q-RGT-2` and `Q-RGT-3`
 - The brief's MVP feature 1 is what a new player does first; feature 2 is a save
-  system with nothing on screen
+  system with nothing on screen. Neither names a new font, image, sound or
+  package
 
 **Input:** `/create-stories`
 
 **Expected behavior:**
 1. Phase 2 reads the standard at `minimal`, where no GDD, ADR or manifest is read
-2. `keyboard` (from the brief's controls) and `web` are both true, so all four
-   floor rows apply
-3. Story 001 carries the four floor rows, each as an acceptance criterion that
+2. `keyboard` (from the brief's controls) and `web` are both true, so the four
+   onboarding and key rows apply; no story brings a file or package in
+3. Story 001 carries those four floor rows, each as an acceptance criterion that
    names the behaviour and the evidence file; story 002 reads `Quality: None — save
    data only; no screen, control, text, art or audio changed`
 4. The Phase 6 list shows a `Quality:` line per story and one `Quality floor:` line
-   naming all four rows as `→ story 001`
+   naming those four rows as `→ story 001` and `Q-RGT-1`, `Q-RGT-2` and `Q-RGT-3`
+   each as `not carried by this epic`
 5. The written stories each have a `## Quality Standard` section; the closing block
    repeats the `Quality floor:` line
 
@@ -337,6 +340,7 @@ Fixture defaults.
 - [ ] Story 001's Dependencies or notes say what must exist before a new player can reach play, since its implementer writes the first-run record
 - [ ] Variant — `project.yaml` has no `platform` block and the brief names no controls: the skill asks which inputs the game supports and whether it runs in a browser, and never drops `Q-KEY-2` on the unset value
 - [ ] Variant — `platform.targets: [Web]` and the brief says "touch only": `keyboard` is false although the `input_methods` line lists `keyboard/mouse`, and the `Quality floor:` line reads `Q-KEY-2 N/A — touch only, no key bound`
+- [ ] Variant — feature 1 says "enemy sprites and a hit sound" and feature 2 "the HUD in the Nunito font, installed as a package": story 001 lists `Q-RGT-2 (floor)` and story 002 lists `Q-RGT-3 (floor)` (the font arrives as a package, so no font file is added and `Q-RGT-1` is not touched), each with a criterion naming `production/qa/evidence/rights-ledger.md`; the `Quality floor:` line reads `Q-RGT-1 not carried by this epic · Q-RGT-2 → story 001 · Q-RGT-3 → story 002`, and a rights row two stories carry reads `→ stories 001, 002`
 - [ ] Variant — the user answers that it is not a browser game: the `Quality floor:` line reads `Q-KEY-2 N/A — not a web game`, and the other three rows are still carried
 - [ ] Variant — `.claude/docs/game-quality-standard.md` does not exist: each story's section reads `Quality standard: NOT ASSESSED — .claude/docs/game-quality-standard.md not found`, never `None`, and the stories are still written
 

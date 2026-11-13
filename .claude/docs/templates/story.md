@@ -42,11 +42,11 @@
 
 *The rows of `.claude/docs/game-quality-standard.md` this story touches, decided from what it changes (that file's "When a story touches a row"), not from its Type. `/create-stories` fills it; `/story-done` checks each row's evidence. A floor row names the acceptance criterion above that covers both the behaviour and the evidence file.*
 
-- [Q-ID] (floor): [AC-N] — evidence: [`production/qa/evidence/first-run/` for a first-run row, `production/qa/evidence/[story-slug]/keys.md` for the key list]
+- [Q-ID] (floor): [AC-N] — evidence: [`production/qa/evidence/first-run/` for a first-run row, `production/qa/evidence/[story-slug]/keys.md` for the key list, `production/qa/evidence/rights-ledger.md` for a rights row]
 - [Q-ID] (advisory): evidence: [path, or how it is observed]
 - [Q-ID]: N/A — [what the design says that makes the row not apply; `/story-done` confirms it against the build]
 
-*A story that changes no first-run flow, screen, control, player-facing text, art or audio reads:* `None — [reason]`
+*A story that changes no first-run flow, screen, control, player-facing text, art or audio, and adds no asset file or package, reads:* `None — [reason]`
 
 ---
 

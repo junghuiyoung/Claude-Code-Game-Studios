@@ -219,10 +219,17 @@ UI last. For each story:
     continues after the skip, shown by a first-run record under
     `production/qa/evidence/first-run/`"). The evidence location is the one the
     standard fixes for the row: that folder for a first-run row, never a file in
-    it, and `production/qa/evidence/[story-slug]/keys.md` for the key list.
+    it, `production/qa/evidence/[story-slug]/keys.md` for the key list, and
+    `production/qa/evidence/rights-ledger.md` for a rights row.
     `/dev-story` writes those files in its run-and-look step, so the story's
     Dependencies name whatever must be built before a new player can reach play.
     The row is added to an existing story, never as a story of its own.
+  - A rights row (`Q-RGT-1` to `Q-RGT-3`) is carried by **every** story that
+    adds or replaces a font, image, audio, video or model file or adds a
+    package, not by one story. Its criterion names what comes in: "The HUD font
+    has a row in `production/qa/evidence/rights-ledger.md` naming its source and
+    a licence that allows shipping the file, and the rights scan prints no `NO
+    ROW` line for it".
   - An advisory row is listed with where its evidence will be. It adds no
     criterion.
   - A row the story touches that does not apply to the game: `Q-ID: N/A —
@@ -230,7 +237,7 @@ UI last. For each story:
     criterion, no evidence; `/story-done` confirms the reason against the build.
     A reason the design does not state is not N/A: carry the row.
   - A story that changes no first-run flow, screen, control, player-facing text,
-    art or audio: `None — [reason]`.
+    art or audio, and adds no asset file or package: `None — [reason]`.
   - Each floor row that applies to the game is carried by a story of this epic,
     or the Phase 6 list names it as not carried here.
 - **Estimate:** propose a t-shirt size from the criteria and the files the story
@@ -268,11 +275,12 @@ Story 003: [title] — Visual/Feel — ADR-0001 — Ready — Estimate S
 
 [N stories: N Logic, N Integration, N Visual/Feel, N UI, N Config/Data; N Blocked]
 QL-STORY-READY: [skipped — Solo mode | its verdicts]
-Quality floor: Q-ONB-1 → story 003 · Q-ONB-3 → story 003 · Q-ONB-5 → story 003 · Q-KEY-2 N/A — not a web game
+Quality floor: Q-ONB-1 → story 003 · Q-ONB-3 → story 003 · Q-ONB-5 → story 003 · Q-KEY-2 N/A — not a web game · Q-RGT-1 → story 003 · Q-RGT-2 → stories 002, 003 · Q-RGT-3 not carried by this epic
 ```
 
 Every story has a `Quality:` line, and the `Quality floor:` line names every row
-the standard marks floor, every time, each as `→ story NNN`, `not carried by this epic`,
+the standard marks floor, every time, each as `→ story NNN` (a rights row: every
+story that carries it), `not carried by this epic`,
 `N/A — [why]` or `NOT ASSESSED — [condition] unknown`. A floor row that applies
 and that no story of this epic carries is said in words under the list, with the
 epic that should carry it if one is known.
@@ -372,7 +380,7 @@ answered (repeat it if you showed it earlier):
 ```
 Verdict: COMPLETE — [N] stories written to production/epics/[epic-slug]/ ([N] Ready, [N] Blocked)
 Review: [QL-STORY-READY skipped — Solo mode | skipped — Lean mode | its verdicts]
-Quality floor: [each floor row of the standard: → story NNN | not carried by this epic | N/A — why | NOT ASSESSED — why]
+Quality floor: [each floor row of the standard: → story NNN (a rights row: → stories NNN, NNN) | not carried by this epic | N/A — why | NOT ASSESSED — why]
 Index: [production/epics/index.md updated | Epics index not updated: production/epics/index.md absent]
 Next step: [/dev-story [first-story-path] | /story-readiness [first-story-path]]
 ```

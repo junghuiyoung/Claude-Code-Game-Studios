@@ -377,6 +377,45 @@ floor row. Case 9 is the exception.
 
 ---
 
+### Case 10: Rights floor — a file with no ledger row blocks the close
+
+**Fixture:**
+- As Case 9's project. `production/epics/mvp/story-004-hud.md` has `Type: UI`,
+  `Status: In Progress`, criteria AC-1 "The HUD shows scrap and hull" and AC-2
+  "The HUD font has a row in `production/qa/evidence/rights-ledger.md` naming its
+  source and a licence that allows shipping the file". Its `## Quality Standard`
+  section lists `Q-RGT-1 (floor): AC-2 — evidence:
+  production/qa/evidence/rights-ledger.md`; its `## Files` add
+  `assets/fonts/Hud.woff2` and `assets/art/hud/panel.png`
+- A retained HUD screenshot with a current stamp is in the story's evidence folder
+- `production/qa/evidence/rights-ledger.md` exists with one row, for
+  `assets/art/hud/`. The rights scan prints `FILE: font assets/fonts/Hud.woff2 —
+  ledger: NO ROW` and `FILES: audio 19 in assets/audio/ — ledger: NO ROW`
+
+**Input:** `/story-done production/epics/mvp/story-004-hud.md`
+
+**Expected behavior:**
+1. Phase 4 runs `node .claude/scripts/rights-scan.mjs --code-root src` as its own
+   Bash call
+2. `Q-RGT-1 (floor)`: a BLOCKING gap naming `assets/fonts/Hud.woff2`
+3. `Q-RGT-2` is a floor row the story's `## Files` touch (`panel.png`) and the
+   section does not list: `Q-RGT-2 (floor): NOT LISTED — BLOCKING`
+4. The 19 audio files are reported as `Q-RGT-2: 19 files outside this story have
+   no ledger row`, and are not this story's gap
+5. The verdict is BLOCKED; "Close anyway" is not offered
+
+**Assertions:**
+- [ ] The scan is run, not described: its lines are quoted in the report
+- [ ] A file the story did not add never blocks this story, and is never left out of the report
+- [ ] Variant — the ledger has a row for `assets/fonts/Hud.woff2` and the section lists `Q-RGT-2` too: both rows are met, the report adds `ledger rows not verified against their sources`, and the verdict is COMPLETE
+- [ ] Variant — that row's Licence cell is empty (`LEDGER: assets/fonts/Hud.woff2 — empty cell: Licence`): `Q-RGT-1: NOT ASSESSED — the row names no licence`, and the verdict is NOT ASSESSED, not BLOCKED
+- [ ] Variant — there is no ledger file at all: a BLOCKING gap, as for any floor row with nothing at its evidence location
+- [ ] Variant — `node` is not on PATH: `Q-RGT-1: NOT ASSESSED — rights scan did not run: node not found`; the row is never treated as met
+- [ ] Variant — the story adds the `howler` package and the scan prints `PACKAGE: howler@2.2.4 — licence: MIT — lock: prod — reached: yes — match: none`: `Q-RGT-3` is met; with `match: gpl-family` and `ledger: no row` it is a BLOCKING gap naming the package
+- [ ] Variant — a Logic story whose `## Files` add no asset file and no package reads `None — rule change only`: accepted, and the scan is not required
+
+---
+
 ## Protocol Compliance
 
 - [ ] Reads a `references/*.md` file only on the branch that needs it, before that branch's step begins

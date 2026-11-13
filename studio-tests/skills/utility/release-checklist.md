@@ -341,8 +341,11 @@ apps are unavailable. Other shared checks have evidence.
 **Fixture:**
 - No `modes` keys (`rigor: minimal`); `platform.cert_tier: none`;
   `platform.targets: [Web]`; the brief's controls are "WASD to move, Space to jump"
-- `.claude/docs/game-quality-standard.md` exists with its four floor rows and its
+- `.claude/docs/game-quality-standard.md` exists with its seven floor rows and its
   `crazygames` rows
+- There is no `production/qa/evidence/rights-ledger.md`. The rights scan prints
+  `CHECK: ledger — NOT RUN: … not found`, `FILES: image 39 in assets/art/ —
+  ledger: NO LEDGER`, and three `PACKAGE:` lines, all `match: none`
 - `production/qa/evidence/` holds story screenshots; **there is no
   `production/qa/evidence/first-run/` folder**
 - The code root binds `W`, `A`, `S`, `D` and `Space`, and nothing else
@@ -359,7 +362,12 @@ apps are unavailable. Other shared checks have evidence.
 5. `platform.distribution_targets` is unset and no `--target crazygames` was typed,
    so the `crazygames` rows read `condition unknown — crazygames
    (platform.distribution_targets unset)` under Advisory, not under Not applicable
-6. Go / No-Go is NOT ASSESSED, naming the floor rows
+6. Phase 2 runs `node .claude/scripts/rights-scan.mjs --code-root src`. The
+   section carries a `Rights scan:` line with its SUMMARY; `Q-RGT-2` reads
+   `NOT ASSESSED — no rights ledger`, never ticked; `Q-RGT-1` is ticked as `the
+   scan lists no font file`; `Q-RGT-3` is ticked, naming the three packages and
+   their licences
+7. Go / No-Go is NOT ASSESSED, naming the floor rows
 
 **Assertions:**
 - [ ] The section is present at `rigor: minimal` — it is not trimmed as process weight
@@ -371,6 +379,11 @@ apps are unavailable. Other shared checks have evidence.
 - [ ] Variant — `project.yaml` has no `platform` block and the design names no controls, but the code root's five bindings are readable: `keyboard` is true and `web` is unknown. The key-binding floor row reads `NOT ASSESSED — web unknown`; `Q-KEY-1` is assessed or `not observed`, never `condition unknown`; an advisory row that depends on `web` alone would read `condition unknown — web`. None is moved to Not applicable
 - [ ] Variant — a first-run record exists but names an older build: the rows that need it read `NOT ASSESSED — first-run record names build X`, never ticked
 - [ ] Variant — the record's stamp check prints a `CHANGED:` or `NEW:` line against a stamp that holds hashes, there is no `.stamp.txt` (`RECEIPT: NONE` beside a `NEW:` line per file), or the check prints no `UNCHANGED:` line: the same rows read NOT ASSESSED, and the report says which case it was; the record's date is not what decides it, and the absence of a `CHANGED:` line is not a pass
+- [ ] Variant — the ledger exists and covers `assets/art/`, and the scan prints `FILE: font assets/fonts/Hud.woff2 — ledger: NO ROW`: `Q-RGT-1` is a blocking item naming the file and Go / No-Go is NOT READY
+- [ ] Variant — the scan prints `PACKAGE: curve@2.0.0 — licence: GPL-3.0-only — lock: dev — reached: yes — match: gpl-family — ledger: no row`: `Q-RGT-3` is a blocking item; the same line with `reached: no` is listed as information and blocks nothing
+- [ ] Variant — every file has a row and no package is marked: the three rows are ticked, each with `rows not verified against their sources` unless the Proof cells were opened on this run
+- [ ] Variant — `node` is not on PATH: the `Rights scan:` line reads `did not run: node not found` and the three rows read `NOT ASSESSED — rights scan did not run`
+- [ ] Variant — the scan prints `HOST: fonts.googleapis.com — 1 references, first index.html:7 [font]`: `Q-RGT-4` names it under Advisory; it never changes Go / No-Go
 - [ ] Variant — `/release-checklist --target crazygames`: the `crazygames` rows are listed as advisory rows, not under Not applicable
 - [ ] Variant — `platform.distribution_targets: []`: the `crazygames` rows are under Not applicable as `not a CrazyGames release (platform.distribution_targets is empty)`
 - [ ] Variant — the standard file does not exist: the section reads `NOT ASSESSED — .claude/docs/game-quality-standard.md not found` and Go / No-Go is not READY

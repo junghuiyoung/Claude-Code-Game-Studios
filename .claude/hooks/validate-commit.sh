@@ -811,6 +811,39 @@ if [ -n "$SRC_FILES" ]; then
     fi
 fi
 
+# Rights ledger (Q-RGT-1 and Q-RGT-2 in .claude/docs/game-quality-standard.md):
+# a font, image, audio, video or model file this commit takes that no row of
+# production/qa/evidence/rights-ledger.md covers. Advisory. The floor is held by
+# /story-done and /release-checklist; this is the early word, said when the file
+# arrives and however it arrived (a Write, a curl, a package script, a
+# generator's CLI), which a Write|Edit hook would miss.
+#
+# rights-scan.mjs holds the one list of file kinds, so every staged path goes to
+# it and it keeps the ones it knows. It reads the ledger's WORKING copy, not the
+# staged one: a row written and not staged quiets the warning for a commit that
+# does not carry the row. That is accepted for a warning; the story close reads
+# the same file again.
+#
+# The scan needs node. Without it the skip is said only when a staged path looks
+# like such a file: that pattern is a guess at the script's list, used for
+# nothing but deciding whether the skip is worth a line.
+if [ -n "$STAGED" ] && [ -f .claude/scripts/rights-scan.mjs ]; then
+    if command -v node >/dev/null 2>&1; then
+        if RIGHTS_OUT=$(printf '%s\n' "$STAGED" | node .claude/scripts/rights-scan.mjs --paths-from-stdin 2>/dev/null); then
+            while IFS= read -r line; do
+                case "$line" in
+                    FILE:*)  WARNINGS="$WARNINGS\nRIGHTS: ${line#FILE: }. Add its row (source, licence) to production/qa/evidence/rights-ledger.md." ;;
+                    FILES:*) WARNINGS="$WARNINGS\nRIGHTS: ${line#FILES: }. Add a row (source, licence) for them to production/qa/evidence/rights-ledger.md; a folder row covers a folder." ;;
+                esac
+            done <<< "$RIGHTS_OUT"
+        else
+            WARNINGS="$WARNINGS\nSKIPPED: .claude/scripts/rights-scan.mjs failed, so the rights-ledger check did NOT run on this commit."
+        fi
+    elif echo "$STAGED" | grep -qiE '\.(ttf|otf|woff2?|png|jpe?g|webp|gif|svg|mp3|ogg|wav|mp4|webm|glb|gltf|fbx)$'; then
+        WARNINGS="$WARNINGS\nSKIPPED: node not found, so the rights-ledger check did NOT run on the staged asset file(s)."
+    fi
+fi
+
 # Warnings allow the commit. They go out as hook JSON: stderr on exit 0 reaches
 # the debug log only, so neither the user nor Claude ever saw them. stderr stays
 # as the fallback for a tree whose helper did not load.
