@@ -140,6 +140,21 @@ Coordinate multiple agents on a single feature area:
 | `/team-live-ops` | live-ops-designer + economy-designer + community-manager + analytics-engineer |
 | `/team-qa` | qa-lead + qa-tester + gameplay-programmer + producer |
 
+## Third-party skills
+
+Two more folders in `.claude/skills/` were copied in from other projects on
+2026-11-13. They are reference knowledge that Claude loads when a task matches,
+not CCGS workflow steps, so they are not counted in the 76 above, are not in
+`studio-tests/catalog.yaml`, and were not written to
+`.claude/rules/skill-authoring.md`.
+
+| Command | Purpose | Source |
+|---------|---------|--------|
+| `/game-ui-frontend` | HUD, menu and overlay design for browser games: playfield protection, hierarchy, motion, prompt shapes | `openai/plugins`, `game-studio` plugin, commit `d420d13` (MIT per its manifest) |
+| `/game-ui-ux` | Engine-neutral HUD and menu rules: anchors, scaling, safe areas, focus, screen stack, accessibility minimums | `gamedev-skills/awesome-gamedev-agent-skills`, commit `c6ca6c4` (Apache-2.0) |
+
+Each `SKILL.md` opens with a local note saying what was changed from upstream.
+
 ## Overlap with Claude Code's bundled skills
 
 Claude Code ships its own skills, and one name collides with CCGS's.
